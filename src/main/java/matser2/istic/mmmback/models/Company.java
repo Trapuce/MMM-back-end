@@ -1,11 +1,13 @@
 package matser2.istic.mmmback.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
 @Entity
 public class Company {
 
@@ -19,39 +21,31 @@ public class Company {
 
     private String address;
 
+    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Employee> employees;
 
-    public Company() {}
-
-    public Long getId() {
-        return id;
+    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resources> resources = new ArrayList<>();
+    public void addEmployee(Employee employee) {
+        this.employees.add(employee);
+        employee.setCompany(this);
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void removeEmployee(Employee employee) {
+        this.employees.remove(employee);
+        employee.setCompany(null);
     }
 
-    public String getName() {
-        return name;
+
+    public void addResource(Resources resource) {
+        this.resources.add(resource);
+        resource.setCompany(this);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void removeResource(Resources resource) {
+        this.resources.remove(resource);
+        resource.setCompany(null);
     }
 
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public void setRegistrationNumber(String registrationNumber) {
-        this.registrationNumber = registrationNumber;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 }
 

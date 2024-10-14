@@ -1,37 +1,29 @@
 package matser2.istic.mmmback.models;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.*;
-
+import java.util.List;
 
 @Data
 @Entity
-public class Employee {
-
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type-resources")
+public abstract class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id ;
+    private String name;
 
-    private String firstName;
 
-    private String lastName;
-
-    private String email;
-
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL )
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToMany(mappedBy = "employees")
+
+    @ManyToMany(mappedBy = "resources")
     private List<Worksite> worksites = new ArrayList<>();
 
 }
-

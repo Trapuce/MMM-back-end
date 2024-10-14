@@ -1,27 +1,17 @@
 package matser2.istic.mmmback.models;
+public enum Role {
+    CHEF_DE_CHANTIER("Chef de chantier"),
+    RESPONSABLE_DU_CHANTIER("Responsable du chantier"),
+    EQUIPIER_SIMPLE("Équipier simple");
 
-import jakarta.persistence.Embeddable;
+    private final String libelle;
 
-@Embeddable
-public class Role {
-
-    private String roleName;
-
-
-    public Role() {}
-
-    public Role(String roleName, String department) {
-        this.roleName = roleName;
+    Role(String libelle) {
+        this.libelle = libelle;
     }
 
-    public String getRoleName() {
-        return roleName;
+    public String getLibelle() {
+        return this.libelle;
     }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-
 }
 
