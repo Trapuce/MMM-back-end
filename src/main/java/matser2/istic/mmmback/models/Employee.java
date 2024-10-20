@@ -9,11 +9,9 @@ import java.util.*;
 
 @Data
 @Entity
-public class Employee {
+@DiscriminatorValue("EMPLOYEE")
+public class Employee extends Resources{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     private String firstName;
 
@@ -26,12 +24,12 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+ /*   @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "company_id")
-    private Company company;
+    private Company company;*/
 
-    @ManyToMany(mappedBy = "employees")
-    private List<Worksite> worksites = new ArrayList<>();
+  /*  @ManyToMany(mappedBy = "employees")
+    private List<Worksite> worksites = new ArrayList<>();*/
 
 }
 

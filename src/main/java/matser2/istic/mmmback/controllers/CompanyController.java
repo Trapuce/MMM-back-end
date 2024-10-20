@@ -6,29 +6,54 @@ import matser2.istic.mmmback.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/Company ")
+import java.util.List;
+
 @RestController
+@RequestMapping("/company")
 public class CompanyController {
 
     @Autowired
     private CompanyService companyService;
 
-    public ResponseEntity<Company> addCompany(Company company) {
-        if (company == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
+        Company company = companyService.getCompany(id);
+        if (company == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(company);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Company>> getAllCompanies() {
+        List<Company> companies = companyService.getAllCompanies();
+        if (companies.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(companies);
+    }
+
+    @PostMapping
+    public ResponseEntity<Company> addCompany( @RequestBody Company company) {
         try {
-             companyService.CreateCompany(company);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            Company createdCompany = companyService.createCompany(company);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(createdCompany);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest()
+                    .body(null);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
+
+
 
 }

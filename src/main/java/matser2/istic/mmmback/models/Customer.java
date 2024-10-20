@@ -24,6 +24,16 @@ public class Customer {
     private List<Worksite> worksites = new ArrayList<>();
 
 
+    public void addWorksite(Worksite worksite) {
+        worksites.add(worksite);
+        worksite.setCustomer(this);
+    }
+    public void removeWorksite(Worksite worksite) {
+        worksites.remove(worksite);
+        worksite.setCustomer(null);
+    }
+
+
 
 
 

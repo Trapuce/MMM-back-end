@@ -27,7 +27,7 @@ public class Worksite {
     @Enumerated(EnumType.STRING)
     private WorksiteStatus status;
 
-    @ManyToMany(
+  /*  @ManyToMany(
             fetch = FetchType.LAZY,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE}
     )
@@ -38,7 +38,7 @@ public class Worksite {
     )
     private List<Employee> employees = new ArrayList<>();
 
-
+*/
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -51,7 +51,7 @@ public class Worksite {
     )
     private List<Resources> resources = new ArrayList<>();
 
-    public void addEmployee(Employee employee) {
+    /*public void addEmployee(Employee employee) {
         employees.add(employee);
         employee.getWorksites().add(this);
     }
@@ -59,7 +59,7 @@ public class Worksite {
     public void removeEmployee(Employee employee) {
         employees.remove(employee);
         employee.getWorksites().remove(this);
-    }
+    }*/
 
     public void addResources(Resources resource) {
         resources.add(resource);

@@ -21,12 +21,12 @@ public class Company {
 
     private String address;
 
-    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Employee> employees;
+  /*  @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Employee> employees;*/
 
     @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resources> resources = new ArrayList<>();
-    public void addEmployee(Employee employee) {
+   /* public void addEmployee(Employee employee) {
         this.employees.add(employee);
         employee.setCompany(this);
     }
@@ -34,7 +34,7 @@ public class Company {
     public void removeEmployee(Employee employee) {
         this.employees.remove(employee);
         employee.setCompany(null);
-    }
+    }*/
 
 
     public void addResource(Resources resource) {
