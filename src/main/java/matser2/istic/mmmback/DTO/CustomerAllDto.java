@@ -1,35 +1,24 @@
-package matser2.istic.mmmback.models;
+package matser2.istic.mmmback.DTO;
 
-
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import matser2.istic.mmmback.models.Worksite;
 
 import java.util.ArrayList;
 import java.util.List;
 
+public class CustomerAllDto {
 
-@Entity
-public class Customer {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("Id")
     private Long id;
+
+    @JsonProperty("Name")
     private String name;
+    @JsonProperty("Email")
     private String email;
 
-
-    @OneToMany(mappedBy = "customer")
+    @JsonProperty("worksites")
     private List<Worksite> worksites = new ArrayList<>();
 
-
-    public void addWorksite(Worksite worksite) {
-        worksites.add(worksite);
-        worksite.setCustomer(this);
-    }
-    public void removeWorksite(Worksite worksite) {
-        worksites.remove(worksite);
-        worksite.setCustomer(null);
-    }
 
     public Long getId() {
         return id;

@@ -1,14 +1,6 @@
-package matser2.istic.mmmback.models;
+package matser2.istic.mmmback.DTO;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import lombok.Data;
-
-
-
-@Entity
-@DiscriminatorValue("EQUIPMENT")
-public class Equipment extends Resources {
+public class EquipmentDto extends ResourcesDto {
     private String type;
     private String serialNumber;
 

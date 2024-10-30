@@ -1,23 +1,24 @@
-package matser2.istic.mmmback.models;
+package matser2.istic.mmmback.DTO;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import matser2.istic.mmmback.models.Role;
 
-
-
-@Entity
-@DiscriminatorValue("EMPLOYEE")
-public class Employee extends Resources{
+public class EmployeeGetDto extends ResourcesDto {
 
 
+    @JsonProperty("FirstName")
     private String firstName;
 
+    @JsonProperty("LastName")
     private String lastName;
 
+    @JsonProperty("Email")
     private String email;
 
+    @JsonProperty("Password")
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    @JsonProperty("Role")
     private Role role;
 
     public String getFirstName() {
@@ -60,4 +61,3 @@ public class Employee extends Resources{
         this.role = role;
     }
 }
-

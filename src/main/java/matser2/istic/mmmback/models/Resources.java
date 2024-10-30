@@ -7,11 +7,11 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type-resources")
-public abstract class Resources {
+public    class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
@@ -26,4 +26,35 @@ public abstract class Resources {
     @ManyToMany(mappedBy = "resources")
     private List<Worksite> worksites = new ArrayList<>();
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public List<Worksite> getWorksites() {
+        return worksites;
+    }
+
+    public void setWorksites(List<Worksite> worksites) {
+        this.worksites = worksites;
+    }
 }

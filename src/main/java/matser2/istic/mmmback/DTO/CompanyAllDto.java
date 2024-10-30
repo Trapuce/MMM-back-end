@@ -1,46 +1,27 @@
-package matser2.istic.mmmback.models;
+package matser2.istic.mmmback.DTO;
 
 
-import jakarta.persistence.*;
-import lombok.Data;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
-
-@Entity
-public class Company {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CompanyAllDto {
+    @JsonProperty("Id")
     private Long id;
 
+
+    @JsonProperty("Name")
     private String name;
 
+    @JsonProperty("RegistratioNumber")
     private String registrationNumber;
 
+    @JsonProperty("Address")
     private String address;
 
-    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resources> resources = new ArrayList<>();
-
-    public void addResource(Resources resource) {
-        this.resources.add(resource);
-        resource.setCompany(this);
-    }
-
-    public void removeResource(Resources resource) {
-        this.resources.remove(resource);
-        resource.setCompany(null);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonProperty("Resources")
+    private List<ResourcesDto> resources ;
 
     public String getName() {
         return name;
@@ -58,6 +39,14 @@ public class Company {
         this.registrationNumber = registrationNumber;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -66,17 +55,17 @@ public class Company {
         this.address = address;
     }
 
-    public List<Resources> getResources() {
+    public List<ResourcesDto> getResources() {
         return resources;
     }
 
-    public void setResources(List<Resources> resources) {
+    public void setResources(List<ResourcesDto> resources) {
         this.resources = resources;
     }
 
     @Override
     public String toString() {
-        return "Company{" +
+        return "CompanyDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", registrationNumber='" + registrationNumber + '\'' +
@@ -85,4 +74,3 @@ public class Company {
                 '}';
     }
 }
-

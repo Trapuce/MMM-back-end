@@ -1,7 +1,9 @@
 package matser2.istic.mmmback.controllers;
 
 
-import matser2.istic.mmmback.models.Worksite;
+import matser2.istic.mmmback.DTO.WorksiteAllDto;
+import matser2.istic.mmmback.DTO.WorksiteGetDto;
+import matser2.istic.mmmback.DTO.WorksitePostDto;
 import matser2.istic.mmmback.service.WorkSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,43 +13,50 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/workSite")
+@RequestMapping("/worksite")
 public class WorkSiteController {
-
 
     @Autowired
     private WorkSiteService workSiteService;
 
-
     @PostMapping
-    public ResponseEntity<Worksite> addWorkSite(@RequestBody Worksite worksite) {
-        if (worksite == null || worksite.getCustomer() == null) {
+    public ResponseEntity<WorksitePostDto> addWorkSite(@RequestBody WorksitePostDto worksiteDto) {
+        if (worksiteDto == null || worksiteDto.getCustomer() == null) {
             return ResponseEntity.badRequest().build();
         }
-
         try {
-            Worksite createdWorksite = workSiteService.createWorkSite(worksite);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdWorksite);
+            WorksitePostDto createdWorksiteDTO = workSiteService.createWorkSite(worksiteDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdWorksiteDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Worksite> getWorkSite(@PathVariable Long id) {
-        Worksite worksite = workSiteService.getWorkSite(id);
-        if (worksite == null) {
+    public ResponseEntity<WorksiteGetDto> getWorkSite(@PathVariable Long id) {
+        WorksiteGetDto worksiteDto = workSiteService.getWorkSite(id);
+        if (worksiteDto == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(worksite);
+        return ResponseEntity.ok(worksiteDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Worksite>> getWorkSites() {
-        List<Worksite> worksites = workSiteService.getWorkSites();
-        if (worksites.isEmpty()) {
+    public ResponseEntity<List<WorksiteAllDto>> getWorkSites() {
+        List<WorksiteAllDto> worksitesDTO = workSiteService.getWorkSites();
+        if (worksitesDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(worksites);
+        return ResponseEntity.ok(worksitesDTO);
+    }
+
+    @PostMapping("/{worksiteId}/resources/{resourceId}")
+    public ResponseEntity<WorksiteGetDto> addResourceToWorksite(
+            @PathVariable Long worksiteId,
+            @PathVariable Long resourceId) {
+        WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourceToWorksite(worksiteId, resourceId);
+        return ResponseEntity.ok(updatedWorksiteDTO);
     }
 }

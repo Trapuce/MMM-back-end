@@ -1,7 +1,8 @@
 package matser2.istic.mmmback.controllers;
 
 
-import matser2.istic.mmmback.models.Company;
+import matser2.istic.mmmback.DTO.CompanyAllDto;
+import matser2.istic.mmmback.DTO.CompanyPostDto;
 import matser2.istic.mmmback.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,35 +18,53 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-
+    /**
+     * Récupérer une entreprise par son ID
+     *
+     * @param id L'ID de l'entreprise
+     * @return La réponse contenant le DTO de l'entreprise ou une réponse 404 si l'entreprise n'est pas trouvée
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable Long id) {
-        Company company = companyService.getCompany(id);
-        if (company == null) {
+    public ResponseEntity<CompanyPostDto> getCompany(@PathVariable Long id) {
+        CompanyPostDto companyDto = companyService.getCompany(id);
+
+        if (companyDto == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(company);
+        return ResponseEntity.ok(companyDto);
     }
 
+    /**
+     * Récupérer toutes les entreprises
+     *
+     * @return La liste de toutes les entreprises, ou une réponse 204 si aucune entreprise n'est trouvée
+     */
     @GetMapping
-    public ResponseEntity<List<Company>> getAllCompanies() {
-        List<Company> companies = companyService.getAllCompanies();
+    public ResponseEntity<List<CompanyPostDto>> getAllCompanies() {
+        List<CompanyPostDto> companies = companyService.getAllCompanies();
+
         if (companies.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(companies);
     }
 
+    /**
+     * Ajouter une nouvelle entreprise
+     *
+     * @param companyDto Les informations de l'entreprise à créer
+     * @return La réponse contenant le DTO de l'entreprise créée ou une réponse 400/500 en cas d'erreur
+     */
     @PostMapping
-    public ResponseEntity<Company> addCompany( @RequestBody Company company) {
+    public ResponseEntity<CompanyPostDto> addCompany(@RequestBody CompanyPostDto companyDto) {
         try {
-            Company createdCompany = companyService.createCompany(company);
+            CompanyPostDto createdCompany = companyService.createCompany(companyDto);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(createdCompany);
         } catch (IllegalArgumentException e) {
             return ResponseEntity
-                    .badRequest()
+                    .status(HttpStatus.BAD_REQUEST)
                     .body(null);
         } catch (Exception e) {
             return ResponseEntity
@@ -53,7 +72,4 @@ public class CompanyController {
                     .body(null);
         }
     }
-
-
-
 }

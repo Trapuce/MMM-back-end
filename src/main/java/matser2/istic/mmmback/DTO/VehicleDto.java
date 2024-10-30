@@ -1,11 +1,6 @@
-package matser2.istic.mmmback.models;
+package matser2.istic.mmmback.DTO;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-
-@Entity
-@DiscriminatorValue("VEHICLE")
-public class Vehicle extends Resources {
+public class VehicleDto extends ResourcesDto{
     private String licensePlate;
     private String model;
 
