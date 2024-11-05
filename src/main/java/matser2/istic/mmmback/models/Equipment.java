@@ -1,5 +1,6 @@
 package matser2.istic.mmmback.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Data;
@@ -9,8 +10,11 @@ import lombok.Data;
 @Entity
 @DiscriminatorValue("EQUIPMENT")
 public class Equipment extends Resources {
+    @Column
     private String type;
+    @Column(name = "serial_number")
     private String serialNumber;
+
 
     public String getType() {
         return type;

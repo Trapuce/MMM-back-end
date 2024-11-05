@@ -1,6 +1,6 @@
 package matser2.istic.mmmback.DTO;
 
-public class EquipmentDto extends ResourcesDto {
+public class EquipmentDto extends ResourcesDto  {
     private String type;
     private String serialNumber;
 

@@ -43,14 +43,14 @@ public class WorkSiteController {
         return ResponseEntity.ok(worksiteDto);
     }
 
-    @GetMapping
+   /* @GetMapping
     public ResponseEntity<List<WorksiteAllDto>> getWorkSites() {
         List<WorksiteAllDto> worksitesDTO = workSiteService.getWorkSites();
         if (worksitesDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(worksitesDTO);
-    }
+    }*/
 
     @PostMapping("/{worksiteId}/resources/{resourceId}")
     public ResponseEntity<WorksiteGetDto> addResourceToWorksite(

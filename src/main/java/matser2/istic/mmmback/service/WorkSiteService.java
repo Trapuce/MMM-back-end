@@ -62,10 +62,10 @@ public class WorkSiteService {
         return worksite != null ? worksiteMapper.worksiteToWorksiteGetDto(worksite) : null;
     }
 
-    public List<WorksiteAllDto> getWorkSites() {
+ /*   public List<WorksiteAllDto> getWorkSites() {
         List<Worksite> worksites = worksiteRepository.findAll();
         return resourceMapper.worksiteToWorksiteAllDto(worksites);
-    }
+    }*/
 
     @Transactional
     public WorksiteGetDto addResourceToWorksite(Long worksiteId, Long resourceId) {
