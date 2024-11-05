@@ -5,7 +5,7 @@ import java.util.List;
 public  class ResourcesDto {
     private Long id;
     private String name;
-    private Long companyId;
+    private CompanyGetDto company;
     private List<WorksiteAllDto> worksites;
 
     public String getName() {
@@ -24,12 +24,12 @@ public  class ResourcesDto {
         this.id = id;
     }
 
-    public Long getCompanyId() {
-        return companyId;
+    public CompanyGetDto getCompany() {
+        return company;
     }
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
+    public void setCompany(CompanyGetDto company) {
+        this.company = company;
     }
 
     public List<WorksiteAllDto> getWorksites() {

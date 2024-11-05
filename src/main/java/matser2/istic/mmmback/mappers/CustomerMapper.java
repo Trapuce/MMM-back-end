@@ -1,6 +1,7 @@
 package matser2.istic.mmmback.mappers;
 
 import matser2.istic.mmmback.DTO.CustomerAllDto;
+import matser2.istic.mmmback.DTO.CustomerGetDto;
 import matser2.istic.mmmback.DTO.CustomerPostDto;
 import matser2.istic.mmmback.models.Customer;
 import org.mapstruct.Mapper;
@@ -18,4 +19,9 @@ public interface CustomerMapper {
     CustomerPostDto customerToCustomerPostDto(Customer customer);
 
     Customer customerPostDtoToCustomer(CustomerPostDto customerPostDto);
+
+
+    CustomerGetDto customerToCustomerGetDto(Customer customer);
+
+    Customer customerGetDtoToCustomer(CustomerGetDto customerGetDto);
 }

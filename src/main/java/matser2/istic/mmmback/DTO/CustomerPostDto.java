@@ -3,12 +3,10 @@ package matser2.istic.mmmback.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CustomerPostDto {
-    @JsonProperty("Id")
     private Long id;
 
-    @JsonProperty("Name")
     private String name;
-    @JsonProperty("Email")
+
     private String email;
 
 

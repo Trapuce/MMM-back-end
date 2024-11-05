@@ -2,6 +2,7 @@ package matser2.istic.mmmback.controllers;
 
 
 import matser2.istic.mmmback.DTO.CompanyAllDto;
+import matser2.istic.mmmback.DTO.CompanyGetDto;
 import matser2.istic.mmmback.DTO.CompanyPostDto;
 import matser2.istic.mmmback.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class CompanyController {
      * @return La réponse contenant le DTO de l'entreprise ou une réponse 404 si l'entreprise n'est pas trouvée
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyPostDto> getCompany(@PathVariable Long id) {
-        CompanyPostDto companyDto = companyService.getCompany(id);
+    public ResponseEntity<CompanyGetDto> getCompany(@PathVariable Long id) {
+        CompanyGetDto companyDto = companyService.getCompany(id);
 
         if (companyDto == null) {
             return ResponseEntity.notFound().build();
@@ -40,8 +41,8 @@ public class CompanyController {
      * @return La liste de toutes les entreprises, ou une réponse 204 si aucune entreprise n'est trouvée
      */
     @GetMapping
-    public ResponseEntity<List<CompanyPostDto>> getAllCompanies() {
-        List<CompanyPostDto> companies = companyService.getAllCompanies();
+    public ResponseEntity<List<CompanyGetDto>> getAllCompanies() {
+        List<CompanyGetDto> companies = companyService.getAllCompanies();
 
         if (companies.isEmpty()) {
             return ResponseEntity.noContent().build();

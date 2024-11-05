@@ -16,46 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(
-        componentModel = "spring",    uses = {ResourcesMapper.class, CompanyMapper.class}
+        componentModel = "spring"
 )
 public interface WorksiteMapper {
-   /* @ObjectFactory
-    default Worksite createWorksite(WorksiteAllDto dto) {
-        return new Worksite();
-    }
 
-    @ObjectFactory
-    default Worksite createWorksite(WorksitePostDto dto) {
-        return new Worksite();
-    }
-
-    @ObjectFactory
-    default Worksite createWorksite(WorksiteGetDto dto) {
-        return new Worksite();
-    }
-    ResourcesDto resourceToResourceDto(Resources resource);
-    Resources resourceDtoToResource(ResourcesDto resourceDto);
-
-    @BeforeMapping
-    default void beforeMapping(@MappingTarget Worksite target, WorksiteAllDto source) {
-        if (target.getResources() == null) {
-            target.setResources(new ArrayList<>());
-        }
-    }
-
-    @BeforeMapping
-    default void beforeMapping(@MappingTarget Worksite target, WorksitePostDto source) {
-        if (target.getResources() == null) {
-            target.setResources(new ArrayList<>());
-        }
-    }
-
-    @BeforeMapping
-    default void beforeMapping(@MappingTarget Worksite target, WorksiteGetDto source) {
-        if (target.getResources() == null) {
-            target.setResources(new ArrayList<>());
-        }
-    }*/
     WorksiteAllDto worksiteToWorksiteAllDto(Worksite worksite);
 
     Worksite worksiteAllDtoToWorksite(WorksiteAllDto worksiteAllDto);
@@ -68,5 +32,4 @@ public interface WorksiteMapper {
 
     Worksite worksiteGetDtoToWorksite(WorksiteGetDto worksiteGetDto);
 
-    List<ResourcesDto> resourcesToResourcesAllDto(List<Resources> resources);
 }

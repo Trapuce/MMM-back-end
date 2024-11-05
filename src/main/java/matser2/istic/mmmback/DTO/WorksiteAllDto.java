@@ -11,9 +11,10 @@ public class WorksiteAllDto {
     private Date startDate;
     private int durationInHalfDays;
     private String location;
-    private CustomerAllDto customer;
+    private CustomerGetDto customer;
     private WorksiteStatus status;
     private List<ResourcesDto> resources;
+    private CompanyGetDto company ;
 
     public Long getId() {
         return id;
@@ -55,13 +56,6 @@ public class WorksiteAllDto {
         this.location = location;
     }
 
-    public CustomerAllDto getCustomerId() {
-        return customer;
-    }
-
-    public void setCustomerId(CustomerAllDto customer) {
-        this.customer = customer;
-    }
 
     public WorksiteStatus getStatus() {
         return status;
@@ -77,5 +71,21 @@ public class WorksiteAllDto {
 
     public void setResources(List<ResourcesDto> resources) {
         this.resources = resources;
+    }
+
+    public CustomerGetDto getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerGetDto customer) {
+        this.customer = customer;
+    }
+
+    public CompanyGetDto getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyGetDto company) {
+        this.company = company;
     }
 }

@@ -1,9 +1,15 @@
 package matser2.istic.mmmback.controllers;
 
 
-import matser2.istic.mmmback.DTO.*;
+import matser2.istic.mmmback.DTO.EmployeeDto;
+import matser2.istic.mmmback.DTO.EquipmentDto;
+import matser2.istic.mmmback.DTO.ResourcesDto;
+import matser2.istic.mmmback.DTO.VehicleDto;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
-import matser2.istic.mmmback.models.*;
+import matser2.istic.mmmback.models.Employee;
+import matser2.istic.mmmback.models.Equipment;
+import matser2.istic.mmmback.models.Resources;
+import matser2.istic.mmmback.models.Vehicle;
 import matser2.istic.mmmback.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +29,16 @@ public class ResourcesController {
     @Autowired
     private ResourcesMapper resourceMapper ;
 
-  /*  @GetMapping
+    @GetMapping
     public ResponseEntity<List<ResourcesDto>> getResources() {
         List<ResourcesDto> resourcesDTOs = resourceService.getAllResources();
         if (resourcesDTOs.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(resourcesDTOs);
-    }*/
+    }
 
-  /*  @GetMapping("/{id}")
+   @GetMapping("/{id}")
     public ResponseEntity<ResourcesDto> getResource(@PathVariable Long id) {
         Resources resource = resourceService.getResourceById(id);
         if (resource == null) {
@@ -40,16 +46,16 @@ public class ResourcesController {
         }
         ResourcesDto resourceDTO = resourceMapper.resourcesToResourcesDto(resource);
         return ResponseEntity.ok(resourceDTO);
-    }*/
+    }
 
     @PostMapping("/employees")
-    public ResponseEntity<EmployeeAllDto> createEmployee(@RequestBody EmployeeAllDto employeeDto) {
+    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) {
         Employee employeeEntity = resourceMapper.employeeDtoToEmployee(employeeDto);
         Employee createdEmployee = resourceService.createResource(employeeEntity);
-        EmployeeAllDto createdEmployeeDTO = resourceMapper.employeeToEmployeeDto(createdEmployee);
+        EmployeeDto createdEmployeeDTO = resourceMapper.employeeToEmployeeDto(createdEmployee);
 
         return ResponseEntity
-                .created(URI.create("/api/resources/employees/" + createdEmployeeDTO.getId()))
+                .created(URI.create("/resources/employees/" + createdEmployeeDTO.getId()))
                 .body(createdEmployeeDTO);
     }
 
@@ -60,7 +66,7 @@ public class ResourcesController {
         VehicleDto createdVehicleDto = resourceMapper.vehicleToVehicleDto(createdVehicle);
 
         return ResponseEntity
-                .created(URI.create("/api/resources/vehicles/" + createdVehicleDto.getId()))
+                .created(URI.create("/resources/vehicles/" + createdVehicleDto.getId()))
                 .body(createdVehicleDto);
     }
 
@@ -71,7 +77,7 @@ public class ResourcesController {
         EquipmentDto createdEquipmentDto = resourceMapper.equipmentToEquipmentDto(createdEquipment);
 
         return ResponseEntity
-                .created(URI.create("/api/resources/equipment/" + createdEquipmentDto.getId()))
+                .created(URI.create("/resources/equipment/" + createdEquipmentDto.getId()))
                 .body(createdEquipmentDto);
     }
  /*   @PostMapping("/supply")

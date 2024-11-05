@@ -7,21 +7,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class CompanyAllDto {
-    @JsonProperty("Id")
     private Long id;
 
 
-    @JsonProperty("Name")
     private String name;
 
-    @JsonProperty("RegistratioNumber")
     private String registrationNumber;
 
-    @JsonProperty("Address")
     private String address;
 
-    @JsonProperty("Resources")
     private List<ResourcesDto> resources ;
+
+    private List<WorksiteGetDto> worksiteList;
+
 
     public String getName() {
         return name;
@@ -61,6 +59,14 @@ public class CompanyAllDto {
 
     public void setResources(List<ResourcesDto> resources) {
         this.resources = resources;
+    }
+
+    public List<WorksiteGetDto> getWorksiteList() {
+        return worksiteList;
+    }
+
+    public void setWorksiteList(List<WorksiteGetDto> worksiteList) {
+        this.worksiteList = worksiteList;
     }
 
     @Override

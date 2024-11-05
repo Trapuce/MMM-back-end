@@ -1,23 +1,17 @@
 package matser2.istic.mmmback.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import matser2.istic.mmmback.models.Role;
 
-public class EmployeeAllDto extends ResourcesDto {
+public class EmployeeDto extends ResourcesDto {
 
-    @JsonProperty("FirstName")
     private String firstName;
 
-    @JsonProperty("LastName")
     private String lastName;
 
-    @JsonProperty("Email")
     private String email;
 
-    @JsonProperty("Password")
     private String password;
 
-    @JsonProperty("Role")
     private Role role;
 
     public String getFirstName() {

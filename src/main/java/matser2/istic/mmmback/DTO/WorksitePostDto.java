@@ -7,23 +7,17 @@ import java.util.Date;
 
 public class WorksitePostDto {
 
-    @JsonProperty("Id")
     private Long id;
-    @JsonProperty("Descripton")
     private String description;
 
-    @JsonProperty("StartDate")
     private Date startDate;
 
-    @JsonProperty("DurationHalfDays")
     private int durationInHalfDays;
 
-    @JsonProperty("Location")
     private String location;
-    @JsonProperty("customer")
+
     private CustomerPostDto customer;
 
-    @JsonProperty("Status")
     private WorksiteStatus status;
 
     public Long getId() {

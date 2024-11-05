@@ -3,6 +3,7 @@ package matser2.istic.mmmback.service;
 
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.CompanyAllDto;
+import matser2.istic.mmmback.DTO.CompanyGetDto;
 import matser2.istic.mmmback.DTO.CompanyPostDto;
 import matser2.istic.mmmback.mappers.CompanyMapper;
 import matser2.istic.mmmback.models.Company;
@@ -31,7 +32,7 @@ public class CompanyService {
     @Transactional
     public CompanyPostDto createCompany(CompanyPostDto companyDto) {
         if (companyDto == null ) {
-            throw new IllegalArgumentException("Le nom de l'entreprise ne peut pas être vide");
+            throw new IllegalArgumentException("Company's name cannot empty ");
         }
         Company companyEntity = companyMapper.companyPostDtoToCompany(companyDto);
         System.out.println(companyEntity);
@@ -46,11 +47,11 @@ public class CompanyService {
      * @return Une liste de DTOs représentant les entreprises.
      */
     @Transactional
-    public List<CompanyPostDto> getAllCompanies() {
+    public List<CompanyGetDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
 
         return companies.stream()
-                .map(companyMapper::companyToCompanyPostDto)
+                .map(companyMapper::companyToCompanyGetDto)
                 .toList();
     }
 
@@ -61,11 +62,10 @@ public class CompanyService {
      * @return Le Dto de l'entreprise ou null si elle n'existe pas.
      */
     @Transactional
-    public CompanyPostDto getCompany(Long id) {
+    public CompanyGetDto getCompany(Long id) {
         Optional<Company> company = companyRepository.findById(id);
 
-        // Si l'entreprise est trouvée, la convertir en DTO, sinon retourner null
-        return company.map(companyMapper::companyToCompanyPostDto).orElse(null);
+        return company.map(companyMapper::companyToCompanyGetDto).orElse(null);
     }
 
     /**

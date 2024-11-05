@@ -2,10 +2,9 @@ package matser2.istic.mmmback.models;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 @Entity
@@ -15,11 +14,31 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
 
+    @Column(name = "registration_number")
     private String registrationNumber;
 
+    @Column(name = "address")
     private String address;
+
+
+    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<Worksite> worksiteList = new ArrayList<>() ;
+
+
+
+    public void addWorksite(Worksite worksite){
+        this.worksiteList.add(worksite);
+        worksite.setCompany(this);
+    }
+
+
+    public void removeWorksite(Worksite worksite){
+        this.worksiteList.add(worksite);
+        worksite.setCompany(null);
+    }
 
     @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Resources> resources = new ArrayList<>();
@@ -64,6 +83,14 @@ public class Company {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<Worksite> getWorksiteList() {
+        return worksiteList;
+    }
+
+    public void setWorksiteList(List<Worksite> worksiteList) {
+        this.worksiteList = worksiteList;
     }
 
     public List<Resources> getResources() {

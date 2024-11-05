@@ -42,7 +42,7 @@ public class ResourceService {
         return resourcesRepository.save(resource);
     }
 
-    /*public List<ResourcesDto> getAllResources() {
+    public List<ResourcesDto> getAllResources() {
         List<Resources> resources = resourcesRepository.findAll();
         return resources.stream()
                 .map(resourcesMapper::resourcesToResourcesDto)
@@ -57,5 +57,5 @@ public class ResourceService {
     public ResourcesDto getResourceDtoById(Long id) {
         Resources resource = getResourceById(id);
         return resourcesMapper.resourcesToResourcesDto(resource);
-    }*/
+    }
 }

@@ -3,17 +3,13 @@ package matser2.istic.mmmback.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CompanyPostDto {
-    @JsonProperty("Id")
     private Long id;
 
 
-    @JsonProperty("Name")
     private String name;
 
-    @JsonProperty("RegistratioNumber")
     private String registrationNumber;
 
-    @JsonProperty("Address")
     private String address;
 
     public Long getId() {

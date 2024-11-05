@@ -2,6 +2,7 @@ package matser2.istic.mmmback.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import matser2.istic.mmmback.DTO.CompanyAllDto;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,16 +17,29 @@ public class Worksite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "start_date")
     private Date startDate;
+
+    @Column(name = "duration_in_half_days")
     private int durationInHalfDays;
+
+    @Column(name = "location")
     private String location;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
     @Enumerated(EnumType.STRING)
     private WorksiteStatus status;
+
+    @ManyToOne(cascade = CascadeType.ALL )
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToMany(
             fetch = FetchType.LAZY,
@@ -109,5 +123,13 @@ public class Worksite {
 
     public void setResources(List<Resources> resources) {
         this.resources = resources;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

@@ -7,22 +7,16 @@ import java.util.Date;
 
 public class WorksiteGetDto {
 
-    @JsonProperty("Id")
     private Long id;
-    @JsonProperty("Descripton")
     private String description;
 
-    @JsonProperty("StartDate")
     private Date startDate;
 
-    @JsonProperty("DurationHalfDays")
     private int durationInHalfDays;
 
-    @JsonProperty("Location")
     private String location;
 
 
-    @JsonProperty("Status")
     private WorksiteStatus status;
 
     public String getDescription() {

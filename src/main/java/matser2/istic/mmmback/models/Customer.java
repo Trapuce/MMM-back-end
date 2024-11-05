@@ -14,9 +14,12 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column
     private String name;
+    @Column
     private String email;
-
+    @Column(name = "phone_number")
+    private int phoneNumber ;
 
     @OneToMany(mappedBy = "customer")
     private List<Worksite> worksites = new ArrayList<>();
@@ -29,6 +32,14 @@ public class Customer {
     public void removeWorksite(Worksite worksite) {
         worksites.remove(worksite);
         worksite.setCustomer(null);
+    }
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Long getId() {
