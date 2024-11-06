@@ -43,14 +43,14 @@ public class WorkSiteController {
         return ResponseEntity.ok(worksiteDto);
     }
 
-   /* @GetMapping
-    public ResponseEntity<List<WorksiteAllDto>> getWorkSites() {
-        List<WorksiteAllDto> worksitesDTO = workSiteService.getWorkSites();
+    @GetMapping
+    public ResponseEntity<List<WorksiteGetDto>> getWorkSites() {
+        List<WorksiteGetDto> worksitesDTO = workSiteService.getWorkSites();
         if (worksitesDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(worksitesDTO);
-    }*/
+    }
 
     @PostMapping("/{worksiteId}/resources/{resourceId}")
     public ResponseEntity<WorksiteGetDto> addResourceToWorksite(
@@ -58,5 +58,12 @@ public class WorkSiteController {
             @PathVariable Long resourceId) {
         WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourceToWorksite(worksiteId, resourceId);
         return ResponseEntity.ok(updatedWorksiteDTO);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteWorksite(@PathVariable Long id) {
+        workSiteService.deleteWorksite(id);
+        return ResponseEntity.noContent().build();
     }
 }

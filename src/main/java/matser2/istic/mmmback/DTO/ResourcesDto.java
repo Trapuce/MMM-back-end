@@ -6,7 +6,7 @@ public  class ResourcesDto {
     private Long id;
     private String name;
     private CompanyGetDto company;
-    private List<WorksiteAllDto> worksites;
+    private List<WorksiteGetDto> worksites;
 
     public String getName() {
         return name;
@@ -32,11 +32,11 @@ public  class ResourcesDto {
         this.company = company;
     }
 
-    public List<WorksiteAllDto> getWorksites() {
+    public List<WorksiteGetDto> getWorksites() {
         return worksites;
     }
 
-    public void setWorksites(List<WorksiteAllDto> worksites) {
+    public void setWorksites(List<WorksiteGetDto> worksites) {
         this.worksites = worksites;
     }
 }

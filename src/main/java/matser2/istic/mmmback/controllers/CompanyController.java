@@ -73,4 +73,10 @@ public class CompanyController {
                     .body(null);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+        companyService.deleteCompany(id);
+        return ResponseEntity.noContent().build();
+    }
 }

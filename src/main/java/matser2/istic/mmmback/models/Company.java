@@ -101,15 +101,6 @@ public class Company {
         this.resources = resources;
     }
 
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", address='" + address + '\'' +
-                ", resources=" + resources +
-                '}';
-    }
+
 }
 

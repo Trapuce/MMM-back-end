@@ -4,12 +4,15 @@ package matser2.istic.mmmback.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
+import matser2.istic.mmmback.mappers.CompanyMapper;
 import matser2.istic.mmmback.mappers.CustomerMapper;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
+import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.Customer;
 import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.Worksite;
+import matser2.istic.mmmback.repository.CompanyRepository;
 import matser2.istic.mmmback.repository.CustomerRepository;
 import matser2.istic.mmmback.repository.ResourcesRepository;
 import matser2.istic.mmmback.repository.WorksiteRepository;
@@ -17,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,25 +35,32 @@ public class WorkSiteService {
     @Autowired
     private ResourcesRepository resourcesRepository;
 
+    @Autowired
     private WorksiteMapper worksiteMapper  ;
 
-
+    @Autowired
     private CustomerMapper customerMapper   ;
 
-    private ResourcesMapper resourceMapper ;
+    @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
+    private CompanyMapper companyMapper;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
-       CustomerPostDto customerDto = worksiteDto.getCustomer();
-        Customer customer = customerMapper.customerPostDtoToCustomer(customerDto);
+        Customer customer = customerMapper.customerPostDtoToCustomer(worksiteDto.getCustomer());
 
-        Worksite worksite =  worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
+        Company company = companyRepository.findById(worksiteDto.getCompany().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
+
+        Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
+
+        company.addWorksite(worksite);
 
         if (customer != null) {
             customer = customerRepository.save(customer);
-
             customer.addWorksite(worksite);
         } else {
-            throw new IllegalArgumentException("Customer must be provided and not null.");
+            throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
         }
 
         Worksite savedWorksite = worksiteRepository.save(worksite);
@@ -57,15 +68,16 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksitePostDto(savedWorksite);
     }
 
+
     public WorksiteGetDto getWorkSite(Long id) {
         Worksite worksite = worksiteRepository.findById(id).orElse(null);
         return worksite != null ? worksiteMapper.worksiteToWorksiteGetDto(worksite) : null;
     }
 
- /*   public List<WorksiteAllDto> getWorkSites() {
+    public List<WorksiteGetDto> getWorkSites() {
         List<Worksite> worksites = worksiteRepository.findAll();
-        return resourceMapper.worksiteToWorksiteAllDto(worksites);
-    }*/
+        return  worksites.stream().map(worksiteMapper::worksiteToWorksiteGetDto).collect(Collectors.toList());
+    }
 
     @Transactional
     public WorksiteGetDto addResourceToWorksite(Long worksiteId, Long resourceId) {
@@ -79,6 +91,14 @@ public class WorkSiteService {
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite) ;
+    }
+
+
+    public void deleteWorksite(Long id){
+        Worksite worksite = worksiteRepository.findById(id).get();
+
+        if (worksite == null) new IllegalArgumentException("no worksite found");
+        worksiteRepository.delete(worksite);
     }
 
 

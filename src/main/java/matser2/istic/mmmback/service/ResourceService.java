@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,13 +50,31 @@ public class ResourceService {
                 .collect(Collectors.toList());
     }
 
-    public Resources getResourceById(Long id) {
-        return resourcesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ressource non trouvée avec l'ID fourni."));
+
+
+    public ResourcesDto getResourceById(Long id) {
+        Optional<Resources> resource = resourcesRepository.findById(id);
+        return  resource.map(resourcesMapper::resourcesToResourcesDto).orElse(null);
     }
 
-    public ResourcesDto getResourceDtoById(Long id) {
-        Resources resource = getResourceById(id);
-        return resourcesMapper.resourcesToResourcesDto(resource);
+    public ResourcesDto updateResource(Long id, ResourcesDto resourceDto) {
+        Resources existingResource = resourcesRepository.findById(id).get();
+
+        existingResource.setName(resourceDto.getName());
+
+        Company company = companyRepository.findById(resourceDto.getCompany().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
+
+        company.addResource(existingResource);
+        Resources updatedResource = resourcesRepository.save(existingResource);
+        return resourcesMapper.resourcesToResourcesDto(updatedResource);
+    }
+
+    public void deleteResource(Long id) {
+        Resources resource = resourcesRepository.findById(id).get();
+        if(resource == null){
+             new IllegalArgumentException ("no ressources");
+        }
+        resourcesRepository.delete(resource);
     }
 }

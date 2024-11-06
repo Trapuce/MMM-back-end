@@ -40,12 +40,11 @@ public class ResourcesController {
 
    @GetMapping("/{id}")
     public ResponseEntity<ResourcesDto> getResource(@PathVariable Long id) {
-        Resources resource = resourceService.getResourceById(id);
-        if (resource == null) {
+        ResourcesDto resourceDto = resourceService.getResourceById(id);
+        if (resourceDto == null) {
             return ResponseEntity.notFound().build();
         }
-        ResourcesDto resourceDTO = resourceMapper.resourcesToResourcesDto(resource);
-        return ResponseEntity.ok(resourceDTO);
+        return ResponseEntity.ok(resourceDto);
     }
 
     @PostMapping("/employees")
@@ -87,4 +86,16 @@ public class ResourcesController {
                 .created(URI.create("/api/resources/supply/" + createdSupply.getId()))
                 .body(createdSupply);
     }*/
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResourcesDto> updateResource(@PathVariable Long id, @RequestBody ResourcesDto resourceDto) {
+        ResourcesDto updatedResourceDto = resourceService.updateResource(id, resourceDto);
+        return ResponseEntity.ok(updatedResourceDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
+        resourceService.deleteResource(id);
+        return ResponseEntity.noContent().build();
+    }
 }

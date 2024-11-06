@@ -25,7 +25,7 @@ public    class Resources {
     private Company company;
 
 
-    @ManyToMany(mappedBy = "resources")
+    @ManyToMany(mappedBy = "resources" , cascade = CascadeType.ALL)
     private List<Worksite> worksites = new ArrayList<>();
 
     public Long getId() {

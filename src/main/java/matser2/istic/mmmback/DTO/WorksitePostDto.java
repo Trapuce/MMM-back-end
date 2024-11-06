@@ -1,6 +1,7 @@
 package matser2.istic.mmmback.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.WorksiteStatus;
 
 import java.util.Date;
@@ -17,6 +18,8 @@ public class WorksitePostDto {
     private String location;
 
     private CustomerPostDto customer;
+
+    private CompanyPostDto company;
 
     private WorksiteStatus status;
 
@@ -74,5 +77,13 @@ public class WorksitePostDto {
 
     public void setStatus(WorksiteStatus status) {
         this.status = status;
+    }
+
+    public CompanyPostDto getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyPostDto company) {
+        this.company = company;
     }
 }

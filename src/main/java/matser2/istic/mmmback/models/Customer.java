@@ -21,7 +21,7 @@ public class Customer {
     @Column(name = "phone_number")
     private int phoneNumber ;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
     private List<Worksite> worksites = new ArrayList<>();
 
 

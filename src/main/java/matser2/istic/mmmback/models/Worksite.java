@@ -42,8 +42,7 @@ public class Worksite {
     private Company company;
 
     @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE}
+            fetch = FetchType.LAZY
     )
     @JoinTable(
             name = "resources_worksite",
