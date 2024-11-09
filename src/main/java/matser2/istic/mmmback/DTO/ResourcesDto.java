@@ -2,7 +2,7 @@ package matser2.istic.mmmback.DTO;
 
 import java.util.List;
 
-public  class ResourcesDto {
+public abstract class ResourcesDto {
     private Long id;
     private String name;
     private CompanyGetDto company;

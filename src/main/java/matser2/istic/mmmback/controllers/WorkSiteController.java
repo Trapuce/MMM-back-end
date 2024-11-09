@@ -59,7 +59,11 @@ public class WorkSiteController {
         WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourceToWorksite(worksiteId, resourceId);
         return ResponseEntity.ok(updatedWorksiteDTO);
     }
-
+    @PutMapping
+    public ResponseEntity<WorksiteGetDto> updateWorksite( @RequestBody WorksitePostDto worksiteDto) {
+        WorksiteGetDto updatedWorksiteDto = workSiteService.updateWorksite(worksiteDto);
+        return ResponseEntity.ok(updatedWorksiteDto);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWorksite(@PathVariable Long id) {

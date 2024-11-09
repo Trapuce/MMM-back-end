@@ -47,21 +47,26 @@ public class WorkSiteService {
     private CompanyMapper companyMapper;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
-        Customer customer = customerMapper.customerPostDtoToCustomer(worksiteDto.getCustomer());
-
-        Company company = companyRepository.findById(worksiteDto.getCompany().getId())
+        Long companyId = worksiteDto.getCompany() != null ? worksiteDto.getCompany().getId() : null;
+        if (companyId == null) {
+            throw new IllegalArgumentException("L'ID de la société doit être fourni.");
+        }
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
 
         Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
 
         company.addWorksite(worksite);
 
-        if (customer != null) {
-            customer = customerRepository.save(customer);
-            customer.addWorksite(worksite);
-        } else {
+        if (worksiteDto.getCustomer() == null) {
             throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
         }
+
+        Customer customer = customerMapper.customerPostDtoToCustomer(worksiteDto.getCustomer());
+
+        customer = customerRepository.save(customer);
+
+        customer.addWorksite(worksite);
 
         Worksite savedWorksite = worksiteRepository.save(worksite);
 
@@ -93,14 +98,50 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite) ;
     }
 
+    @Transactional
+    public WorksiteGetDto updateWorksite(WorksitePostDto worksiteDto) {
+        if (worksiteDto.getId() == null) {
+            throw new IllegalArgumentException("L'ID du chantier doit être fourni pour la mise à jour.");
+        }
 
-    public void deleteWorksite(Long id){
-        Worksite worksite = worksiteRepository.findById(id).get();
+        Worksite existingWorksite = worksiteRepository.findById(worksiteDto.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
 
-        if (worksite == null) new IllegalArgumentException("no worksite found");
-        worksiteRepository.delete(worksite);
+        Long companyId = worksiteDto.getCompany() != null ? worksiteDto.getCompany().getId() : null;
+        if (companyId != null && (existingWorksite.getCompany() == null || !existingWorksite.getCompany().getId().equals(companyId))) {
+            Company newCompany = companyRepository.findById(companyId)
+                    .orElseThrow(() -> new EntityNotFoundException("Aucune société trouvée avec l'ID fourni."));
+            existingWorksite.setCompany(newCompany);
+            newCompany.addWorksite(existingWorksite);
+        }
+
+        Long customerId = worksiteDto.getCustomer() != null ? worksiteDto.getCustomer().getId() : null;
+        if (customerId != null && (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId))) {
+            Customer newCustomer = customerRepository.findById(customerId)
+                    .orElseThrow(() -> new EntityNotFoundException("Aucun client trouvé avec l'ID fourni."));
+            existingWorksite.setCustomer(newCustomer);
+            newCustomer.addWorksite(existingWorksite);
+        }
+
+        existingWorksite.setDescription(worksiteDto.getDescription());
+        existingWorksite.setLocation(worksiteDto.getLocation());
+        existingWorksite.setStartDate(worksiteDto.getStartDate());
+
+        Worksite updatedWorksite = worksiteRepository.save(existingWorksite);
+        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
+    public void deleteWorksite(Long id) {
+        Worksite worksite = worksiteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Aucun chantier trouvé avec l'ID fourni."));
+
+        Company company = worksite.getCompany();
+        if (company != null) {
+            company.removeWorksite(worksite);
+        }
+
+        worksiteRepository.delete(worksite);
+    }
 
 
 }

@@ -15,7 +15,14 @@ public class Equipment extends Resources {
     @Column(name = "serial_number")
     private String serialNumber;
 
-
+    @Override
+    public void update(Resources updatedResource) {
+        if (updatedResource instanceof Equipment) {
+            Equipment equipment = (Equipment) updatedResource;
+            this.type = equipment.getType();
+            this.serialNumber = equipment.getSerialNumber();
+        }
+    }
     public String getType() {
         return type;
     }

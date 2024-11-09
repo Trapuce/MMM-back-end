@@ -79,23 +79,61 @@ public class ResourcesController {
                 .created(URI.create("/resources/equipment/" + createdEquipmentDto.getId()))
                 .body(createdEquipmentDto);
     }
- /*   @PostMapping("/supply")
-    public ResponseEntity<Supply> addSupply( @RequestBody Supply supply) {
-        Supply createdSupply =  resourceService.createResource(supply);
-        return ResponseEntity
-                .created(URI.create("/api/resources/supply/" + createdSupply.getId()))
-                .body(createdSupply);
-    }*/
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResourcesDto> updateResource(@PathVariable Long id, @RequestBody ResourcesDto resourceDto) {
-        ResourcesDto updatedResourceDto = resourceService.updateResource(id, resourceDto);
-        return ResponseEntity.ok(updatedResourceDto);
-    }
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
         resourceService.deleteResource(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/employees/{id}")
+    public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
+        try {
+            Resources existingResource = resourceService.findById(id);
+            if (!(existingResource instanceof Employee)) {
+                return ResponseEntity.badRequest()
+                        .body("La ressource avec l'ID " + id + " n'est pas un employé");
+            }
+            Resources updated = resourceService.updateEmployee(id, updatedEmployee);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/vehicles/{id}")
+    public ResponseEntity<?> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
+        try {
+            Resources existingResource = resourceService.findById(id);
+            if (!(existingResource instanceof Vehicle)) {
+                return ResponseEntity.badRequest()
+                        .body("La ressource avec l'ID " + id + " n'est pas un véhicule");
+            }
+            Resources updated = resourceService.updateVehicle(id, updatedVehicle);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/equipment/{id}")
+    public ResponseEntity<?> updateEquipment(@PathVariable Long id, @RequestBody Equipment updatedEquipment) {
+        try {
+            Resources existingResource = resourceService.findById(id);
+            if (!(existingResource instanceof Equipment)) {
+                return ResponseEntity.badRequest()
+                        .body("La ressource avec l'ID " + id + " n'est pas un équipement");
+            }
+            Resources updated = resourceService.updateEquipment(id, updatedEquipment);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
+
+
+

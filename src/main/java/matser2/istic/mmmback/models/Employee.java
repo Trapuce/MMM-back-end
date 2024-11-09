@@ -63,5 +63,15 @@ public class Employee extends Resources{
     public void setRole(Role role) {
         this.role = role;
     }
+    @Override
+    public void update(Resources updatedResource) {
+        if (updatedResource instanceof Employee) {
+            Employee employee = (Employee) updatedResource;
+            this.firstName = employee.getFirstName();
+            this.lastName = employee.getLastName();
+            this.email = employee.getEmail();
+            this.password = employee.getPassword();
+        }
+    }
 }
 

@@ -13,7 +13,14 @@ public class Vehicle extends Resources {
 
     @Column(name = "model")
     private String model;
-
+    @Override
+    public void update(Resources updatedResource) {
+        if (updatedResource instanceof Vehicle) {
+            Vehicle vehicle = (Vehicle) updatedResource;
+            this.licensePlate = vehicle.getLicensePlate();
+            this.model = vehicle.getModel();
+        }
+    }
     public String getLicensePlate() {
         return licensePlate;
     }

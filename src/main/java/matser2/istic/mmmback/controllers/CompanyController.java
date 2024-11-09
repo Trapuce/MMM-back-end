@@ -79,4 +79,16 @@ public class CompanyController {
         companyService.deleteCompany(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping
+    public ResponseEntity<CompanyPostDto> updateCompany(@RequestBody CompanyPostDto companyPostDto) {
+        try {
+            CompanyPostDto updatedCompany = companyService.updateCompany(companyPostDto);
+            return ResponseEntity.ok(updatedCompany);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }

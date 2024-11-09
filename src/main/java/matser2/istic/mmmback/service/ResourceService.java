@@ -5,8 +5,7 @@ import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.ResourcesDto;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
-import matser2.istic.mmmback.models.Company;
-import matser2.istic.mmmback.models.Resources;
+import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.CompanyRepository;
 import matser2.istic.mmmback.repository.ResourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,25 +55,48 @@ public class ResourceService {
         Optional<Resources> resource = resourcesRepository.findById(id);
         return  resource.map(resourcesMapper::resourcesToResourcesDto).orElse(null);
     }
+    public Resources findById(Long id) {
+        return resourcesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Resource not found with id: " + id));
+    }
 
-    public ResourcesDto updateResource(Long id, ResourcesDto resourceDto) {
-        Resources existingResource = resourcesRepository.findById(id).get();
+    public Resources updateEmployee(Long id, Employee updatedEmployee) {
+        Employee existingEmployee = (Employee) findById(id);
+        existingEmployee.setName(updatedEmployee.getName());
+        existingEmployee.setEmail(updatedEmployee.getEmail());
+        existingEmployee.setFirstName(updatedEmployee.getFirstName());
+        existingEmployee.setLastName(updatedEmployee.getLastName());
+        existingEmployee.setPassword(updatedEmployee.getPassword());
+        existingEmployee.setRole(updatedEmployee.getRole());
+        return resourcesRepository.save(existingEmployee);
+    }
 
-        existingResource.setName(resourceDto.getName());
+    public Resources updateVehicle(Long id, Vehicle updatedVehicle) {
+        Vehicle existingVehicle = (Vehicle) findById(id);
+        existingVehicle.setName(updatedVehicle.getName());
+        existingVehicle.setLicensePlate(updatedVehicle.getLicensePlate());
+        existingVehicle.setModel(updatedVehicle.getModel());
+        return resourcesRepository.save(existingVehicle);
+    }
 
-        Company company = companyRepository.findById(resourceDto.getCompany().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
-
-        company.addResource(existingResource);
-        Resources updatedResource = resourcesRepository.save(existingResource);
-        return resourcesMapper.resourcesToResourcesDto(updatedResource);
+    public Resources updateEquipment(Long id, Equipment updatedEquipment) {
+        Equipment existingEquipment = (Equipment) findById(id);
+        existingEquipment.setName(updatedEquipment.getName());
+        existingEquipment.setSerialNumber(updatedEquipment.getSerialNumber());
+        existingEquipment.setType(updatedEquipment.getType());
+        return resourcesRepository.save(existingEquipment);
     }
 
     public void deleteResource(Long id) {
-        Resources resource = resourcesRepository.findById(id).get();
-        if(resource == null){
-             new IllegalArgumentException ("no ressources");
+        Resources resource = resourcesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Ressource non trouvée avec l'ID fourni."));
+
+        Company company = resource.getCompany();
+        if (company != null) {
+            company.removeResource(resource);
         }
+
         resourcesRepository.delete(resource);
     }
+
 }

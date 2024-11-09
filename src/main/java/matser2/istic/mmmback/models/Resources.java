@@ -1,6 +1,8 @@
 package matser2.istic.mmmback.models;
 
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,7 +13,13 @@ import java.util.List;
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name="type-resources")
-public    class Resources {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type_resources")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Employee.class, name = "EMPLOYEE"),
+        @JsonSubTypes.Type(value = Equipment.class, name = "EQUIPMENT"),
+        @JsonSubTypes.Type(value = Vehicle.class, name = "VEHICLE")
+})
+public  abstract   class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
@@ -20,12 +28,12 @@ public    class Resources {
     private String name;
 
 
-    @ManyToOne(cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
 
-    @ManyToMany(mappedBy = "resources" , cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "resources" )
     private List<Worksite> worksites = new ArrayList<>();
 
     public Long getId() {
@@ -35,6 +43,7 @@ public    class Resources {
     public void setId(Long id) {
         this.id = id;
     }
+    public abstract void update(Resources updatedResource);
 
     public String getName() {
         return name;

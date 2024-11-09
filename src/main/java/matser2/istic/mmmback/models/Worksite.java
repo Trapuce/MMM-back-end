@@ -30,14 +30,14 @@ public class Worksite {
     @Column(name = "location")
     private String location;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @Enumerated(EnumType.STRING)
     private WorksiteStatus status;
 
-    @ManyToOne(cascade = CascadeType.ALL )
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 

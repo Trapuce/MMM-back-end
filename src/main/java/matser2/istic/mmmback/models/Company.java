@@ -36,7 +36,7 @@ public class Company {
 
 
     public void removeWorksite(Worksite worksite){
-        this.worksiteList.add(worksite);
+        this.worksiteList.remove(worksite);
         worksite.setCompany(null);
     }
 
