@@ -19,7 +19,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = Equipment.class, name = "EQUIPMENT"),
         @JsonSubTypes.Type(value = Vehicle.class, name = "VEHICLE")
 })
-public  abstract   class Resources {
+public abstract  class Resources {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
@@ -36,6 +36,10 @@ public  abstract   class Resources {
     @ManyToMany(mappedBy = "resources" )
     private List<Worksite> worksites = new ArrayList<>();
 
+    @OneToMany(mappedBy = "resource", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Availability> availabilities = new ArrayList<>();
+
+
     public Long getId() {
         return id;
     }
@@ -43,7 +47,6 @@ public  abstract   class Resources {
     public void setId(Long id) {
         this.id = id;
     }
-    public abstract void update(Resources updatedResource);
 
     public String getName() {
         return name;
@@ -67,5 +70,13 @@ public  abstract   class Resources {
 
     public void setWorksites(List<Worksite> worksites) {
         this.worksites = worksites;
+    }
+
+    public List<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<Availability> availabilities) {
+        this.availabilities = availabilities;
     }
 }

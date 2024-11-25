@@ -1,12 +1,16 @@
 package matser2.istic.mmmback.models;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 
 
 @Entity
 @DiscriminatorValue("EMPLOYEE")
-public class Employee extends Resources{
+public class Employee extends Resources   {
 
 
     @Column(name = "first_name")
@@ -52,6 +56,7 @@ public class Employee extends Resources{
         return password;
     }
 
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -63,15 +68,8 @@ public class Employee extends Resources{
     public void setRole(Role role) {
         this.role = role;
     }
-    @Override
-    public void update(Resources updatedResource) {
-        if (updatedResource instanceof Employee) {
-            Employee employee = (Employee) updatedResource;
-            this.firstName = employee.getFirstName();
-            this.lastName = employee.getLastName();
-            this.email = employee.getEmail();
-            this.password = employee.getPassword();
-        }
-    }
+
+
+
 }
 

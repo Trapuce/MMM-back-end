@@ -51,6 +51,23 @@ public class Worksite {
     )
     private List<Resources> resources = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "worksite",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Anomaly> anomalies = new ArrayList<>();
+
+    public void addAnomaly(Anomaly anomaly) {
+        anomalies.add(anomaly);
+        anomaly.setWorksite(this);
+    }
+
+    public void removeAnomaly(Anomaly anomaly) {
+        anomalies.remove(anomaly);
+        anomaly.setWorksite(null);
+    }
+
     public void addResources(Resources resource) {
         resources.add(resource);
         resource.getWorksites().add(this);
@@ -130,5 +147,13 @@ public class Worksite {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public List<Anomaly> getAnomalies() {
+        return anomalies;
+    }
+
+    public void setAnomalies(List<Anomaly> anomalies) {
+        this.anomalies = anomalies;
     }
 }

@@ -1,5 +1,7 @@
 package matser2.istic.mmmback.DTO;
 
+import matser2.istic.mmmback.models.Availability;
+
 import java.util.List;
 
 public abstract class ResourcesDto {
@@ -7,7 +9,7 @@ public abstract class ResourcesDto {
     private String name;
     private CompanyGetDto company;
     private List<WorksiteGetDto> worksites;
-
+    private List<Availability> availabilities ;
     public String getName() {
         return name;
     }
@@ -38,5 +40,13 @@ public abstract class ResourcesDto {
 
     public void setWorksites(List<WorksiteGetDto> worksites) {
         this.worksites = worksites;
+    }
+
+    public List<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<Availability> availabilities) {
+        this.availabilities = availabilities;
     }
 }

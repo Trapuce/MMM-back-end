@@ -15,6 +15,8 @@ public class WorksiteAllDto {
     private WorksiteStatus status;
     private List<ResourcesDto> resources;
     private CompanyGetDto company ;
+    private List<AnomalyDto> anomalies;
+
 
     public Long getId() {
         return id;
@@ -87,5 +89,13 @@ public class WorksiteAllDto {
 
     public void setCompany(CompanyGetDto company) {
         this.company = company;
+    }
+
+    public List<AnomalyDto> getAnomalies() {
+        return anomalies;
+    }
+
+    public void setAnomalies(List<AnomalyDto> anomalies) {
+        this.anomalies = anomalies;
     }
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(
-        componentModel = "spring"
+        componentModel = "spring" , uses = {ResourcesMapper.class}
 )
 public interface WorksiteMapper {
 

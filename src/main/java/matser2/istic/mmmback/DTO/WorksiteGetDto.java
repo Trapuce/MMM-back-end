@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import matser2.istic.mmmback.models.WorksiteStatus;
 
 import java.util.Date;
+import java.util.List;
 
 public class WorksiteGetDto {
 
@@ -18,6 +19,16 @@ public class WorksiteGetDto {
 
 
     private WorksiteStatus status;
+
+    private List<AnomalyDto> anomalies;
+
+    public List<AnomalyDto> getAnomalies() {
+        return anomalies;
+    }
+
+    public void setAnomalies(List<AnomalyDto> anomalies) {
+        this.anomalies = anomalies;
+    }
 
     public String getDescription() {
         return description;

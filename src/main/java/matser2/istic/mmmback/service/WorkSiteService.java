@@ -4,14 +4,8 @@ package matser2.istic.mmmback.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
-import matser2.istic.mmmback.mappers.CompanyMapper;
-import matser2.istic.mmmback.mappers.CustomerMapper;
-import matser2.istic.mmmback.mappers.ResourcesMapper;
-import matser2.istic.mmmback.mappers.WorksiteMapper;
-import matser2.istic.mmmback.models.Company;
-import matser2.istic.mmmback.models.Customer;
-import matser2.istic.mmmback.models.Resources;
-import matser2.istic.mmmback.models.Worksite;
+import matser2.istic.mmmback.mappers.*;
+import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.CompanyRepository;
 import matser2.istic.mmmback.repository.CustomerRepository;
 import matser2.istic.mmmback.repository.ResourcesRepository;
@@ -45,6 +39,9 @@ public class WorkSiteService {
     private CompanyRepository companyRepository;
     @Autowired
     private CompanyMapper companyMapper;
+
+    @Autowired
+    private AnomalyMapper anomalyMapper;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
         Long companyId = worksiteDto.getCompany() != null ? worksiteDto.getCompany().getId() : null;
@@ -143,5 +140,35 @@ public class WorkSiteService {
         worksiteRepository.delete(worksite);
     }
 
+    public void updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
+
+        worksite.setStatus(newStatus);
+
+        worksiteRepository.save(worksite);
+    }
+
+    public AnomalyDto addAnomalyToWorksite(Long worksiteId, AnomalyDto anomalyDto) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Anomaly anomaly = new Anomaly();
+        anomaly.setDescription(anomalyDto.getDescription());
+        worksite.addAnomaly(anomaly);
+
+        for (PhotoDto photo : anomalyDto.getPhotos()) {
+
+            Photo photonew = new Photo();
+            photonew.setId(photo.getId());
+            photonew.setFilePath(photo.getFilePath());
+            anomaly.addPhoto(photonew);
+        }
+
+        worksite.addAnomaly(anomaly);
+        worksiteRepository.save(worksite);
+
+        return anomalyMapper.anomalyToAnomalyDto(anomaly);
+    }
 
 }

@@ -6,18 +6,24 @@ import matser2.istic.mmmback.DTO.ResourcesDto;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
 import matser2.istic.mmmback.models.*;
+import matser2.istic.mmmback.repository.AvailabilityRepository;
 import matser2.istic.mmmback.repository.CompanyRepository;
 import matser2.istic.mmmback.repository.ResourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ResourceService {
+public class ResourceService  {
 
     @Autowired
     private ResourcesRepository resourcesRepository;
@@ -30,16 +36,39 @@ public class ResourceService {
     @Autowired
     private WorksiteMapper worksiteMapper;
 
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
+
     public <T extends Resources> T createResource(T resource) {
         if (resource.getCompany() == null) {
             throw new IllegalArgumentException("La société doit être définie pour la ressource.");
         }
 
+        // Vérification de l'existence de la société
         Company company = companyRepository.findById(resource.getCompany().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
 
         company.addResource(resource);
-        return resourcesRepository.save(resource);
+
+        T savedResource = resourcesRepository.save(resource);
+
+        if (resource.getAvailabilities() != null && !resource.getAvailabilities().isEmpty()) {
+            for (Availability availability : resource.getAvailabilities()) {
+                availability.setResource(savedResource);
+                availabilityRepository.save(availability);
+            }
+        }
+
+        if (resource.getAvailabilities() == null || resource.getAvailabilities().isEmpty()) {
+            Availability newAvailability = new Availability();
+            newAvailability.setResource(savedResource);
+            newAvailability.setAvailable(true);
+            newAvailability.setStartTime(new Date());
+            newAvailability.setEndTime(new Date());
+            availabilityRepository.save(newAvailability);
+        }
+
+        return savedResource;
     }
 
     public List<ResourcesDto> getAllResources() {

@@ -9,7 +9,7 @@ import org.mapstruct.*;
 
 
 @Mapper(
-        componentModel = "spring"
+        componentModel = "spring" , uses = {ResourcesMapper.class}
 )
 public interface CompanyMapper {
 
