@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: mmm-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: traore
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: springSecurity
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+    image: mmm-back
+    container_name: mmm-back-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/springSecurity
+      SPRING_DATASOURCE_USERNAME: traore
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - database
+
+volumes:
+  db_data:

@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/availability")
+@RequestMapping("/api/v1/availability")
 public class AvailabilityController {
 
 

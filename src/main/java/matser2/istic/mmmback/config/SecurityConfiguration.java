@@ -36,7 +36,7 @@ public class SecurityConfiguration {
         return   http
                 .csrf(customizer->customizer.disable())
                 .authorizeHttpRequests(request->request
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register" , "/api-docs , /swagger-ui/index.html" , "/api/v1/**").permitAll()
                         .anyRequest().authenticated() )
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
