@@ -13,6 +13,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/ResourcesRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/WorkSiteController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/WorksiteMapper.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/WebConfig.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/CustomerService.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/CustomerMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Vehicle.java
