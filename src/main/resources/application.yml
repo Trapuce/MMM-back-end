@@ -1,14 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/springSecurity
     username: traore
     password: password
     driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/springSecurity
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-
 springdoc:
   api-docs:
     path: /api-docs
