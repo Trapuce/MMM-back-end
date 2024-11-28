@@ -28,9 +28,7 @@ public abstract  class Resources {
     private String name;
 
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+
 
 
     @ManyToMany(mappedBy = "resources" )
@@ -56,13 +54,7 @@ public abstract  class Resources {
         this.name = name;
     }
 
-    public Company getCompany() {
-        return company;
-    }
 
-    public void setCompany(Company company) {
-        this.company = company;
-    }
 
     public List<Worksite> getWorksites() {
         return worksites;

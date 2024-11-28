@@ -1,9 +1,7 @@
 package matser2.istic.mmmback.mappers;
 
 
-import matser2.istic.mmmback.DTO.CompanyAllDto;
-import matser2.istic.mmmback.DTO.CompanyGetDto;
-import matser2.istic.mmmback.DTO.CompanyPostDto;
+import matser2.istic.mmmback.DTO.CompanyDto;
 import matser2.istic.mmmback.models.Company;
 import org.mapstruct.*;
 
@@ -13,17 +11,10 @@ import org.mapstruct.*;
 )
 public interface CompanyMapper {
 
-    CompanyAllDto companyToCompanyAllDto(Company company);
 
-    Company companyAllDtoToCompany(CompanyAllDto companyAllDto);
+    CompanyDto companyToCompanyDto(Company company);
 
-    CompanyPostDto companyToCompanyPostDto(Company company);
-
-    Company companyPostDtoToCompany(CompanyPostDto companyPostDto);
-
-    CompanyGetDto companyToCompanyGetDto(Company company);
-
-    Company companyGetDtoToCompany(CompanyGetDto companyGetDto);
+    Company companyDtoToCompany(CompanyDto companyDto);
 
 
 

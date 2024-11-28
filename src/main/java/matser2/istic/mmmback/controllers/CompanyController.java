@@ -1,9 +1,7 @@
 package matser2.istic.mmmback.controllers;
 
 
-import matser2.istic.mmmback.DTO.CompanyAllDto;
-import matser2.istic.mmmback.DTO.CompanyGetDto;
-import matser2.istic.mmmback.DTO.CompanyPostDto;
+import matser2.istic.mmmback.DTO.CompanyDto;
 import matser2.istic.mmmback.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,8 +24,8 @@ public class CompanyController {
      * @return La réponse contenant le DTO de l'entreprise ou une réponse 404 si l'entreprise n'est pas trouvée
      */
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyGetDto> getCompany(@PathVariable Long id) {
-        CompanyGetDto companyDto = companyService.getCompany(id);
+    public ResponseEntity<CompanyDto> getCompany(@PathVariable Long id) {
+        CompanyDto companyDto = companyService.getCompany(id);
 
         if (companyDto == null) {
             return ResponseEntity.notFound().build();
@@ -41,8 +39,8 @@ public class CompanyController {
      * @return La liste de toutes les entreprises, ou une réponse 204 si aucune entreprise n'est trouvée
      */
     @GetMapping
-    public ResponseEntity<List<CompanyGetDto>> getAllCompanies() {
-        List<CompanyGetDto> companies = companyService.getAllCompanies();
+    public ResponseEntity<List<CompanyDto>> getAllCompanies() {
+        List<CompanyDto> companies = companyService.getAllCompanies();
 
         if (companies.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -57,9 +55,9 @@ public class CompanyController {
      * @return La réponse contenant le DTO de l'entreprise créée ou une réponse 400/500 en cas d'erreur
      */
     @PostMapping
-    public ResponseEntity<CompanyPostDto> addCompany(@RequestBody CompanyPostDto companyDto) {
+    public ResponseEntity<CompanyDto> addCompany(@RequestBody CompanyDto companyDto) {
         try {
-            CompanyPostDto createdCompany = companyService.createCompany(companyDto);
+            CompanyDto createdCompany = companyService.createCompany(companyDto);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(createdCompany);
@@ -81,9 +79,9 @@ public class CompanyController {
     }
 
     @PutMapping
-    public ResponseEntity<CompanyPostDto> updateCompany(@RequestBody CompanyPostDto companyPostDto) {
+    public ResponseEntity<CompanyDto> updateCompany(@RequestBody CompanyDto companyPostDto) {
         try {
-            CompanyPostDto updatedCompany = companyService.updateCompany(companyPostDto);
+            CompanyDto updatedCompany = companyService.updateCompany(companyPostDto);
             return ResponseEntity.ok(updatedCompany);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

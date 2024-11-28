@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-27T20:27:54+0100",
+    date = "2024-11-28T14:21:21+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -26,6 +26,7 @@ public class CustomerMapperImpl implements CustomerMapper {
 
         CustomerAllDto customerAllDto = new CustomerAllDto();
 
+        customerAllDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
         customerAllDto.setId( customer.getId() );
         customerAllDto.setName( customer.getName() );
         customerAllDto.setEmail( customer.getEmail() );
@@ -45,6 +46,9 @@ public class CustomerMapperImpl implements CustomerMapper {
 
         Customer customer = new Customer();
 
+        if ( customerAllDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerAllDto.getPhoneNumber() ) );
+        }
         customer.setId( customerAllDto.getId() );
         customer.setName( customerAllDto.getName() );
         customer.setEmail( customerAllDto.getEmail() );
@@ -67,6 +71,7 @@ public class CustomerMapperImpl implements CustomerMapper {
         customerPostDto.setId( customer.getId() );
         customerPostDto.setName( customer.getName() );
         customerPostDto.setEmail( customer.getEmail() );
+        customerPostDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
 
         return customerPostDto;
     }
@@ -79,6 +84,9 @@ public class CustomerMapperImpl implements CustomerMapper {
 
         Customer customer = new Customer();
 
+        if ( customerPostDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerPostDto.getPhoneNumber() ) );
+        }
         customer.setId( customerPostDto.getId() );
         customer.setName( customerPostDto.getName() );
         customer.setEmail( customerPostDto.getEmail() );
@@ -96,6 +104,8 @@ public class CustomerMapperImpl implements CustomerMapper {
 
         customerGetDto.setId( customer.getId() );
         customerGetDto.setName( customer.getName() );
+        customerGetDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
+        customerGetDto.setEmail( customer.getEmail() );
 
         return customerGetDto;
     }
@@ -108,8 +118,12 @@ public class CustomerMapperImpl implements CustomerMapper {
 
         Customer customer = new Customer();
 
+        if ( customerGetDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerGetDto.getPhoneNumber() ) );
+        }
         customer.setId( customerGetDto.getId() );
         customer.setName( customerGetDto.getName() );
+        customer.setEmail( customerGetDto.getEmail() );
 
         return customer;
     }

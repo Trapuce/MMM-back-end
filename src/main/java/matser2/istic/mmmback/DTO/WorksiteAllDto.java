@@ -1,5 +1,6 @@
 package matser2.istic.mmmback.DTO;
 
+import matser2.istic.mmmback.models.Photo;
 import matser2.istic.mmmback.models.WorksiteStatus;
 
 import java.util.Date;
@@ -7,16 +8,20 @@ import java.util.List;
 
 public class WorksiteAllDto {
     private Long id;
+    private String title;
     private String description;
     private Date startDate;
-    private int durationInHalfDays;
+    private Date statusUpdated;
+    private int duration;
+    private Date createdAt;
+    private int longitude;
+    private int latitude;
     private String location;
-    private CustomerGetDto customer;
     private WorksiteStatus status;
+    private CustomerGetDto customer;
     private List<ResourcesDto> resources;
-    private CompanyGetDto company ;
     private List<AnomalyDto> anomalies;
-
+    private List<PhotoDto> photos;
 
     public Long getId() {
         return id;
@@ -34,13 +39,6 @@ public class WorksiteAllDto {
         this.description = description;
     }
 
-    public int getDurationInHalfDays() {
-        return durationInHalfDays;
-    }
-
-    public void setDurationInHalfDays(int durationInHalfDays) {
-        this.durationInHalfDays = durationInHalfDays;
-    }
 
     public Date getStartDate() {
         return startDate;
@@ -83,13 +81,6 @@ public class WorksiteAllDto {
         this.customer = customer;
     }
 
-    public CompanyGetDto getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyGetDto company) {
-        this.company = company;
-    }
 
     public List<AnomalyDto> getAnomalies() {
         return anomalies;
@@ -97,5 +88,61 @@ public class WorksiteAllDto {
 
     public void setAnomalies(List<AnomalyDto> anomalies) {
         this.anomalies = anomalies;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getStatusUpdated() {
+        return statusUpdated;
+    }
+
+    public void setStatusUpdated(Date statusUpdated) {
+        this.statusUpdated = statusUpdated;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
+    }
+
+    public List<PhotoDto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoDto> photos) {
+        this.photos = photos;
     }
 }

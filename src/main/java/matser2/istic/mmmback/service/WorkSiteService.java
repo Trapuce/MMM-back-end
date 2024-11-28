@@ -44,31 +44,21 @@ public class WorkSiteService {
     private AnomalyMapper anomalyMapper;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
-        Long companyId = worksiteDto.getCompany() != null ? worksiteDto.getCompany().getId() : null;
-        if (companyId == null) {
-            throw new IllegalArgumentException("L'ID de la société doit être fourni.");
-        }
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
-
-        Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
-
-        company.addWorksite(worksite);
-
         if (worksiteDto.getCustomer() == null) {
             throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
         }
 
+        Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
+
         Customer customer = customerMapper.customerPostDtoToCustomer(worksiteDto.getCustomer());
-
         customer = customerRepository.save(customer);
-
         customer.addWorksite(worksite);
 
         Worksite savedWorksite = worksiteRepository.save(worksite);
 
         return worksiteMapper.worksiteToWorksitePostDto(savedWorksite);
     }
+
 
 
     public WorksiteGetDto getWorkSite(Long id) {
@@ -96,46 +86,45 @@ public class WorkSiteService {
     }
 
     @Transactional
-    public WorksiteGetDto updateWorksite(WorksitePostDto worksiteDto) {
-        if (worksiteDto.getId() == null) {
+    public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {
+        if (id == null) {
             throw new IllegalArgumentException("L'ID du chantier doit être fourni pour la mise à jour.");
         }
 
-        Worksite existingWorksite = worksiteRepository.findById(worksiteDto.getId())
+        Worksite existingWorksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
 
-        Long companyId = worksiteDto.getCompany() != null ? worksiteDto.getCompany().getId() : null;
-        if (companyId != null && (existingWorksite.getCompany() == null || !existingWorksite.getCompany().getId().equals(companyId))) {
-            Company newCompany = companyRepository.findById(companyId)
-                    .orElseThrow(() -> new EntityNotFoundException("Aucune société trouvée avec l'ID fourni."));
-            existingWorksite.setCompany(newCompany);
-            newCompany.addWorksite(existingWorksite);
+        if (worksiteAllDto.getCustomer() != null && worksiteAllDto.getCustomer().getId() != null) {
+            Long customerId = worksiteAllDto.getCustomer().getId();
+            if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId)) {
+                Customer newCustomer = customerRepository.findById(customerId)
+                        .orElseThrow(() -> new EntityNotFoundException("Aucun client trouvé avec l'ID fourni."));
+                existingWorksite.setCustomer(newCustomer);
+                newCustomer.addWorksite(existingWorksite);
+            }
         }
 
-        Long customerId = worksiteDto.getCustomer() != null ? worksiteDto.getCustomer().getId() : null;
-        if (customerId != null && (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId))) {
-            Customer newCustomer = customerRepository.findById(customerId)
-                    .orElseThrow(() -> new EntityNotFoundException("Aucun client trouvé avec l'ID fourni."));
-            existingWorksite.setCustomer(newCustomer);
-            newCustomer.addWorksite(existingWorksite);
-        }
-
-        existingWorksite.setDescription(worksiteDto.getDescription());
-        existingWorksite.setLocation(worksiteDto.getLocation());
-        existingWorksite.setStartDate(worksiteDto.getStartDate());
+        existingWorksite.setTitle(worksiteAllDto.getTitle());
+        existingWorksite.setDescription(worksiteAllDto.getDescription());
+        existingWorksite.setLocation(worksiteAllDto.getLocation());
+        existingWorksite.setStartDate(worksiteAllDto.getStartDate());
+        existingWorksite.setStatus(worksiteAllDto.getStatus());
+        existingWorksite.setLongitude(worksiteAllDto.getLongitude());
+        existingWorksite.setLatitude(worksiteAllDto.getLatitude());
+        existingWorksite.setDuration(worksiteAllDto.getDuration());
 
         Worksite updatedWorksite = worksiteRepository.save(existingWorksite);
-        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
+
+        return worksiteMapper.worksiteToWorksiteAllDto(updatedWorksite);
     }
+
+
 
     public void deleteWorksite(Long id) {
         Worksite worksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Aucun chantier trouvé avec l'ID fourni."));
 
-        Company company = worksite.getCompany();
-        if (company != null) {
-            company.removeWorksite(worksite);
-        }
+
 
         worksiteRepository.delete(worksite);
     }

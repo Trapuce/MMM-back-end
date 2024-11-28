@@ -9,7 +9,6 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Anomaly.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/VehicleDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/EquipmentRepository.java
-/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CompanyAllDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/ResourcesRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/WorkSiteController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/WorksiteMapper.java
@@ -20,7 +19,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/CompanyController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/WorksiteStatus.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/ResourceService.java
-/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CompanyPostDto.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CompanyDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/ResourcesMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Equipment.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/WorkSiteService.java
@@ -34,7 +33,6 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Customer.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/ResourcesController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/ResourcesFactory.java
-/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CompanyGetDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/AnomalyMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Role.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Availability.java

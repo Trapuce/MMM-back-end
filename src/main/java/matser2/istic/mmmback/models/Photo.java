@@ -16,6 +16,11 @@ public class Photo {
     @JoinColumn(name = "anomaly_id", nullable = false)
     private Anomaly anomaly;
 
+
+    @ManyToOne
+    @JoinColumn(name = "worksite_id", nullable = false)
+    private Worksite worksite;
+
     public Long getId() {
         return id;
     }
@@ -38,5 +43,13 @@ public class Photo {
 
     public void setAnomaly(Anomaly anomaly) {
         this.anomaly = anomaly;
+    }
+
+    public Worksite getWorksite() {
+        return worksite;
+    }
+
+    public void setWorksite(Worksite worksite) {
+        this.worksite = worksite;
     }
 }

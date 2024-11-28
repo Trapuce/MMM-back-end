@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import matser2.istic.mmmback.DTO.AnomalyDto;
-import matser2.istic.mmmback.DTO.CompanyGetDto;
 import matser2.istic.mmmback.DTO.EmployeeDto;
 import matser2.istic.mmmback.DTO.EquipmentDto;
 import matser2.istic.mmmback.DTO.PhotoDto;
@@ -12,7 +11,6 @@ import matser2.istic.mmmback.DTO.VehicleDto;
 import matser2.istic.mmmback.DTO.WorksiteGetDto;
 import matser2.istic.mmmback.models.Anomaly;
 import matser2.istic.mmmback.models.Availability;
-import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.models.Equipment;
 import matser2.istic.mmmback.models.Photo;
@@ -22,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-27T20:27:54+0100",
+    date = "2024-11-28T14:21:21+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -38,7 +36,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         equipmentDto.setName( equipment.getName() );
         equipmentDto.setId( equipment.getId() );
-        equipmentDto.setCompany( companyToCompanyGetDto( equipment.getCompany() ) );
         equipmentDto.setWorksites( worksiteListToWorksiteGetDtoList( equipment.getWorksites() ) );
         List<Availability> list1 = equipment.getAvailabilities();
         if ( list1 != null ) {
@@ -60,7 +57,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         equipment.setId( equipmentDto.getId() );
         equipment.setName( equipmentDto.getName() );
-        equipment.setCompany( companyGetDtoToCompany( equipmentDto.getCompany() ) );
         equipment.setWorksites( worksiteGetDtoListToWorksiteList( equipmentDto.getWorksites() ) );
         List<Availability> list1 = equipmentDto.getAvailabilities();
         if ( list1 != null ) {
@@ -82,7 +78,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         vehicleDto.setName( vehicle.getName() );
         vehicleDto.setId( vehicle.getId() );
-        vehicleDto.setCompany( companyToCompanyGetDto( vehicle.getCompany() ) );
         vehicleDto.setWorksites( worksiteListToWorksiteGetDtoList( vehicle.getWorksites() ) );
         List<Availability> list1 = vehicle.getAvailabilities();
         if ( list1 != null ) {
@@ -104,7 +99,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         vehicle.setId( vehicleDto.getId() );
         vehicle.setName( vehicleDto.getName() );
-        vehicle.setCompany( companyGetDtoToCompany( vehicleDto.getCompany() ) );
         vehicle.setWorksites( worksiteGetDtoListToWorksiteList( vehicleDto.getWorksites() ) );
         List<Availability> list1 = vehicleDto.getAvailabilities();
         if ( list1 != null ) {
@@ -126,7 +120,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         employeeDto.setName( employee.getName() );
         employeeDto.setId( employee.getId() );
-        employeeDto.setCompany( companyToCompanyGetDto( employee.getCompany() ) );
         employeeDto.setWorksites( worksiteListToWorksiteGetDtoList( employee.getWorksites() ) );
         List<Availability> list1 = employee.getAvailabilities();
         if ( list1 != null ) {
@@ -151,7 +144,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         employee.setId( employeeDto.getId() );
         employee.setName( employeeDto.getName() );
-        employee.setCompany( companyGetDtoToCompany( employeeDto.getCompany() ) );
         employee.setWorksites( worksiteGetDtoListToWorksiteList( employeeDto.getWorksites() ) );
         List<Availability> list1 = employeeDto.getAvailabilities();
         if ( list1 != null ) {
@@ -164,21 +156,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         employee.setRole( employeeDto.getRole() );
 
         return employee;
-    }
-
-    protected CompanyGetDto companyToCompanyGetDto(Company company) {
-        if ( company == null ) {
-            return null;
-        }
-
-        CompanyGetDto companyGetDto = new CompanyGetDto();
-
-        companyGetDto.setId( company.getId() );
-        companyGetDto.setName( company.getName() );
-        companyGetDto.setRegistrationNumber( company.getRegistrationNumber() );
-        companyGetDto.setAddress( company.getAddress() );
-
-        return companyGetDto;
     }
 
     protected PhotoDto photoToPhotoDto(Photo photo) {
@@ -241,13 +218,19 @@ public class ResourcesMapperImpl implements ResourcesMapper {
 
         WorksiteGetDto worksiteGetDto = new WorksiteGetDto();
 
+        worksiteGetDto.setPhotos( photoListToPhotoDtoList( worksite.getPhotos() ) );
         worksiteGetDto.setAnomalies( anomalyListToAnomalyDtoList( worksite.getAnomalies() ) );
         worksiteGetDto.setDescription( worksite.getDescription() );
         worksiteGetDto.setStartDate( worksite.getStartDate() );
         worksiteGetDto.setId( worksite.getId() );
-        worksiteGetDto.setDurationInHalfDays( worksite.getDurationInHalfDays() );
         worksiteGetDto.setLocation( worksite.getLocation() );
         worksiteGetDto.setStatus( worksite.getStatus() );
+        worksiteGetDto.setTitle( worksite.getTitle() );
+        worksiteGetDto.setStatusUpdated( worksite.getStatusUpdated() );
+        worksiteGetDto.setDuration( worksite.getDuration() );
+        worksiteGetDto.setCreatedAt( worksite.getCreatedAt() );
+        worksiteGetDto.setLongitude( worksite.getLongitude() );
+        worksiteGetDto.setLatitude( worksite.getLatitude() );
 
         return worksiteGetDto;
     }
@@ -263,21 +246,6 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         }
 
         return list1;
-    }
-
-    protected Company companyGetDtoToCompany(CompanyGetDto companyGetDto) {
-        if ( companyGetDto == null ) {
-            return null;
-        }
-
-        Company company = new Company();
-
-        company.setId( companyGetDto.getId() );
-        company.setName( companyGetDto.getName() );
-        company.setRegistrationNumber( companyGetDto.getRegistrationNumber() );
-        company.setAddress( companyGetDto.getAddress() );
-
-        return company;
     }
 
     protected Photo photoDtoToPhoto(PhotoDto photoDto) {
@@ -343,10 +311,16 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         worksite.setId( worksiteGetDto.getId() );
         worksite.setDescription( worksiteGetDto.getDescription() );
         worksite.setStartDate( worksiteGetDto.getStartDate() );
-        worksite.setDurationInHalfDays( worksiteGetDto.getDurationInHalfDays() );
         worksite.setLocation( worksiteGetDto.getLocation() );
         worksite.setStatus( worksiteGetDto.getStatus() );
         worksite.setAnomalies( anomalyDtoListToAnomalyList( worksiteGetDto.getAnomalies() ) );
+        worksite.setTitle( worksiteGetDto.getTitle() );
+        worksite.setStatusUpdated( worksiteGetDto.getStatusUpdated() );
+        worksite.setDuration( worksiteGetDto.getDuration() );
+        worksite.setCreatedAt( worksiteGetDto.getCreatedAt() );
+        worksite.setLongitude( worksiteGetDto.getLongitude() );
+        worksite.setLatitude( worksiteGetDto.getLatitude() );
+        worksite.setPhotos( photoDtoListToPhotoList( worksiteGetDto.getPhotos() ) );
 
         return worksite;
     }

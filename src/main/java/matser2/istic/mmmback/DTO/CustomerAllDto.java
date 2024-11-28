@@ -15,10 +15,19 @@ public class CustomerAllDto {
     private String name;
     @JsonProperty("Email")
     private String email;
+     @JsonProperty
+    private String phoneNumber ;
 
     @JsonProperty("worksites")
     private List<Worksite> worksites = new ArrayList<>();
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public Long getId() {
         return id;

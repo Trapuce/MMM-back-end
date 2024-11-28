@@ -2,9 +2,7 @@ package matser2.istic.mmmback.service;
 
 
 import jakarta.transaction.Transactional;
-import matser2.istic.mmmback.DTO.CompanyAllDto;
-import matser2.istic.mmmback.DTO.CompanyGetDto;
-import matser2.istic.mmmback.DTO.CompanyPostDto;
+import matser2.istic.mmmback.DTO.CompanyDto;
 import matser2.istic.mmmback.mappers.CompanyMapper;
 import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.Resources;
@@ -32,15 +30,15 @@ public class CompanyService {
      * @return Le DTO de l'entreprise créée.
      */
     @Transactional
-    public CompanyPostDto createCompany(CompanyPostDto companyDto) {
+    public CompanyDto createCompany(CompanyDto companyDto) {
         if (companyDto == null ) {
             throw new IllegalArgumentException("Company's name cannot empty ");
         }
-        Company companyEntity = companyMapper.companyPostDtoToCompany(companyDto);
+        Company companyEntity = companyMapper.companyDtoToCompany(companyDto);
         System.out.println(companyEntity);
         Company savedCompany = companyRepository.save(companyEntity);
 
-        return companyMapper.companyToCompanyPostDto(savedCompany);
+        return companyMapper.companyToCompanyDto(savedCompany);
     }
 
     /**
@@ -49,11 +47,11 @@ public class CompanyService {
      * @return Une liste de DTOs représentant les entreprises.
      */
     @Transactional
-    public List<CompanyGetDto> getAllCompanies() {
+    public List<CompanyDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
 
         return companies.stream()
-                .map(companyMapper::companyToCompanyGetDto)
+                .map(companyMapper::companyToCompanyDto)
                 .toList();
     }
 
@@ -64,15 +62,15 @@ public class CompanyService {
      * @return Le Dto de l'entreprise ou null si elle n'existe pas.
      */
     @Transactional
-    public CompanyGetDto getCompany(Long id) {
+    public CompanyDto getCompany(Long id) {
         Optional<Company> company = companyRepository.findById(id);
 
-        return company.map(companyMapper::companyToCompanyGetDto).orElse(null);
+        return company.map(companyMapper::companyToCompanyDto).orElse(null);
     }
 
 
     @Transactional
-    public CompanyPostDto updateCompany(CompanyPostDto companyPostDto) {
+    public CompanyDto updateCompany(CompanyDto companyPostDto) {
         if (companyPostDto.getId() == null) {
             throw new IllegalArgumentException("L'ID de l'entreprise est requis pour la mise à jour.");
         }
@@ -86,7 +84,7 @@ public class CompanyService {
 
         Company updatedCompany = companyRepository.save(existingCompany);
 
-        return companyMapper.companyToCompanyPostDto(updatedCompany);
+        return companyMapper.companyToCompanyDto(updatedCompany);
     }
 
 
@@ -100,15 +98,7 @@ public class CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("L'entreprise avec l'ID " + id + " n'existe pas."));
 
-        for (Worksite worksite : company.getWorksiteList()) {
-            worksite.setCompany(null);
-        }
-        company.getWorksiteList().clear();
 
-        for (Resources resource : company.getResources()) {
-            resource.setCompany(null);
-        }
-        company.getResources().clear();
 
         companyRepository.delete(company);
     }

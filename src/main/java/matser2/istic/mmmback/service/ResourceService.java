@@ -40,15 +40,7 @@ public class ResourceService  {
     private AvailabilityRepository availabilityRepository;
 
     public <T extends Resources> T createResource(T resource) {
-        if (resource.getCompany() == null) {
-            throw new IllegalArgumentException("La société doit être définie pour la ressource.");
-        }
 
-        // Vérification de l'existence de la société
-        Company company = companyRepository.findById(resource.getCompany().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Société non trouvée avec l'ID fourni."));
-
-        company.addResource(resource);
 
         T savedResource = resourcesRepository.save(resource);
 
@@ -120,10 +112,6 @@ public class ResourceService  {
         Resources resource = resourcesRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Ressource non trouvée avec l'ID fourni."));
 
-        Company company = resource.getCompany();
-        if (company != null) {
-            company.removeResource(resource);
-        }
 
         resourcesRepository.delete(resource);
     }

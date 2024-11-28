@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import matser2.istic.mmmback.DTO.AnomalyDto;
-import matser2.istic.mmmback.DTO.CompanyGetDto;
-import matser2.istic.mmmback.DTO.CompanyPostDto;
 import matser2.istic.mmmback.DTO.CustomerGetDto;
 import matser2.istic.mmmback.DTO.CustomerPostDto;
 import matser2.istic.mmmback.DTO.PhotoDto;
@@ -14,7 +12,6 @@ import matser2.istic.mmmback.DTO.WorksiteAllDto;
 import matser2.istic.mmmback.DTO.WorksiteGetDto;
 import matser2.istic.mmmback.DTO.WorksitePostDto;
 import matser2.istic.mmmback.models.Anomaly;
-import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.Customer;
 import matser2.istic.mmmback.models.Photo;
 import matser2.istic.mmmback.models.Resources;
@@ -24,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-27T20:27:53+0100",
+    date = "2024-11-28T14:21:21+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -43,14 +40,19 @@ public class WorksiteMapperImpl implements WorksiteMapper {
 
         worksiteAllDto.setId( worksite.getId() );
         worksiteAllDto.setDescription( worksite.getDescription() );
-        worksiteAllDto.setDurationInHalfDays( worksite.getDurationInHalfDays() );
         worksiteAllDto.setStartDate( worksite.getStartDate() );
         worksiteAllDto.setLocation( worksite.getLocation() );
         worksiteAllDto.setStatus( worksite.getStatus() );
         worksiteAllDto.setResources( resourcesListToResourcesDtoList( worksite.getResources() ) );
         worksiteAllDto.setCustomer( customerToCustomerGetDto( worksite.getCustomer() ) );
-        worksiteAllDto.setCompany( companyToCompanyGetDto( worksite.getCompany() ) );
         worksiteAllDto.setAnomalies( anomalyListToAnomalyDtoList( worksite.getAnomalies() ) );
+        worksiteAllDto.setTitle( worksite.getTitle() );
+        worksiteAllDto.setStatusUpdated( worksite.getStatusUpdated() );
+        worksiteAllDto.setDuration( worksite.getDuration() );
+        worksiteAllDto.setCreatedAt( worksite.getCreatedAt() );
+        worksiteAllDto.setLongitude( worksite.getLongitude() );
+        worksiteAllDto.setLatitude( worksite.getLatitude() );
+        worksiteAllDto.setPhotos( photoListToPhotoDtoList( worksite.getPhotos() ) );
 
         return worksiteAllDto;
     }
@@ -66,13 +68,18 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksite.setId( worksiteAllDto.getId() );
         worksite.setDescription( worksiteAllDto.getDescription() );
         worksite.setStartDate( worksiteAllDto.getStartDate() );
-        worksite.setDurationInHalfDays( worksiteAllDto.getDurationInHalfDays() );
         worksite.setLocation( worksiteAllDto.getLocation() );
         worksite.setCustomer( customerGetDtoToCustomer( worksiteAllDto.getCustomer() ) );
         worksite.setStatus( worksiteAllDto.getStatus() );
         worksite.setResources( resourcesDtoListToResourcesList( worksiteAllDto.getResources() ) );
-        worksite.setCompany( companyGetDtoToCompany( worksiteAllDto.getCompany() ) );
         worksite.setAnomalies( anomalyDtoListToAnomalyList( worksiteAllDto.getAnomalies() ) );
+        worksite.setTitle( worksiteAllDto.getTitle() );
+        worksite.setStatusUpdated( worksiteAllDto.getStatusUpdated() );
+        worksite.setDuration( worksiteAllDto.getDuration() );
+        worksite.setCreatedAt( worksiteAllDto.getCreatedAt() );
+        worksite.setLongitude( worksiteAllDto.getLongitude() );
+        worksite.setLatitude( worksiteAllDto.getLatitude() );
+        worksite.setPhotos( photoDtoListToPhotoList( worksiteAllDto.getPhotos() ) );
 
         return worksite;
     }
@@ -89,10 +96,14 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksitePostDto.setDescription( worksite.getDescription() );
         worksitePostDto.setStartDate( worksite.getStartDate() );
         worksitePostDto.setLocation( worksite.getLocation() );
-        worksitePostDto.setDurationInHalfDays( worksite.getDurationInHalfDays() );
         worksitePostDto.setCustomer( customerToCustomerPostDto( worksite.getCustomer() ) );
         worksitePostDto.setStatus( worksite.getStatus() );
-        worksitePostDto.setCompany( companyToCompanyPostDto( worksite.getCompany() ) );
+        worksitePostDto.setTitle( worksite.getTitle() );
+        worksitePostDto.setStatusUpdated( worksite.getStatusUpdated() );
+        worksitePostDto.setDuration( worksite.getDuration() );
+        worksitePostDto.setCreatedAt( worksite.getCreatedAt() );
+        worksitePostDto.setLongitude( worksite.getLongitude() );
+        worksitePostDto.setLatitude( worksite.getLatitude() );
 
         return worksitePostDto;
     }
@@ -108,11 +119,15 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksite.setId( worksitePostDto.getId() );
         worksite.setDescription( worksitePostDto.getDescription() );
         worksite.setStartDate( worksitePostDto.getStartDate() );
-        worksite.setDurationInHalfDays( worksitePostDto.getDurationInHalfDays() );
         worksite.setLocation( worksitePostDto.getLocation() );
         worksite.setCustomer( customerPostDtoToCustomer( worksitePostDto.getCustomer() ) );
         worksite.setStatus( worksitePostDto.getStatus() );
-        worksite.setCompany( companyPostDtoToCompany( worksitePostDto.getCompany() ) );
+        worksite.setTitle( worksitePostDto.getTitle() );
+        worksite.setStatusUpdated( worksitePostDto.getStatusUpdated() );
+        worksite.setDuration( worksitePostDto.getDuration() );
+        worksite.setCreatedAt( worksitePostDto.getCreatedAt() );
+        worksite.setLongitude( worksitePostDto.getLongitude() );
+        worksite.setLatitude( worksitePostDto.getLatitude() );
 
         return worksite;
     }
@@ -125,13 +140,19 @@ public class WorksiteMapperImpl implements WorksiteMapper {
 
         WorksiteGetDto worksiteGetDto = new WorksiteGetDto();
 
+        worksiteGetDto.setPhotos( photoListToPhotoDtoList( worksite.getPhotos() ) );
         worksiteGetDto.setAnomalies( anomalyListToAnomalyDtoList( worksite.getAnomalies() ) );
         worksiteGetDto.setDescription( worksite.getDescription() );
         worksiteGetDto.setStartDate( worksite.getStartDate() );
         worksiteGetDto.setId( worksite.getId() );
-        worksiteGetDto.setDurationInHalfDays( worksite.getDurationInHalfDays() );
         worksiteGetDto.setLocation( worksite.getLocation() );
         worksiteGetDto.setStatus( worksite.getStatus() );
+        worksiteGetDto.setTitle( worksite.getTitle() );
+        worksiteGetDto.setStatusUpdated( worksite.getStatusUpdated() );
+        worksiteGetDto.setDuration( worksite.getDuration() );
+        worksiteGetDto.setCreatedAt( worksite.getCreatedAt() );
+        worksiteGetDto.setLongitude( worksite.getLongitude() );
+        worksiteGetDto.setLatitude( worksite.getLatitude() );
 
         return worksiteGetDto;
     }
@@ -147,10 +168,16 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksite.setId( worksiteGetDto.getId() );
         worksite.setDescription( worksiteGetDto.getDescription() );
         worksite.setStartDate( worksiteGetDto.getStartDate() );
-        worksite.setDurationInHalfDays( worksiteGetDto.getDurationInHalfDays() );
         worksite.setLocation( worksiteGetDto.getLocation() );
         worksite.setStatus( worksiteGetDto.getStatus() );
         worksite.setAnomalies( anomalyDtoListToAnomalyList( worksiteGetDto.getAnomalies() ) );
+        worksite.setTitle( worksiteGetDto.getTitle() );
+        worksite.setStatusUpdated( worksiteGetDto.getStatusUpdated() );
+        worksite.setDuration( worksiteGetDto.getDuration() );
+        worksite.setCreatedAt( worksiteGetDto.getCreatedAt() );
+        worksite.setLongitude( worksiteGetDto.getLongitude() );
+        worksite.setLatitude( worksiteGetDto.getLatitude() );
+        worksite.setPhotos( photoDtoListToPhotoList( worksiteGetDto.getPhotos() ) );
 
         return worksite;
     }
@@ -177,23 +204,10 @@ public class WorksiteMapperImpl implements WorksiteMapper {
 
         customerGetDto.setId( customer.getId() );
         customerGetDto.setName( customer.getName() );
+        customerGetDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
+        customerGetDto.setEmail( customer.getEmail() );
 
         return customerGetDto;
-    }
-
-    protected CompanyGetDto companyToCompanyGetDto(Company company) {
-        if ( company == null ) {
-            return null;
-        }
-
-        CompanyGetDto companyGetDto = new CompanyGetDto();
-
-        companyGetDto.setId( company.getId() );
-        companyGetDto.setName( company.getName() );
-        companyGetDto.setRegistrationNumber( company.getRegistrationNumber() );
-        companyGetDto.setAddress( company.getAddress() );
-
-        return companyGetDto;
     }
 
     protected PhotoDto photoToPhotoDto(Photo photo) {
@@ -256,8 +270,12 @@ public class WorksiteMapperImpl implements WorksiteMapper {
 
         Customer customer = new Customer();
 
+        if ( customerGetDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerGetDto.getPhoneNumber() ) );
+        }
         customer.setId( customerGetDto.getId() );
         customer.setName( customerGetDto.getName() );
+        customer.setEmail( customerGetDto.getEmail() );
 
         return customer;
     }
@@ -273,21 +291,6 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         }
 
         return list1;
-    }
-
-    protected Company companyGetDtoToCompany(CompanyGetDto companyGetDto) {
-        if ( companyGetDto == null ) {
-            return null;
-        }
-
-        Company company = new Company();
-
-        company.setId( companyGetDto.getId() );
-        company.setName( companyGetDto.getName() );
-        company.setRegistrationNumber( companyGetDto.getRegistrationNumber() );
-        company.setAddress( companyGetDto.getAddress() );
-
-        return company;
     }
 
     protected Photo photoDtoToPhoto(PhotoDto photoDto) {
@@ -353,23 +356,9 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         customerPostDto.setId( customer.getId() );
         customerPostDto.setName( customer.getName() );
         customerPostDto.setEmail( customer.getEmail() );
+        customerPostDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
 
         return customerPostDto;
-    }
-
-    protected CompanyPostDto companyToCompanyPostDto(Company company) {
-        if ( company == null ) {
-            return null;
-        }
-
-        CompanyPostDto companyPostDto = new CompanyPostDto();
-
-        companyPostDto.setId( company.getId() );
-        companyPostDto.setName( company.getName() );
-        companyPostDto.setRegistrationNumber( company.getRegistrationNumber() );
-        companyPostDto.setAddress( company.getAddress() );
-
-        return companyPostDto;
     }
 
     protected Customer customerPostDtoToCustomer(CustomerPostDto customerPostDto) {
@@ -379,25 +368,13 @@ public class WorksiteMapperImpl implements WorksiteMapper {
 
         Customer customer = new Customer();
 
+        if ( customerPostDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerPostDto.getPhoneNumber() ) );
+        }
         customer.setId( customerPostDto.getId() );
         customer.setName( customerPostDto.getName() );
         customer.setEmail( customerPostDto.getEmail() );
 
         return customer;
-    }
-
-    protected Company companyPostDtoToCompany(CompanyPostDto companyPostDto) {
-        if ( companyPostDto == null ) {
-            return null;
-        }
-
-        Company company = new Company();
-
-        company.setId( companyPostDto.getId() );
-        company.setName( companyPostDto.getName() );
-        company.setRegistrationNumber( companyPostDto.getRegistrationNumber() );
-        company.setAddress( companyPostDto.getAddress() );
-
-        return company;
     }
 }

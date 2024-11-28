@@ -7,7 +7,7 @@ import java.util.List;
 public abstract class ResourcesDto {
     private Long id;
     private String name;
-    private CompanyGetDto company;
+    private CompanyDto company;
     private List<WorksiteGetDto> worksites;
     private List<Availability> availabilities ;
     public String getName() {
@@ -26,11 +26,11 @@ public abstract class ResourcesDto {
         this.id = id;
     }
 
-    public CompanyGetDto getCompany() {
+    public CompanyDto getCompany() {
         return company;
     }
 
-    public void setCompany(CompanyGetDto company) {
+    public void setCompany(CompanyDto company) {
         this.company = company;
     }
 

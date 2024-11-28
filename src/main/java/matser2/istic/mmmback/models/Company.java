@@ -24,34 +24,11 @@ public class Company {
     private String address;
 
 
-    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<Worksite> worksiteList = new ArrayList<>() ;
 
 
 
-    public void addWorksite(Worksite worksite){
-        this.worksiteList.add(worksite);
-        worksite.setCompany(this);
-    }
 
 
-    public void removeWorksite(Worksite worksite){
-        this.worksiteList.remove(worksite);
-        worksite.setCompany(null);
-    }
-
-    @OneToMany(mappedBy = "company" , cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Resources> resources = new ArrayList<>();
-
-    public void addResource(Resources resource) {
-        this.resources.add(resource);
-        resource.setCompany(this);
-    }
-
-    public void removeResource(Resources resource) {
-        this.resources.remove(resource);
-        resource.setCompany(null);
-    }
 
     public Long getId() {
         return id;
@@ -85,21 +62,6 @@ public class Company {
         this.address = address;
     }
 
-    public List<Worksite> getWorksiteList() {
-        return worksiteList;
-    }
-
-    public void setWorksiteList(List<Worksite> worksiteList) {
-        this.worksiteList = worksiteList;
-    }
-
-    public List<Resources> getResources() {
-        return resources;
-    }
-
-    public void setResources(List<Resources> resources) {
-        this.resources = resources;
-    }
 
 
 }

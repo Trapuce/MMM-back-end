@@ -6,7 +6,6 @@ matser2/istic/mmmback/models/WorksiteStatus.class
 matser2/istic/mmmback/config/JwtAuthenticationFilter.class
 matser2/istic/mmmback/mappers/ResourcesMapperImpl.class
 matser2/istic/mmmback/repository/WorksiteRepository.class
-matser2/istic/mmmback/DTO/CompanyAllDto.class
 matser2/istic/mmmback/mappers/CustomerMapper.class
 matser2/istic/mmmback/models/Resources.class
 matser2/istic/mmmback/service/CompanyService.class
@@ -35,10 +34,8 @@ matser2/istic/mmmback/mappers/AnomalyMapperImpl.class
 matser2/istic/mmmback/config/JwtService.class
 matser2/istic/mmmback/DTO/WorksiteGetDto.class
 matser2/istic/mmmback/service/AvailabilityService.class
-matser2/istic/mmmback/DTO/CompanyGetDto.class
 matser2/istic/mmmback/repository/EmployeeRepository.class
 matser2/istic/mmmback/models/Vehicle.class
-matser2/istic/mmmback/DTO/CompanyPostDto.class
 matser2/istic/mmmback/DTO/VehicleDto.class
 matser2/istic/mmmback/DTO/WorksitePostDto.class
 matser2/istic/mmmback/repository/AvailabilityRepository.class
@@ -60,6 +57,7 @@ matser2/istic/mmmback/DTO/CustomerGetDto.class
 matser2/istic/mmmback/repository/CustomerRepository.class
 matser2/istic/mmmback/models/Customer.class
 matser2/istic/mmmback/service/CustomerService.class
+matser2/istic/mmmback/DTO/CompanyDto.class
 matser2/istic/mmmback/controllers/WorkSiteController.class
 matser2/istic/mmmback/mappers/CompanyMapperImpl.class
 matser2/istic/mmmback/mappers/CompanyMapper.class

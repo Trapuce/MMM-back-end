@@ -9,17 +9,18 @@ import java.util.Date;
 public class WorksitePostDto {
 
     private Long id;
+    private String title;
     private String description;
-
     private Date startDate;
-
-    private int durationInHalfDays;
-
+    private Date statusUpdated;
+    private int duration;
+    private Date createdAt;
+    private int longitude;
+    private int latitude;
     private String location;
 
     private CustomerPostDto customer;
 
-    private CompanyPostDto company;
 
     private WorksiteStatus status;
 
@@ -55,13 +56,6 @@ public class WorksitePostDto {
         this.location = location;
     }
 
-    public int getDurationInHalfDays() {
-        return durationInHalfDays;
-    }
-
-    public void setDurationInHalfDays(int durationInHalfDays) {
-        this.durationInHalfDays = durationInHalfDays;
-    }
 
     public CustomerPostDto getCustomer() {
         return customer;
@@ -79,11 +73,51 @@ public class WorksitePostDto {
         this.status = status;
     }
 
-    public CompanyPostDto getCompany() {
-        return company;
+    public String getTitle() {
+        return title;
     }
 
-    public void setCompany(CompanyPostDto company) {
-        this.company = company;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getStatusUpdated() {
+        return statusUpdated;
+    }
+
+    public void setStatusUpdated(Date statusUpdated) {
+        this.statusUpdated = statusUpdated;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
     }
 }

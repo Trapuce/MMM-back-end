@@ -9,12 +9,14 @@ import java.util.List;
 public class WorksiteGetDto {
 
     private Long id;
+    private String title;
     private String description;
-
     private Date startDate;
-
-    private int durationInHalfDays;
-
+    private Date statusUpdated;
+    private int duration;
+    private Date createdAt;
+    private int longitude;
+    private int latitude;
     private String location;
 
 
@@ -22,9 +24,22 @@ public class WorksiteGetDto {
 
     private List<AnomalyDto> anomalies;
 
+
+    private List<PhotoDto> photos;
+
+    public List<PhotoDto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoDto> photos) {
+        this.photos = photos;
+    }
+
     public List<AnomalyDto> getAnomalies() {
         return anomalies;
     }
+
+
 
     public void setAnomalies(List<AnomalyDto> anomalies) {
         this.anomalies = anomalies;
@@ -54,13 +69,6 @@ public class WorksiteGetDto {
         this.id = id;
     }
 
-    public int getDurationInHalfDays() {
-        return durationInHalfDays;
-    }
-
-    public void setDurationInHalfDays(int durationInHalfDays) {
-        this.durationInHalfDays = durationInHalfDays;
-    }
 
     public String getLocation() {
         return location;
@@ -76,5 +84,53 @@ public class WorksiteGetDto {
 
     public void setStatus(WorksiteStatus status) {
         this.status = status;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Date getStatusUpdated() {
+        return statusUpdated;
+    }
+
+    public void setStatusUpdated(Date statusUpdated) {
+        this.statusUpdated = statusUpdated;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(int longitude) {
+        this.longitude = longitude;
+    }
+
+    public int getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(int latitude) {
+        this.latitude = latitude;
     }
 }

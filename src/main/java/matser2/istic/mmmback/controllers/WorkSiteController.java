@@ -64,11 +64,14 @@ public class WorkSiteController {
         WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourceToWorksite(worksiteId, resourceId);
         return ResponseEntity.ok(updatedWorksiteDTO);
     }
-    @PutMapping
-    public ResponseEntity<WorksiteGetDto> updateWorksite( @RequestBody WorksitePostDto worksiteDto) {
-        WorksiteGetDto updatedWorksiteDto = workSiteService.updateWorksite(worksiteDto);
+    @PutMapping("/{id}")
+    public ResponseEntity<WorksiteAllDto> updateWorksite(
+            @PathVariable Long id,
+            @RequestBody WorksiteAllDto worksiteAllDto) {
+        WorksiteAllDto updatedWorksiteDto = workSiteService.updateWorksite(id, worksiteAllDto);
         return ResponseEntity.ok(updatedWorksiteDto);
     }
+
 
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateWorksiteStatus(@PathVariable Long id, @RequestBody String newStatus) {
