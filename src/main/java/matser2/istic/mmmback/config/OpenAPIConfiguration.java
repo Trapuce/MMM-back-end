@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -14,19 +15,20 @@ public class OpenAPIConfiguration {
 
     @Bean
     public OpenAPI defineOpenApi() {
-        Server server = new Server();
-        server.setUrl("http://localhost:8080");
-        server.setDescription("Development");
+        Server devServer = new Server()
+                .url("http://localhost:8080")
+                .description("Serveur de développement");
 
-        Contact myContact = new Contact();
-        myContact.setName("Jane Doe");
-        myContact.setEmail("your.email@gmail.com");
+        Server prodServer = new Server()
+                .url("https://159.65.20.48:8080")
+                .description("Serveur de production");
 
-        Info information = new Info()
-                .title("Employee Management System API")
-                .version("1.0")
-                .description("This API exposes endpoints to manage employees.")
-                .contact(myContact);
-        return new OpenAPI().info(information).servers(List.of(server));
+        return new OpenAPI()
+                .servers(Arrays.asList(devServer, prodServer))
+                .info(new Info()
+                        .title("Employee Management System API")
+                        .version("1.0")
+                        .description("API pour la gestion des employés"));
     }
+
 }
