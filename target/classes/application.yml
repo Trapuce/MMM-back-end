@@ -6,7 +6,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/springSecurity
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
 springdoc:
   api-docs:
