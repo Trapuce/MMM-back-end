@@ -20,6 +20,7 @@ matser2/istic/mmmback/models/LoginRequest.class
 matser2/istic/mmmback/models/Equipment.class
 matser2/istic/mmmback/service/AuthService.class
 matser2/istic/mmmback/service/WorkSiteService.class
+matser2/istic/mmmback/mappers/PhotoMapper.class
 matser2/istic/mmmback/models/Supply.class
 matser2/istic/mmmback/mappers/CustomerMapperImpl.class
 matser2/istic/mmmback/repository/ResourcesRepository.class
@@ -51,6 +52,7 @@ matser2/istic/mmmback/config/OpenAPIConfiguration.class
 matser2/istic/mmmback/DTO/WorksiteAllDto.class
 matser2/istic/mmmback/models/Worksite.class
 matser2/istic/mmmback/mappers/WorksiteMapper.class
+matser2/istic/mmmback/mappers/PhotoMapperImpl.class
 matser2/istic/mmmback/models/Role.class
 matser2/istic/mmmback/mappers/ResourcesMapper.class
 matser2/istic/mmmback/DTO/CustomerGetDto.class

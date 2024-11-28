@@ -16,6 +16,12 @@ public interface AnomalyMapper {
     AnomalyDto anomalyToAnomalyDto(Anomaly anomaly);
 
 
+    Anomaly anomalyDtoToAnomaly(AnomalyDto anomalyDto);
 
+
+    List<AnomalyDto> anomaliesToAnomalyDtos(List<Anomaly> anomalies);
+
+
+    List<Anomaly> anomalyDtosToAnomalies(List<AnomalyDto> anomalyDtos);
 
 }

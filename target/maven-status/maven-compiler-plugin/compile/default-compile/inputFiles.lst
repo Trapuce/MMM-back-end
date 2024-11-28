@@ -39,6 +39,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Employee.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/AvailabilityRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/WorksiteAllDto.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/PhotoMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/AnomalyDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/JwtAuthenticationFilter.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/CompanyService.java

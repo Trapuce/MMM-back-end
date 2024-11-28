@@ -133,6 +133,27 @@ public class ResourcesController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
+    @GetMapping("/employees")
+    public List<EmployeeDto> getAllEmployees() {
+        return resourceService.getAllEmployees();
+    }
+
+    @GetMapping("/vehicles")
+    public List<VehicleDto> getAllVehicles() {
+        return resourceService.getAllVehicles();
+    }
+
+    @GetMapping("/equipment")
+    public List<EquipmentDto> getAllEquipment() {
+        return resourceService.getAllEquipment();
+    }
+
+    @GetMapping("/site-managers")
+    public List<EmployeeDto> getAllSiteManagers() {
+        return resourceService.getAllSiteManagers();
+    }
 }
 
 

@@ -5,6 +5,7 @@ import matser2.istic.mmmback.models.Company;
 import matser2.istic.mmmback.models.WorksiteStatus;
 
 import java.util.Date;
+import java.util.List;
 
 public class WorksitePostDto {
 
@@ -21,7 +22,7 @@ public class WorksitePostDto {
 
     private CustomerPostDto customer;
 
-
+    private List<PhotoDto> photos;
     private WorksiteStatus status;
 
     public Long getId() {
@@ -119,5 +120,13 @@ public class WorksitePostDto {
 
     public void setLatitude(int latitude) {
         this.latitude = latitude;
+    }
+
+    public List<PhotoDto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoDto> photos) {
+        this.photos = photos;
     }
 }

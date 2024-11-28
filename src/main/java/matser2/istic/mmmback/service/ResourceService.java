@@ -2,7 +2,10 @@ package matser2.istic.mmmback.service;
 
 
 import jakarta.transaction.Transactional;
+import matser2.istic.mmmback.DTO.EmployeeDto;
+import matser2.istic.mmmback.DTO.EquipmentDto;
 import matser2.istic.mmmback.DTO.ResourcesDto;
+import matser2.istic.mmmback.DTO.VehicleDto;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
 import matser2.istic.mmmback.models.*;
@@ -114,6 +117,46 @@ public class ResourceService  {
 
 
         resourcesRepository.delete(resource);
+    }
+
+
+    /**
+     * Récupère toutes les ressources de type Employee.
+     */
+    public List<EmployeeDto> getAllEmployees() {
+        return resourcesRepository.findAll().stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> resourcesMapper.employeeToEmployeeDto((Employee) resource))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Récupère toutes les ressources de type Vehicle.
+     */
+    public List<VehicleDto> getAllVehicles() {
+        return resourcesRepository.findAll().stream()
+                .filter(resource -> resource instanceof Vehicle)
+                .map(resource -> resourcesMapper.vehicleToVehicleDto((Vehicle) resource))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Récupère toutes les ressources de type Equipment.
+     */
+    public List<EquipmentDto> getAllEquipment() {
+        return resourcesRepository.findAll().stream()
+                .filter(resource -> resource instanceof Equipment)
+                .map(resource -> resourcesMapper.equipmentToEquipmentDto((Equipment) resource))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Récupère tous les employés avec le rôle "Chef de chantier".
+     */
+    public List<EmployeeDto> getAllSiteManagers() {
+        return getAllEmployees().stream()
+                .filter(employeeDto -> "CHEF_DE_CHANTIER".equals(employeeDto.getRole()))
+                .collect(Collectors.toList());
     }
 
 }

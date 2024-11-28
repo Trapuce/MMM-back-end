@@ -13,6 +13,7 @@ import matser2.istic.mmmback.repository.WorksiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +43,12 @@ public class WorkSiteService {
 
     @Autowired
     private AnomalyMapper anomalyMapper;
+
+    @Autowired
+    private PhotoMapper photoMapper;
+
+    @Autowired
+    private ResourcesMapper resourcesMapper;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
         if (worksiteDto.getCustomer() == null) {
@@ -85,7 +92,6 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite) ;
     }
 
-    @Transactional
     public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {
         if (id == null) {
             throw new IllegalArgumentException("L'ID du chantier doit être fourni pour la mise à jour.");
@@ -94,6 +100,7 @@ public class WorkSiteService {
         Worksite existingWorksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
 
+        // Mise à jour du client associé
         if (worksiteAllDto.getCustomer() != null && worksiteAllDto.getCustomer().getId() != null) {
             Long customerId = worksiteAllDto.getCustomer().getId();
             if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId)) {
@@ -108,10 +115,26 @@ public class WorkSiteService {
         existingWorksite.setDescription(worksiteAllDto.getDescription());
         existingWorksite.setLocation(worksiteAllDto.getLocation());
         existingWorksite.setStartDate(worksiteAllDto.getStartDate());
+        existingWorksite.setStatusUpdated(new Date());
         existingWorksite.setStatus(worksiteAllDto.getStatus());
         existingWorksite.setLongitude(worksiteAllDto.getLongitude());
         existingWorksite.setLatitude(worksiteAllDto.getLatitude());
         existingWorksite.setDuration(worksiteAllDto.getDuration());
+
+        if (worksiteAllDto.getAnomalies() != null) {
+            existingWorksite.setAnomalies(anomalyMapper.anomalyDtosToAnomalies(worksiteAllDto.getAnomalies()));
+        }
+
+        if (worksiteAllDto.getPhotos() != null) {
+            existingWorksite.setPhotos(photoMapper.photoDtosToPhotos(worksiteAllDto.getPhotos()));
+        }
+
+        if (worksiteAllDto.getResources() != null) {
+            List<Resources> resources = worksiteAllDto.getResources().stream()
+                    .map(resourcesMapper::resourcesDtoToResources)
+                    .collect(Collectors.toList());
+            existingWorksite.setResources(resources);
+        }
 
         Worksite updatedWorksite = worksiteRepository.save(existingWorksite);
 
