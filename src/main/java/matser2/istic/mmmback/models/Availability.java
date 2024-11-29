@@ -13,18 +13,17 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_time", nullable = false)
+    @Column(name = "start_time")
     private Date startTime;
 
-    @Column(name = "end_time", nullable = false)
+    @Column(name = "end_time")
     private Date endTime;
 
     @ManyToOne
     @JoinColumn(name = "resource_id", nullable = false)
     private Resources resource;
 
-    @Column(name = "is_available", nullable = false)
-    private boolean isAvailable;
+
 
     public Long getId() {
         return id;
@@ -58,12 +57,6 @@ public class Availability {
         this.resource = resource;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
 
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
 }
 

@@ -38,6 +38,16 @@ public abstract  class Resources {
     private List<Availability> availabilities = new ArrayList<>();
 
 
+    public void addAvailability(Availability availability) {
+        availabilities.add(availability);
+        availability.setResource(this);
+    }
+
+    public void removeAvailability(Availability availability) {
+        availabilities.remove(availability);
+        availability.setResource(null);
+    }
+
     public Long getId() {
         return id;
     }

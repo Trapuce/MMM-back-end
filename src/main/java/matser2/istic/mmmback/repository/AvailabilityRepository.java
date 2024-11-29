@@ -11,12 +11,36 @@ import java.util.List;
 
 @Repository
 public interface AvailabilityRepository extends JpaRepository<Availability, Long> {
-    @Query("SELECT a.resource FROM Availability a WHERE a.isAvailable = true AND a.startTime <= :startDate AND a.endTime >= :endDate")
+
+//    @Query("SELECT a.resource FROM Availability a " +
+//            "WHERE (a.startTime IS NULL OR a.endTime IS NULL " +
+//            "      OR (a.startTime <= :endDate AND a.endTime >= :startDate) " +
+//            "      OR a.startTime >= CURRENT_TIMESTAMP)")
+//    List<Resources> findAvailableResources(Date startDate, Date endDate);
+
+    @Query("SELECT a.resource FROM Availability a " +
+            "WHERE ( " +
+            /* Scénario 1: Ressources toujours disponibles */
+            "(a.startTime IS NULL AND a.endTime IS NULL) " +
+            "OR " +
+            /* Scénario 2: Période définie qui ne chevauche pas la période demandée */
+            "(a.startTime IS NOT NULL AND a.endTime IS NOT NULL " +
+            "AND (a.endTime < :startDate OR a.startTime > :endDate)) " +
+            "OR " +
+            /* Scénario 3: Date de début définie mais pas de fin */
+            "(a.startTime IS NOT NULL AND a.endTime IS NULL " +
+            "AND a.startTime <= :endDate) " +
+            ")")
     List<Resources> findAvailableResources(Date startDate, Date endDate);
 
 
-
-    @Query("SELECT a FROM Availability a WHERE a.resource = :resource AND a.endTime >= :startDate AND a.startTime <= :endDate")
+    @Query("SELECT a FROM Availability a " +
+            "WHERE a.resource = :resource " +
+            "AND a.endTime >= :startDate " +
+            "AND a.startTime <= :endDate " +
+            "AND (a.startTime IS NULL OR a.endTime IS NULL OR a.startTime >= CURRENT_TIMESTAMP)")
     List<Availability> findConflictingAvailabilities(Resources resource, Date startDate, Date endDate);
 
+    List<Availability> findByResourceId(Long id);
 }
+

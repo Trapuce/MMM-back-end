@@ -8,64 +8,64 @@ import java.util.Date;
 import java.util.List;
 
 
-@Data
-@Entity
-public class Worksite {
+    @Data
+    @Entity
+    public class Worksite {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column
-    private String title;
-    @Column(name = "description")
-    private String description;
-    @Column(name = "start_date")
-    private Date startDate;
-    @Column(name = "status_updated")
-    private Date statusUpdated;
-    @Column(name = "duration")
-    private int duration;
+        @Column
+        private String title;
+        @Column(name = "description")
+        private String description;
+        @Column(name = "start_date")
+        private Date startDate;
+        @Column(name = "status_updated")
+        private Date statusUpdated;
+        @Column(name = "duration")
+        private int duration;
 
-    @Column(name="created_at")
-    private Date createdAt;
-    @Column
-    private int longitude;
-    @Column
-    private int latitude ;
+        @Column(name="created_at")
+        private Date createdAt;
+        @Column
+        private int longitude;
+        @Column
+        private int latitude ;
 
-    @Column(name = "location")
-    private String location;
+        @Column(name = "location")
+        private String location;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+        @ManyToOne
+        @JoinColumn(name = "customer_id")
+        private Customer customer;
 
-    @Enumerated(EnumType.STRING)
-    private WorksiteStatus status;
-
-
-
-    @ManyToMany(
-            fetch = FetchType.LAZY
-    )
-    @JoinTable(
-            name = "resources_worksite",
-            joinColumns = @JoinColumn(name = "worksite_id"),
-            inverseJoinColumns = @JoinColumn(name = "resources_id")
-    )
-    private List<Resources> resources = new ArrayList<>();
-
-    @OneToMany(
-            mappedBy = "worksite",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<Anomaly> anomalies = new ArrayList<>();
+        @Enumerated(EnumType.STRING)
+        private WorksiteStatus status;
 
 
-    @OneToMany(mappedBy = "worksite" , cascade = CascadeType.ALL , orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+
+        @ManyToMany(
+                fetch = FetchType.LAZY
+        )
+        @JoinTable(
+                name = "resources_worksite",
+                joinColumns = @JoinColumn(name = "worksite_id"),
+                inverseJoinColumns = @JoinColumn(name = "resources_id")
+        )
+        private List<Resources> resources = new ArrayList<>();
+
+        @OneToMany(
+                mappedBy = "worksite",
+                cascade = CascadeType.ALL,
+                orphanRemoval = true
+        )
+        private List<Anomaly> anomalies = new ArrayList<>();
+
+
+        @OneToMany(mappedBy = "worksite" , cascade = CascadeType.ALL , orphanRemoval = true)
+        private List<Photo> photos = new ArrayList<>();
 
 
     public void addPhoto(Photo photo) {

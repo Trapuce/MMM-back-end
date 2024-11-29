@@ -10,6 +10,7 @@ import matser2.istic.mmmback.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,8 @@ public class WorkSiteService {
     @Autowired
     private PhotoRepository    photoRepository;
 
+    @Autowired
+    private AvailabilityRepository availabilityRepository;
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
         if (worksiteDto.getCustomer() == null) {
             throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
@@ -79,7 +82,11 @@ public class WorkSiteService {
 
     public List<WorksiteGetDto> getWorkSites() {
         List<Worksite> worksites = worksiteRepository.findAll();
-        return  worksites.stream().map(worksiteMapper::worksiteToWorksiteGetDto).collect(Collectors.toList());
+
+        return worksites.stream()
+                .sorted((w1, w2) -> w2.getCreatedAt().compareTo(w1.getCreatedAt()))
+                .map(worksiteMapper::worksiteToWorksiteGetDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -105,10 +112,40 @@ public class WorkSiteService {
             throw new EntityNotFoundException("Resources not found with ids: " + missingResourceIds);
         }
 
-        resources.forEach(worksite::addResources);
+        // Calculate the start and end date based on the worksite's duration in half-days
+        Date startDate = worksite.getStartDate();
+        int durationInHalfDays = worksite.getDuration(); // Assume the duration is given in half-days
+        Date endDate = calculateEndDate(startDate, durationInHalfDays);
 
+        // Iterate through the resources to update their availability
+        for (Resources resource : resources) {
+            List<Availability> availabilities = availabilityRepository.findByResourceId(resource.getId());
+
+            for (Availability availability : availabilities) {
+                    availability.setStartTime(startDate);
+                    availability.setEndTime(endDate);
+                    availabilityRepository.save(availability);
+
+            }
+
+            // Add the resource to the worksite
+            worksite.addResources(resource);
+        }
+
+        // Save and return the updated worksite DTO
         Worksite updatedWorksite = worksiteRepository.save(worksite);
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
+    }
+
+    public Date calculateEndDate(Date startDate, int durationInHalfDays) {
+        int daysToAdd = durationInHalfDays / 2;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+
+        calendar.add(Calendar.DAY_OF_YEAR, daysToAdd);
+
+        return calendar.getTime();
     }
 
     public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {

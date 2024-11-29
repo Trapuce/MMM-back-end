@@ -1,6 +1,7 @@
 package matser2.istic.mmmback.service;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
@@ -10,6 +11,7 @@ import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.AvailabilityRepository;
 import matser2.istic.mmmback.repository.CompanyRepository;
 import matser2.istic.mmmback.repository.ResourcesRepository;
+import matser2.istic.mmmback.repository.WorksiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -43,29 +46,34 @@ public class ResourceService  {
     @Autowired
     private ResourcesSimpleMapper resourcesSimpleMapper;
 
+    @Autowired
+    private WorksiteRepository worksiteRepository;
+
     public <T extends Resources> T createResource(T resource) {
 
-
+        // Save the resource first
         T savedResource = resourcesRepository.save(resource);
 
         if (resource.getAvailabilities() != null && !resource.getAvailabilities().isEmpty()) {
             for (Availability availability : resource.getAvailabilities()) {
-                availability.setResource(savedResource);
+                savedResource.addAvailability(availability);
                 availabilityRepository.save(availability);
             }
         }
 
+        // If no availabilities are provided, create an empty availability (not null)
         if (resource.getAvailabilities() == null || resource.getAvailabilities().isEmpty()) {
             Availability newAvailability = new Availability();
-            newAvailability.setResource(savedResource);
-            newAvailability.setAvailable(true);
-            newAvailability.setStartTime(new Date());
-            newAvailability.setEndTime(new Date());
+            savedResource.addAvailability(newAvailability);
+            newAvailability.setStartTime(null);  // Explicitly not set
+            newAvailability.setEndTime(null);    // Explicitly not set
+
             availabilityRepository.save(newAvailability);
         }
 
         return savedResource;
     }
+
 
     public List<ResourcesDto> getAllResources() {
         List<Resources> resources = resourcesRepository.findAll();
@@ -166,6 +174,99 @@ public class ResourceService  {
                 .map(resource -> (Employee) resource)
                 .filter(employee -> Role.EQUIPIER_SIMPLE.equals(employee.getRole()))
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
+                .collect(Collectors.toList());
+    }
+    public List<EmployeeSummaryDto> getAvailableEmployeesForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> (Employee) resource)
+                .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
+                .collect(Collectors.toList());
+    }
+
+        public Date calculateEndDate(Date startDate, int durationInHalfDays) {
+            int daysToAdd = durationInHalfDays / 2;
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+
+            calendar.add(Calendar.DAY_OF_YEAR, daysToAdd);
+
+            return calendar.getTime();
+        }
+
+    public List<VehicleSummaryDto> getAvailableVehiclesForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .filter(resource -> resource instanceof Vehicle)
+                .map(resource -> (Vehicle) resource)
+                .map(resourcesSimpleMapper::vehicleToVehicleSummaryDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<EquipmentSummaryDto> getAvailableEquipmentsForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        // Récupérer les équipements disponibles pendant la période du chantier
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .filter(resource -> resource instanceof Equipment)
+                .map(resource -> (Equipment) resource)
+                .map(resourcesSimpleMapper::equipmentToEquipmentSummaryDto)
+                .collect(Collectors.toList());
+    }
+    public List<EmployeeSummaryDto> getAvailableSiteManagersForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> (Employee) resource)
+                .filter(employee -> Role.CHEF_DE_CHANTIER.equals(employee.getRole()))
+                .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<EmployeeSummaryDto> getAvailableEquipiersForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> (Employee) resource)
+                .filter(employee -> Role.EQUIPIER_SIMPLE.equals(employee.getRole()))
+                .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
+                .collect(Collectors.toList());
+    }
+    public List<ResourcesSimpleDto> getAvailableResourcesForWorksite(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Date startDate = worksite.getStartDate();
+        Date endDate = calculateEndDate(startDate, worksite.getDuration());
+
+        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+                .map(resourcesSimpleMapper::resourcesToResourcesSimpleDto)
                 .collect(Collectors.toList());
     }
 

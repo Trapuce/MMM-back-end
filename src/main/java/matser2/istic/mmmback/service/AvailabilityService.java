@@ -19,7 +19,7 @@ public class AvailabilityService {
 
 
 
-    public List<Resources> getAvailableResources(Date startDate, int durationInHalfDays) {
+   /* public List<Resources> getAvailableResources(Date startDate, int durationInHalfDays) {
         Date endDate = calculateEndDate(startDate, durationInHalfDays);
         return availabilityRepository.findAvailableResources(startDate, endDate);
     }
@@ -30,11 +30,9 @@ public class AvailabilityService {
     }
     public List<Resources> getAvailableResources(Date startDate, Date endDate) {
         return availabilityRepository.findAvailableResources(startDate, endDate);
-    }
+    }*/
 
-    public boolean isResourceAvailable(Resources resource, Date startDate, Date endDate) {
-        return availabilityRepository.findConflictingAvailabilities(resource, startDate, endDate).isEmpty();
-    }
+
 
    public List<Employee> getAvailableEmployees(Date startDate, Date endDate) {
         return availabilityRepository.findAvailableResources(startDate, endDate).stream()
@@ -55,5 +53,9 @@ public class AvailabilityService {
                 .filter(resource -> resource instanceof Equipment)
                 .map(resource -> (Equipment) resource)
                 .toList();
+    }
+
+    public List<Resources> getAvailableResources(Date startDate, Date endDate) {
+        return availabilityRepository.findAvailableResources(startDate, endDate);
     }
 }

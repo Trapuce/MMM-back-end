@@ -10,11 +10,14 @@ import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.Vehicle;
 import matser2.istic.mmmback.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -203,4 +206,67 @@ public class ResourcesController {
         }
         return ResponseEntity.ok(siteManagers);
     }
+
+
+    /**
+     * Endpoint pour récupérer tous les employés disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-employees-for-worksite/{worksiteId}")
+    public ResponseEntity<List<EmployeeSummaryDto>> getAvailableEmployeesForWorksite(
+            @PathVariable Long worksiteId) {
+        List<EmployeeSummaryDto> employees = resourceService.getAvailableEmployeesForWorksite(worksiteId);
+        return ResponseEntity.ok(employees);
+    }
+
+    /**
+     * Endpoint pour récupérer tous les véhicules disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-vehicles-for-worksite/{worksiteId}")
+    public ResponseEntity<List<VehicleSummaryDto>> getAvailableVehiclesForWorksite(
+            @PathVariable Long worksiteId) {
+        List<VehicleSummaryDto> vehicles = resourceService.getAvailableVehiclesForWorksite(worksiteId);
+        return ResponseEntity.ok(vehicles);
+    }
+
+    /**
+     * Endpoint pour récupérer tous les équipements disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-equipments-for-worksite/{worksiteId}")
+    public ResponseEntity<List<EquipmentSummaryDto>> getAvailableEquipmentsForWorksite(
+            @PathVariable Long worksiteId) {
+        List<EquipmentSummaryDto> equipments = resourceService.getAvailableEquipmentsForWorksite(worksiteId);
+        return ResponseEntity.ok(equipments);
+    }
+
+    /**
+     * Endpoint pour récupérer tous les chefs de chantier disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-site-managers-for-worksite/{worksiteId}")
+    public ResponseEntity<List<EmployeeSummaryDto>> getAvailableSiteManagersForWorksite(
+            @PathVariable Long worksiteId) {
+        List<EmployeeSummaryDto> siteManagers = resourceService.getAvailableSiteManagersForWorksite(worksiteId);
+        return ResponseEntity.ok(siteManagers);
+    }
+
+    /**
+     * Endpoint pour récupérer tous les équipiers disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-equipiers-for-worksite/{worksiteId}")
+    public ResponseEntity<List<EmployeeSummaryDto>> getAvailableEquipiersForWorksite(
+            @PathVariable Long worksiteId) {
+        List<EmployeeSummaryDto> equipiers = resourceService.getAvailableEquipiersForWorksite(worksiteId);
+        return ResponseEntity.ok(equipiers);
+    }
+
+    /**
+     * Endpoint pour récupérer toutes les ressources disponibles pour un chantier donné.
+     */
+    @GetMapping("/available-for-worksite/{worksiteId}")
+    public ResponseEntity<List<ResourcesSimpleDto>> getAvailableResourcesForWorksite(
+            @PathVariable Long worksiteId) {
+        List<ResourcesSimpleDto> resources = resourceService.getAvailableResourcesForWorksite(worksiteId);
+        return ResponseEntity.ok(resources);
+    }
+
+
 }
