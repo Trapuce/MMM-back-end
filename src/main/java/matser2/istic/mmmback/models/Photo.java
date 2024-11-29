@@ -9,11 +9,11 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "file_path", nullable = false)
+    @Column(name = "file_path")
     private String filePath;
 
     @ManyToOne
-    @JoinColumn(name = "anomaly_id", nullable = false)
+    @JoinColumn(name = "anomaly_id")
     private Anomaly anomaly;
 
 

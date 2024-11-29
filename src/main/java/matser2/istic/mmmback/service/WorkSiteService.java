@@ -112,12 +112,10 @@ public class WorkSiteService {
             throw new EntityNotFoundException("Resources not found with ids: " + missingResourceIds);
         }
 
-        // Calculate the start and end date based on the worksite's duration in half-days
         Date startDate = worksite.getStartDate();
-        int durationInHalfDays = worksite.getDuration(); // Assume the duration is given in half-days
+        int durationInHalfDays = worksite.getDuration();
         Date endDate = calculateEndDate(startDate, durationInHalfDays);
 
-        // Iterate through the resources to update their availability
         for (Resources resource : resources) {
             List<Availability> availabilities = availabilityRepository.findByResourceId(resource.getId());
 
@@ -134,6 +132,35 @@ public class WorkSiteService {
 
         // Save and return the updated worksite DTO
         Worksite updatedWorksite = worksiteRepository.save(worksite);
+        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
+    }
+
+
+    @Transactional
+    public WorksiteGetDto removeResourceFromWorksite(Long worksiteId, Long resourceId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        Resources resource = resourcesRepository.findById(resourceId)
+                .orElseThrow(() -> new EntityNotFoundException("Resource not found with id: " + resourceId));
+
+        if (!worksite.getResources().contains(resource)) {
+            throw new IllegalArgumentException("The resource is not associated with this worksite.");
+        }
+
+        List<Availability> availabilities = availabilityRepository.findByResourceId(resourceId);
+        for (Availability availability : availabilities) {
+            if (availability.getStartTime() != null && availability.getEndTime() != null) {
+                availability.setStartTime(null);
+                availability.setEndTime(null);
+                availabilityRepository.save(availability);
+            }
+        }
+
+        worksite.removeResources(resource);
+
+        Worksite updatedWorksite = worksiteRepository.save(worksite);
+
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 

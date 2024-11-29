@@ -15,6 +15,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/WebConfig.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/CustomerService.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/CustomerMapper.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/AvailabilityDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Vehicle.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/CompanyController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/WorksiteStatus.java
@@ -53,6 +54,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/ResourcesSimpleDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/SecurityConfiguration.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/AvailabilityController.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/AvailabilityMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/WorksitePostDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CustomerGetDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/WorksiteGetDto.java

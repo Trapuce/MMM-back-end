@@ -200,4 +200,21 @@ public class WorkSiteController {
         return ResponseEntity.ok(resources);
     }
 
+    @DeleteMapping("/{worksiteId}/resources/{resourceId}")
+    public ResponseEntity<String> removeResourceFromWorksite(
+            @PathVariable Long worksiteId,
+            @PathVariable Long resourceId) {
+        try {
+            workSiteService.removeResourceFromWorksite(worksiteId, resourceId);
+            return ResponseEntity.ok("Resource removed successfully from the worksite.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred while removing the resource: " + e.getMessage());
+        }
+    }
+
 }

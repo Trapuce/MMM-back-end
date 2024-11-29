@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
 import matser2.istic.mmmback.DTO.AnomalyDto;
+import matser2.istic.mmmback.DTO.AvailabilityDto;
 import matser2.istic.mmmback.DTO.EmployeeDto;
 import matser2.istic.mmmback.DTO.EquipmentDto;
 import matser2.istic.mmmback.DTO.PhotoDto;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-29T19:41:54+0100",
+    date = "2024-11-29T22:11:55+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -37,10 +38,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         equipmentDto.setName( equipment.getName() );
         equipmentDto.setId( equipment.getId() );
         equipmentDto.setWorksites( worksiteListToWorksiteGetDtoList( equipment.getWorksites() ) );
-        List<Availability> list1 = equipment.getAvailabilities();
-        if ( list1 != null ) {
-            equipmentDto.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        equipmentDto.setAvailabilities( availabilityListToAvailabilityDtoList( equipment.getAvailabilities() ) );
         equipmentDto.setType( equipment.getType() );
         equipmentDto.setSerialNumber( equipment.getSerialNumber() );
 
@@ -58,10 +56,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         equipment.setId( equipmentDto.getId() );
         equipment.setName( equipmentDto.getName() );
         equipment.setWorksites( worksiteGetDtoListToWorksiteList( equipmentDto.getWorksites() ) );
-        List<Availability> list1 = equipmentDto.getAvailabilities();
-        if ( list1 != null ) {
-            equipment.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        equipment.setAvailabilities( availabilityDtoListToAvailabilityList( equipmentDto.getAvailabilities() ) );
         equipment.setType( equipmentDto.getType() );
         equipment.setSerialNumber( equipmentDto.getSerialNumber() );
 
@@ -79,10 +74,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         vehicleDto.setName( vehicle.getName() );
         vehicleDto.setId( vehicle.getId() );
         vehicleDto.setWorksites( worksiteListToWorksiteGetDtoList( vehicle.getWorksites() ) );
-        List<Availability> list1 = vehicle.getAvailabilities();
-        if ( list1 != null ) {
-            vehicleDto.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        vehicleDto.setAvailabilities( availabilityListToAvailabilityDtoList( vehicle.getAvailabilities() ) );
         vehicleDto.setLicensePlate( vehicle.getLicensePlate() );
         vehicleDto.setModel( vehicle.getModel() );
 
@@ -100,10 +92,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         vehicle.setId( vehicleDto.getId() );
         vehicle.setName( vehicleDto.getName() );
         vehicle.setWorksites( worksiteGetDtoListToWorksiteList( vehicleDto.getWorksites() ) );
-        List<Availability> list1 = vehicleDto.getAvailabilities();
-        if ( list1 != null ) {
-            vehicle.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        vehicle.setAvailabilities( availabilityDtoListToAvailabilityList( vehicleDto.getAvailabilities() ) );
         vehicle.setLicensePlate( vehicleDto.getLicensePlate() );
         vehicle.setModel( vehicleDto.getModel() );
 
@@ -121,10 +110,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         employeeDto.setName( employee.getName() );
         employeeDto.setId( employee.getId() );
         employeeDto.setWorksites( worksiteListToWorksiteGetDtoList( employee.getWorksites() ) );
-        List<Availability> list1 = employee.getAvailabilities();
-        if ( list1 != null ) {
-            employeeDto.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        employeeDto.setAvailabilities( availabilityListToAvailabilityDtoList( employee.getAvailabilities() ) );
         employeeDto.setFirstName( employee.getFirstName() );
         employeeDto.setLastName( employee.getLastName() );
         employeeDto.setEmail( employee.getEmail() );
@@ -145,10 +131,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         employee.setId( employeeDto.getId() );
         employee.setName( employeeDto.getName() );
         employee.setWorksites( worksiteGetDtoListToWorksiteList( employeeDto.getWorksites() ) );
-        List<Availability> list1 = employeeDto.getAvailabilities();
-        if ( list1 != null ) {
-            employee.setAvailabilities( new ArrayList<Availability>( list1 ) );
-        }
+        employee.setAvailabilities( availabilityDtoListToAvailabilityList( employeeDto.getAvailabilities() ) );
         employee.setFirstName( employeeDto.getFirstName() );
         employee.setLastName( employeeDto.getLastName() );
         employee.setEmail( employeeDto.getEmail() );
@@ -248,6 +231,33 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         return list1;
     }
 
+    protected AvailabilityDto availabilityToAvailabilityDto(Availability availability) {
+        if ( availability == null ) {
+            return null;
+        }
+
+        AvailabilityDto availabilityDto = new AvailabilityDto();
+
+        availabilityDto.setId( availability.getId() );
+        availabilityDto.setStartTime( availability.getStartTime() );
+        availabilityDto.setEndTime( availability.getEndTime() );
+
+        return availabilityDto;
+    }
+
+    protected List<AvailabilityDto> availabilityListToAvailabilityDtoList(List<Availability> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<AvailabilityDto> list1 = new ArrayList<AvailabilityDto>( list.size() );
+        for ( Availability availability : list ) {
+            list1.add( availabilityToAvailabilityDto( availability ) );
+        }
+
+        return list1;
+    }
+
     protected Photo photoDtoToPhoto(PhotoDto photoDto) {
         if ( photoDto == null ) {
             return null;
@@ -333,6 +343,33 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         List<Worksite> list1 = new ArrayList<Worksite>( list.size() );
         for ( WorksiteGetDto worksiteGetDto : list ) {
             list1.add( worksiteGetDtoToWorksite( worksiteGetDto ) );
+        }
+
+        return list1;
+    }
+
+    protected Availability availabilityDtoToAvailability(AvailabilityDto availabilityDto) {
+        if ( availabilityDto == null ) {
+            return null;
+        }
+
+        Availability availability = new Availability();
+
+        availability.setId( availabilityDto.getId() );
+        availability.setStartTime( availabilityDto.getStartTime() );
+        availability.setEndTime( availabilityDto.getEndTime() );
+
+        return availability;
+    }
+
+    protected List<Availability> availabilityDtoListToAvailabilityList(List<AvailabilityDto> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<Availability> list1 = new ArrayList<Availability>( list.size() );
+        for ( AvailabilityDto availabilityDto : list ) {
+            list1.add( availabilityDtoToAvailability( availabilityDto ) );
         }
 
         return list1;

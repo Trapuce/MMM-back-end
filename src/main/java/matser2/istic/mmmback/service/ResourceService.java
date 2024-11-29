@@ -61,7 +61,6 @@ public class ResourceService  {
             }
         }
 
-        // If no availabilities are provided, create an empty availability (not null)
         if (resource.getAvailabilities() == null || resource.getAvailabilities().isEmpty()) {
             Availability newAvailability = new Availability();
             savedResource.addAvailability(newAvailability);

@@ -13,7 +13,7 @@ public abstract class ResourcesDto {
 
     private List<WorksiteGetDto> worksites;
 
-    private List<Availability> availabilities ;
+    private List<AvailabilityDto> availabilities ;
 
 
     public String getName() {
@@ -42,11 +42,11 @@ public abstract class ResourcesDto {
         this.worksites = worksites;
     }
 
-    public List<Availability> getAvailabilities() {
+    public List<AvailabilityDto> getAvailabilities() {
         return availabilities;
     }
 
-    public void setAvailabilities(List<Availability> availabilities) {
+    public void setAvailabilities(List<AvailabilityDto> availabilities) {
         this.availabilities = availabilities;
     }
 }
