@@ -1,17 +1,24 @@
 package matser2.istic.mmmback.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import matser2.istic.mmmback.models.Role;
 
 public class EmployeeSummaryDto extends ResourcesSimpleDto{
 
+    @NotEmpty(message = "First name is required.")
     private String firstName;
 
+    @NotEmpty(message = "Last name is required.")
     private String lastName;
 
+    @NotEmpty(message = "Email is required.")
     private String email;
 
+    @NotEmpty(message = "Password is required.")
     private String password;
 
+    @NotNull(message = "Role is required.")
     private Role role;
 
     public String getFirstName() {

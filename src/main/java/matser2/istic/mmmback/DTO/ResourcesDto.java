@@ -1,14 +1,21 @@
 package matser2.istic.mmmback.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
 import matser2.istic.mmmback.models.Availability;
 
 import java.util.List;
 
 public abstract class ResourcesDto {
     private Long id;
+
+    @NotEmpty(message = "name is required.")
     private String name;
+
     private List<WorksiteGetDto> worksites;
+
     private List<Availability> availabilities ;
+
+
     public String getName() {
         return name;
     }

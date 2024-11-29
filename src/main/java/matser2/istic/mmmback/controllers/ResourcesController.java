@@ -1,6 +1,7 @@
 package matser2.istic.mmmback.controllers;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.models.Employee;
@@ -9,11 +10,13 @@ import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.Vehicle;
 import matser2.istic.mmmback.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/v1/resources")
@@ -22,10 +25,10 @@ public class ResourcesController {
     @Autowired
     private ResourceService resourceService;
 
-
     @Autowired
-    private ResourcesMapper resourceMapper ;
+    private ResourcesMapper resourceMapper;
 
+    // Get all resources
     @GetMapping
     public ResponseEntity<List<ResourcesDto>> getResources() {
         List<ResourcesDto> resourcesDTOs = resourceService.getAllResources();
@@ -35,55 +38,68 @@ public class ResourcesController {
         return ResponseEntity.ok(resourcesDTOs);
     }
 
-   @GetMapping("/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResourcesDto> getResource(@PathVariable Long id) {
         ResourcesDto resourceDto = resourceService.getResourceById(id);
         if (resourceDto == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(resourceDto);
     }
 
     @PostMapping("/employees")
     public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) {
-        Employee employeeEntity = resourceMapper.employeeDtoToEmployee(employeeDto);
-        Employee createdEmployee = resourceService.createResource(employeeEntity);
-        EmployeeDto createdEmployeeDTO = resourceMapper.employeeToEmployeeDto(createdEmployee);
+        try {
+            Employee employeeEntity = resourceMapper.employeeDtoToEmployee(employeeDto);
+            Employee createdEmployee = resourceService.createResource(employeeEntity);
+            EmployeeDto createdEmployeeDTO = resourceMapper.employeeToEmployeeDto(createdEmployee);
 
-        return ResponseEntity
-                .created(URI.create("/resources/employees/" + createdEmployeeDTO.getId()))
-                .body(createdEmployeeDTO);
+            URI location = URI.create("/resources/employees/" + createdEmployeeDTO.getId());
+            return ResponseEntity.created(location).body(createdEmployeeDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Internal Server Error
+        }
     }
 
     @PostMapping("/vehicles")
     public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleDto vehicleDto) {
-        Vehicle vehicleEntity = resourceMapper.vehicleDtoToVehicle(vehicleDto);
-        Vehicle createdVehicle = resourceService.createResource(vehicleEntity);
-        VehicleDto createdVehicleDto = resourceMapper.vehicleToVehicleDto(createdVehicle);
+        try {
+            Vehicle vehicleEntity = resourceMapper.vehicleDtoToVehicle(vehicleDto);
+            Vehicle createdVehicle = resourceService.createResource(vehicleEntity);
+            VehicleDto createdVehicleDto = resourceMapper.vehicleToVehicleDto(createdVehicle);
 
-        return ResponseEntity
-                .created(URI.create("/resources/vehicles/" + createdVehicleDto.getId()))
-                .body(createdVehicleDto);
+            URI location = URI.create("/resources/vehicles/" + createdVehicleDto.getId());
+            return ResponseEntity.created(location).body(createdVehicleDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/equipment")
     public ResponseEntity<EquipmentDto> createEquipment(@RequestBody EquipmentDto equipmentDto) {
-        Equipment equipmentEntity = resourceMapper.equipmentDtoToEquipment(equipmentDto);
-        Equipment createdEquipment = resourceService.createResource(equipmentEntity);
-        EquipmentDto createdEquipmentDto = resourceMapper.equipmentToEquipmentDto(createdEquipment);
+        try {
+            Equipment equipmentEntity = resourceMapper.equipmentDtoToEquipment(equipmentDto);
+            Equipment createdEquipment = resourceService.createResource(equipmentEntity);
+            EquipmentDto createdEquipmentDto = resourceMapper.equipmentToEquipmentDto(createdEquipment);
 
-        return ResponseEntity
-                .created(URI.create("/resources/equipment/" + createdEquipmentDto.getId()))
-                .body(createdEquipmentDto);
+            URI location = URI.create("/resources/equipment/" + createdEquipmentDto.getId());
+            return ResponseEntity.created(location).body(createdEquipmentDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
-
-
-
+    // Delete a resource by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
-        resourceService.deleteResource(id);
-        return ResponseEntity.noContent().build();
+        try {
+            resourceService.deleteResource(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PutMapping("/employees/{id}")
@@ -91,13 +107,17 @@ public class ResourcesController {
         try {
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Employee)) {
-                return ResponseEntity.badRequest()
-                        .body("La ressource avec l'ID " + id + " n'est pas un employé");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("The resource with ID " + id + " is not an employee.");
             }
             Resources updated = resourceService.updateEmployee(id, updatedEmployee);
             return ResponseEntity.ok(updated);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Employee with ID " + id + " not found.");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 
@@ -106,13 +126,17 @@ public class ResourcesController {
         try {
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Vehicle)) {
-                return ResponseEntity.badRequest()
-                        .body("La ressource avec l'ID " + id + " n'est pas un véhicule");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("The resource with ID " + id + " is not a vehicle.");
             }
             Resources updated = resourceService.updateVehicle(id, updatedVehicle);
             return ResponseEntity.ok(updated);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Vehicle with ID " + id + " not found.");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 
@@ -121,37 +145,53 @@ public class ResourcesController {
         try {
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Equipment)) {
-                return ResponseEntity.badRequest()
-                        .body("La ressource avec l'ID " + id + " n'est pas un équipement");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("The resource with ID " + id + " is not an equipment.");
             }
             Resources updated = resourceService.updateEquipment(id, updatedEquipment);
             return ResponseEntity.ok(updated);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Equipment with ID " + id + " not found.");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 
-
     @GetMapping("/employees")
-    public List<EmployeeSummaryDto> getAllEmployees() {
-        return resourceService.getAllEmployees();
+    public ResponseEntity<List<EmployeeSummaryDto>> getAllEmployees() {
+        List<EmployeeSummaryDto> employees = resourceService.getAllEmployees();
+        if (employees.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(employees);
     }
 
     @GetMapping("/vehicles")
-    public List<VehicleSummaryDto> getAllVehicles() {
-        return resourceService.getAllVehicles();
+    public ResponseEntity<List<VehicleSummaryDto>> getAllVehicles() {
+        List<VehicleSummaryDto> vehicles = resourceService.getAllVehicles();
+        if (vehicles.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(vehicles);
     }
 
     @GetMapping("/equipment")
-    public List<EquipmentSummaryDto> getAllEquipment() {
-        return resourceService.getAllEquipment();
+    public ResponseEntity<List<EquipmentSummaryDto>> getAllEquipment() {
+        List<EquipmentSummaryDto> equipment = resourceService.getAllEquipment();
+        if (equipment.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(equipment);
     }
 
     @GetMapping("/site-managers")
-    public List<EmployeeSummaryDto> getAllSiteManagers() {
-        return resourceService.getAllSiteManagers();
+    public ResponseEntity<List<EmployeeSummaryDto>> getAllSiteManagers() {
+        List<EmployeeSummaryDto> siteManagers = resourceService.getAllSiteManagers();
+        if (siteManagers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(siteManagers);
     }
 }
-
-
-

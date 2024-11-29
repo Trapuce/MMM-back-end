@@ -1,8 +1,12 @@
 package matser2.istic.mmmback.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public abstract class ResourcesSimpleDto {
 
     private Long id;
+
+    @NotEmpty(message = "name is required.")
     private String name;
 
 

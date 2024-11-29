@@ -1,7 +1,13 @@
 package matser2.istic.mmmback.DTO;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class VehicleSummaryDto extends ResourcesSimpleDto {
+
+    @NotEmpty(message = "License plate is required.")
     private String licensePlate;
+
+    @NotEmpty(message = "Model is required.")
     private String model;
 
     public String getLicensePlate() {

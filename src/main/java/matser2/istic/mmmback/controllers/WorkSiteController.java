@@ -2,6 +2,7 @@ package matser2.istic.mmmback.controllers;
 
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import matser2.istic.mmmback.DTO.AnomalyDto;
 import matser2.istic.mmmback.DTO.WorksiteAllDto;
 import matser2.istic.mmmback.DTO.WorksiteGetDto;
@@ -12,6 +13,7 @@ import matser2.istic.mmmback.service.WorkSiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -25,88 +27,158 @@ public class WorkSiteController {
     private WorkSiteService workSiteService;
 
     @PostMapping
-    public ResponseEntity<WorksitePostDto> addWorkSite(@RequestBody WorksitePostDto worksiteDto) {
-        if (worksiteDto == null || worksiteDto.getCustomer() == null) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<?> addWorkSite(@RequestBody @Valid WorksitePostDto worksiteDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
         }
+
         try {
+            if (worksiteDto == null || worksiteDto.getCustomer() == null) {
+                return ResponseEntity.badRequest().body("Worksite or customer information is missing.");
+            }
+
             WorksitePostDto createdWorksiteDTO = workSiteService.createWorkSite(worksiteDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdWorksiteDTO);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("Invalid data: " + e.getMessage());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<WorksiteGetDto> getWorkSite(@PathVariable Long id) {
-        WorksiteGetDto worksiteDto = workSiteService.getWorkSite(id);
-        if (worksiteDto == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            WorksiteGetDto worksiteDto = workSiteService.getWorkSite(id);
+            if (worksiteDto == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(worksiteDto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.ok(worksiteDto);
     }
 
     @GetMapping
     public ResponseEntity<List<WorksiteGetDto>> getWorkSites() {
-        List<WorksiteGetDto> worksitesDTO = workSiteService.getWorkSites();
-        if (worksitesDTO.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        try {
+            List<WorksiteGetDto> worksitesDTO = workSiteService.getWorkSites();
+            if (worksitesDTO.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+            }
+            return ResponseEntity.ok(worksitesDTO);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-        return ResponseEntity.ok(worksitesDTO);
     }
 
     @PostMapping("/{worksiteId}/resources")
     public ResponseEntity<WorksiteGetDto> addResourcesToWorksite(
             @PathVariable Long worksiteId,
             @RequestBody List<Long> resourceIds) {
-        WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourcesToWorksite(worksiteId, resourceIds);
-        return ResponseEntity.ok(updatedWorksiteDTO);
+        try {
+            WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourcesToWorksite(worksiteId, resourceIds);
+            if (updatedWorksiteDTO == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(updatedWorksiteDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
     @PutMapping("/{id}")
     public ResponseEntity<WorksiteAllDto> updateWorksite(
             @PathVariable Long id,
             @RequestBody WorksiteAllDto worksiteAllDto) {
-        WorksiteAllDto updatedWorksiteDto = workSiteService.updateWorksite(id, worksiteAllDto);
-        return ResponseEntity.ok(updatedWorksiteDto);
+        try {
+            WorksiteAllDto updatedWorksiteDto = workSiteService.updateWorksite(id, worksiteAllDto);
+            if (updatedWorksiteDto == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(updatedWorksiteDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
+
 
 
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateWorksiteStatus(@PathVariable Long id, @RequestBody String newStatus) {
         try {
             newStatus = newStatus.replace("\"", "");
-            System.out.println(newStatus);
             WorksiteStatus status = WorksiteStatus.valueOf(newStatus.toUpperCase());
-            System.out.println("status : " +status.toString());
             workSiteService.updateWorksiteStatus(id, status);
 
             return ResponseEntity.ok("Worksite status updated successfully.");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid status value: " + newStatus);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid status value: " + newStatus);
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Worksite not found with ID: " + id);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred: " + e.getMessage());
         }
     }
 
+
     @PostMapping("/{id}/anomalies")
-    public AnomalyDto addAnomaly(@PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
-        return workSiteService.addAnomalyToWorksite(id, anomalyDto);
+    public ResponseEntity<AnomalyDto> addAnomaly(@PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
+        try {
+            AnomalyDto addedAnomaly = workSiteService.addAnomalyToWorksite(id, anomalyDto);
+            if (addedAnomaly == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(null);
+            }
+            return ResponseEntity.status(HttpStatus.CREATED).body(addedAnomaly);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
 
+
     @GetMapping("/{id}/anomalies")
-    public List<AnomalyDto> getAnomalies(@PathVariable Long id) {
-        return workSiteService.getWorkSite(id).getAnomalies();
+    public ResponseEntity<List<AnomalyDto>> getAnomalies(@PathVariable Long id) {
+        try {
+            List<AnomalyDto> anomalies = workSiteService.getWorkSite(id).getAnomalies();
+            if (anomalies == null || anomalies.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            return ResponseEntity.ok(anomalies);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
+
 
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWorksite(@PathVariable Long id) {
-        workSiteService.deleteWorksite(id);
-        return ResponseEntity.noContent().build();
+        try {
+            workSiteService.deleteWorksite(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
     }
+
 }
