@@ -20,7 +20,7 @@ public class OpenAPIConfiguration {
                 .description("Serveur de développement");
 
         Server prodServer = new Server()
-                .url("https://159.65.20.48:8080")
+                .url("http://159.65.20.48:8080")
                 .description("Serveur de production");
 
         return new OpenAPI()
