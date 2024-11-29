@@ -41,6 +41,7 @@ matser2/istic/mmmback/mappers/AnomalyMapperImpl.class
 matser2/istic/mmmback/config/JwtService.class
 matser2/istic/mmmback/DTO/WorksiteGetDto.class
 matser2/istic/mmmback/service/AvailabilityService.class
+matser2/istic/mmmback/repository/AnomalyRepository.class
 matser2/istic/mmmback/repository/EmployeeRepository.class
 matser2/istic/mmmback/models/Vehicle.class
 matser2/istic/mmmback/DTO/AvailabilityDto.class

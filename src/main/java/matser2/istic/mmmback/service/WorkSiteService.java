@@ -10,10 +10,7 @@ import matser2.istic.mmmback.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +54,9 @@ public class WorkSiteService {
 
     @Autowired
     private AvailabilityRepository availabilityRepository;
+
+    @Autowired
+    private AnomalyRepository anomalyRepository;
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
         if (worksiteDto.getCustomer() == null) {
             throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
@@ -259,13 +259,15 @@ public class WorkSiteService {
         Anomaly anomaly = new Anomaly();
         anomaly.setDescription(anomalyDto.getDescription());
 
+        // Ajouter les photos, si présentes
         if (anomalyDto.getPhotos() != null) {
             for (PhotoDto photoDto : anomalyDto.getPhotos()) {
-                Photo photo = new Photo();
-                photo.setFilePath(photoDto.getFilePath());
-                anomaly.addPhoto(photo);
-
-                worksite.addPhoto(photo);
+                if (photoDto.getFilePath() != null && !photoDto.getFilePath().isEmpty()) {
+                    Photo photo = new Photo();
+                    photo.setFilePath(photoDto.getFilePath());
+                    anomaly.addPhoto(photo);
+                    worksite.addPhoto(photo);
+                }
             }
         }
 
@@ -273,10 +275,13 @@ public class WorkSiteService {
 
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
+        // Récupérer l'anomalie récemment ajoutée et la retourner sous forme de DTO
         Anomaly savedAnomaly = updatedWorksite.getAnomalies().get(updatedWorksite.getAnomalies().size() - 1);
-
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
     }
+
+
+
     public void addPhotosToWorksite(Long worksiteId, List<PhotoDto> photos) throws EntityNotFoundException {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new EntityNotFoundException("Worksite not found"));
@@ -290,4 +295,48 @@ public class WorkSiteService {
 
         worksiteRepository.save(worksite);
     }
+
+    public AnomalyDto updateAnomalyInWorksite(Long worksiteId, Long anomalyId, AnomalyDto anomalyDto) {
+        // Vérifier que le chantier existe
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+
+        // Trouver l'anomalie dans le chantier
+        Anomaly existingAnomaly = worksite.getAnomalies().stream()
+                .filter(a -> a.getId().equals(anomalyId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Anomaly not found with id: " + anomalyId));
+
+        // Mettre à jour la description
+        existingAnomaly.setDescription(anomalyDto.getDescription());
+
+        // Gérer les photos
+        // Supprimer les anciennes photos
+        existingAnomaly.getPhotos().clear();
+
+        // Ajouter les nouvelles photos
+        if (anomalyDto.getPhotos() != null) {
+            for (PhotoDto photoDto : anomalyDto.getPhotos()) {
+                if (photoDto.getFilePath() != null && !photoDto.getFilePath().isEmpty()) {
+                    Photo photo = new Photo();
+                    photo.setFilePath(photoDto.getFilePath());
+                    existingAnomaly.addPhoto(photo);
+                    worksite.addPhoto(photo);
+                }
+            }
+        }
+
+        // Sauvegarder les modifications
+        Worksite updatedWorksite = worksiteRepository.save(worksite);
+
+        // Retrouver l'anomalie mise à jour
+        Anomaly savedAnomaly = updatedWorksite.getAnomalies().stream()
+                .filter(a -> a.getId().equals(anomalyId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Updated anomaly not found"));
+
+        // Convertir et retourner le DTO
+        return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
+    }
+
 }

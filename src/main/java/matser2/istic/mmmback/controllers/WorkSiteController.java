@@ -217,4 +217,20 @@ public class WorkSiteController {
         }
     }
 
+
+    @PutMapping("/{worksiteId}/anomalies/{anomalyId}")
+    public ResponseEntity<AnomalyDto> updateAnomaly(
+            @PathVariable Long worksiteId,
+            @PathVariable Long anomalyId,
+            @RequestBody AnomalyDto anomalyDto) {
+        try {
+            AnomalyDto updatedAnomaly = workSiteService.updateAnomalyInWorksite(worksiteId, anomalyId, anomalyDto);
+            return ResponseEntity.ok(updatedAnomaly);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

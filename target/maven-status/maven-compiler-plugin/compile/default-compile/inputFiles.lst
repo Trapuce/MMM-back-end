@@ -10,6 +10,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/VehicleDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/EquipmentRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/ResourcesRepository.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/AnomalyRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/WorkSiteController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/WorksiteMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/WebConfig.java
