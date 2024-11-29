@@ -194,4 +194,13 @@ public class ResourcesController {
         }
         return ResponseEntity.ok(siteManagers);
     }
+
+    @GetMapping("/teamnates")
+    public ResponseEntity<List<EmployeeSummaryDto>> getEquipiers() {
+        List<EmployeeSummaryDto> siteManagers = resourceService.getAllEquipiers();
+        if (siteManagers.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(siteManagers);
+    }
 }

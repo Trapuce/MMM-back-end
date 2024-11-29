@@ -160,4 +160,13 @@ public class ResourceService  {
                 .collect(Collectors.toList());
     }
 
+    public List<EmployeeSummaryDto> getAllEquipiers() {
+        return resourcesRepository.findAll().stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> (Employee) resource)
+                .filter(employee -> Role.EQUIPIER_SIMPLE.equals(employee.getRole()))
+                .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
+                .collect(Collectors.toList());
+    }
+
 }
