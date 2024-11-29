@@ -18,6 +18,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Vehicle.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/CompanyController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/WorksiteStatus.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/EmployeeSummaryDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/ResourceService.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CompanyDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/ResourcesMapper.java
@@ -25,6 +26,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/WorkSiteService.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/EquipmentDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/PhotoDto.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/VehicleSummaryDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/VehicleRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/OpenAPIConfiguration.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/AuthService.java
@@ -36,6 +38,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/AnomalyMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Role.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Availability.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/ResourcesSimpleMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Employee.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/AvailabilityRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/WorksiteAllDto.java
@@ -46,6 +49,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/service/MyUserDetailsService.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/mappers/CompanyMapper.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/CustomerAllDto.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/ResourcesSimpleDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/config/SecurityConfiguration.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/controllers/AvailabilityController.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/WorksitePostDto.java
@@ -54,6 +58,7 @@
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/ResourcesDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/repository/CustomerRepository.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Photo.java
+/home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/DTO/EquipmentSummaryDto.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/Supply.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/LoginRequest.java
 /home/daouda-traore/Documents/MMM-back-end/src/main/java/matser2/istic/mmmback/models/UserPrincipal.java

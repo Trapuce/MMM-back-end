@@ -57,11 +57,11 @@ public class WorkSiteController {
         return ResponseEntity.ok(worksitesDTO);
     }
 
-    @PostMapping("/{worksiteId}/resources/{resourceId}")
-    public ResponseEntity<WorksiteGetDto> addResourceToWorksite(
+    @PostMapping("/{worksiteId}/resources")
+    public ResponseEntity<WorksiteGetDto> addResourcesToWorksite(
             @PathVariable Long worksiteId,
-            @PathVariable Long resourceId) {
-        WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourceToWorksite(worksiteId, resourceId);
+            @RequestBody List<Long> resourceIds) {
+        WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourcesToWorksite(worksiteId, resourceIds);
         return ResponseEntity.ok(updatedWorksiteDTO);
     }
     @PutMapping("/{id}")

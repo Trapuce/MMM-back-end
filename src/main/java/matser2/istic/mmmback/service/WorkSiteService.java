@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,17 +80,32 @@ public class WorkSiteService {
     }
 
     @Transactional
-    public WorksiteGetDto addResourceToWorksite(Long worksiteId, Long resourceId) {
+    public WorksiteGetDto addResourcesToWorksite(Long worksiteId, List<Long> resourceIds) {
+        // Validate input
+        if (resourceIds == null || resourceIds.isEmpty()) {
+            throw new IllegalArgumentException("Resource IDs list cannot be null or empty");
+        }
+
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
 
-        Resources resource = resourcesRepository.findById(resourceId)
-                .orElseThrow(() -> new EntityNotFoundException("Resource not found with id: " + resourceId));
+        List<Resources> resources = resourcesRepository.findAllById(resourceIds);
+        if (resources.size() != resourceIds.size()) {
+            Set<Long> foundResourceIds = resources.stream()
+                    .map(Resources::getId)
+                    .collect(Collectors.toSet());
 
-        worksite.addResources(resource);
+            List<Long> missingResourceIds = resourceIds.stream()
+                    .filter(id -> !foundResourceIds.contains(id))
+                    .collect(Collectors.toList());
+
+            throw new EntityNotFoundException("Resources not found with ids: " + missingResourceIds);
+        }
+
+        resources.forEach(worksite::addResources);
+
         Worksite updatedWorksite = worksiteRepository.save(worksite);
-
-        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite) ;
+        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
     public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {
@@ -138,6 +154,7 @@ public class WorkSiteService {
 
         Worksite updatedWorksite = worksiteRepository.save(existingWorksite);
 
+        // Retourner le DTO mis à jour
         return worksiteMapper.worksiteToWorksiteAllDto(updatedWorksite);
     }
 

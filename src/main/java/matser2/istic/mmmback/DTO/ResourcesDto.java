@@ -7,7 +7,6 @@ import java.util.List;
 public abstract class ResourcesDto {
     private Long id;
     private String name;
-    private CompanyDto company;
     private List<WorksiteGetDto> worksites;
     private List<Availability> availabilities ;
     public String getName() {
@@ -26,13 +25,7 @@ public abstract class ResourcesDto {
         this.id = id;
     }
 
-    public CompanyDto getCompany() {
-        return company;
-    }
 
-    public void setCompany(CompanyDto company) {
-        this.company = company;
-    }
 
     public List<WorksiteGetDto> getWorksites() {
         return worksites;

@@ -1,10 +1,7 @@
 package matser2.istic.mmmback.controllers;
 
 
-import matser2.istic.mmmback.DTO.EmployeeDto;
-import matser2.istic.mmmback.DTO.EquipmentDto;
-import matser2.istic.mmmback.DTO.ResourcesDto;
-import matser2.istic.mmmback.DTO.VehicleDto;
+import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.models.Equipment;
@@ -136,22 +133,22 @@ public class ResourcesController {
 
 
     @GetMapping("/employees")
-    public List<EmployeeDto> getAllEmployees() {
+    public List<EmployeeSummaryDto> getAllEmployees() {
         return resourceService.getAllEmployees();
     }
 
     @GetMapping("/vehicles")
-    public List<VehicleDto> getAllVehicles() {
+    public List<VehicleSummaryDto> getAllVehicles() {
         return resourceService.getAllVehicles();
     }
 
     @GetMapping("/equipment")
-    public List<EquipmentDto> getAllEquipment() {
+    public List<EquipmentSummaryDto> getAllEquipment() {
         return resourceService.getAllEquipment();
     }
 
     @GetMapping("/site-managers")
-    public List<EmployeeDto> getAllSiteManagers() {
+    public List<EmployeeSummaryDto> getAllSiteManagers() {
         return resourceService.getAllSiteManagers();
     }
 }

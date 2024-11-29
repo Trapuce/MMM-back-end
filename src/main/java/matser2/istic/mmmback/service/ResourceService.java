@@ -2,11 +2,9 @@ package matser2.istic.mmmback.service;
 
 
 import jakarta.transaction.Transactional;
-import matser2.istic.mmmback.DTO.EmployeeDto;
-import matser2.istic.mmmback.DTO.EquipmentDto;
-import matser2.istic.mmmback.DTO.ResourcesDto;
-import matser2.istic.mmmback.DTO.VehicleDto;
+import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
+import matser2.istic.mmmback.mappers.ResourcesSimpleMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
 import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.AvailabilityRepository;
@@ -41,6 +39,9 @@ public class ResourceService  {
 
     @Autowired
     private AvailabilityRepository availabilityRepository;
+
+    @Autowired
+    private ResourcesSimpleMapper resourcesSimpleMapper;
 
     public <T extends Resources> T createResource(T resource) {
 
@@ -123,39 +124,39 @@ public class ResourceService  {
     /**
      * Récupère toutes les ressources de type Employee.
      */
-    public List<EmployeeDto> getAllEmployees() {
+    public List<EmployeeSummaryDto> getAllEmployees() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Employee)
-                .map(resource -> resourcesMapper.employeeToEmployeeDto((Employee) resource))
+                .map(resource -> resourcesSimpleMapper.employeeToEmployeeSummaryDto((Employee) resource))
                 .collect(Collectors.toList());
     }
 
     /**
      * Récupère toutes les ressources de type Vehicle.
      */
-    public List<VehicleDto> getAllVehicles() {
+    public List<VehicleSummaryDto> getAllVehicles() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Vehicle)
-                .map(resource -> resourcesMapper.vehicleToVehicleDto((Vehicle) resource))
+                .map(resource -> resourcesSimpleMapper.vehicleToVehicleSummaryDto((Vehicle) resource))
                 .collect(Collectors.toList());
     }
 
     /**
      * Récupère toutes les ressources de type Equipment.
      */
-    public List<EquipmentDto> getAllEquipment() {
+    public List<EquipmentSummaryDto> getAllEquipment() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Equipment)
-                .map(resource -> resourcesMapper.equipmentToEquipmentDto((Equipment) resource))
+                .map(resource -> resourcesSimpleMapper.equipmentToEquipmentSummaryDto((Equipment) resource))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Récupère tous les employés avec le rôle "Chef de chantier".
-     */
-    public List<EmployeeDto> getAllSiteManagers() {
-        return getAllEmployees().stream()
-                .filter(employeeDto -> "CHEF_DE_CHANTIER".equals(employeeDto.getRole()))
+    public List<EmployeeSummaryDto> getAllSiteManagers() {
+        return resourcesRepository.findAll().stream()
+                .filter(resource -> resource instanceof Employee)
+                .map(resource -> (Employee) resource)
+                .filter(employee -> Role.CHEF_DE_CHANTIER.equals(employee.getRole()))
+                .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
     }
 
