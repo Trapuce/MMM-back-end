@@ -3,10 +3,7 @@ package matser2.istic.mmmback.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import matser2.istic.mmmback.DTO.AnomalyDto;
-import matser2.istic.mmmback.DTO.WorksiteAllDto;
-import matser2.istic.mmmback.DTO.WorksiteGetDto;
-import matser2.istic.mmmback.DTO.WorksitePostDto;
+import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.WorksiteStatus;
 import matser2.istic.mmmback.service.WorkSiteService;
@@ -179,6 +176,28 @@ public class WorkSiteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
+    }
+
+
+    @PostMapping("/{id}/photos")
+    public ResponseEntity<String> addPhotosToWorksite(
+            @PathVariable Long id,
+            @RequestBody List<PhotoDto> photos) {
+        try {
+            workSiteService.addPhotosToWorksite(id, photos);
+            return ResponseEntity.ok("Photos added successfully.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Worksite not found.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/{worksiteId}/resources")
+    public ResponseEntity<List<ResourcesSimpleDto>> getWorksiteResources(
+            @PathVariable Long worksiteId) {
+        List<ResourcesSimpleDto> resources = workSiteService.getWorksiteResources(worksiteId);
+        return ResponseEntity.ok(resources);
     }
 
 }

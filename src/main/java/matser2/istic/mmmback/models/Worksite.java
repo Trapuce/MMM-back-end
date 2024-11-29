@@ -68,12 +68,12 @@ public class Worksite {
     private List<Photo> photos = new ArrayList<>();
 
 
-    private void addPhoto(Photo photo) {
+    public void addPhoto(Photo photo) {
         photos.add(photo);
         photo.setWorksite(this);
     }
 
-    private void removePhoto(Photo photo) {
+    public void removePhoto(Photo photo) {
         photos.remove(photo);
         photo.setWorksite(null);
     }

@@ -29,6 +29,7 @@ matser2/istic/mmmback/models/Supply.class
 matser2/istic/mmmback/mappers/CustomerMapperImpl.class
 matser2/istic/mmmback/repository/ResourcesRepository.class
 matser2/istic/mmmback/MmmBackApplication.class
+matser2/istic/mmmback/repository/PhotoRepository.class
 matser2/istic/mmmback/DTO/ResourcesDto.class
 matser2/istic/mmmback/models/Employee.class
 matser2/istic/mmmback/config/WebConfig.class

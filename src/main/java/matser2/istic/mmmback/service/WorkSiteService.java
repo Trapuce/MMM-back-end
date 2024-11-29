@@ -6,10 +6,7 @@ import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.*;
 import matser2.istic.mmmback.models.*;
-import matser2.istic.mmmback.repository.CompanyRepository;
-import matser2.istic.mmmback.repository.CustomerRepository;
-import matser2.istic.mmmback.repository.ResourcesRepository;
-import matser2.istic.mmmback.repository.WorksiteRepository;
+import matser2.istic.mmmback.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +47,12 @@ public class WorkSiteService {
 
     @Autowired
     private ResourcesMapper resourcesMapper;
+
+    @Autowired
+    private ResourcesSimpleMapper resourcesSimpleMapper;
+
+    @Autowired
+    private PhotoRepository    photoRepository;
 
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
         if (worksiteDto.getCustomer() == null) {
@@ -158,7 +161,14 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteAllDto(updatedWorksite);
     }
 
+    public List<ResourcesSimpleDto> getWorksiteResources(Long worksiteId) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
 
+        return worksite.getResources().stream()
+                .map(resourcesSimpleMapper::resourcesToResourcesSimpleDto)
+                .collect(Collectors.toList());
+    }
 
     public void deleteWorksite(Long id) {
         Worksite worksite = worksiteRepository.findById(id)
@@ -184,20 +194,36 @@ public class WorkSiteService {
 
         Anomaly anomaly = new Anomaly();
         anomaly.setDescription(anomalyDto.getDescription());
-        worksite.addAnomaly(anomaly);
 
-        for (PhotoDto photo : anomalyDto.getPhotos()) {
+        if (anomalyDto.getPhotos() != null) {
+            for (PhotoDto photoDto : anomalyDto.getPhotos()) {
+                Photo photo = new Photo();
+                photo.setFilePath(photoDto.getFilePath());
+                anomaly.addPhoto(photo);
 
-            Photo photonew = new Photo();
-            photonew.setId(photo.getId());
-            photonew.setFilePath(photo.getFilePath());
-            anomaly.addPhoto(photonew);
+                worksite.addPhoto(photo);
+            }
         }
 
         worksite.addAnomaly(anomaly);
-        worksiteRepository.save(worksite);
 
-        return anomalyMapper.anomalyToAnomalyDto(anomaly);
+        Worksite updatedWorksite = worksiteRepository.save(worksite);
+
+        Anomaly savedAnomaly = updatedWorksite.getAnomalies().get(updatedWorksite.getAnomalies().size() - 1);
+
+        return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
     }
+    public void addPhotosToWorksite(Long worksiteId, List<PhotoDto> photos) throws EntityNotFoundException {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found"));
 
+        for (PhotoDto photoDto : photos) {
+            Photo photo = new Photo();
+            photo.setFilePath(photoDto.getFilePath());
+            worksite.addPhoto(photo);
+            photoRepository.save(photo);
+        }
+
+        worksiteRepository.save(worksite);
+    }
 }
