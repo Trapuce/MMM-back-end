@@ -3,6 +3,7 @@ package matser2.istic.mmmback.DTO;
 import jakarta.validation.constraints.NotEmpty;
 import matser2.istic.mmmback.models.Availability;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ResourcesDto {
@@ -13,7 +14,7 @@ public abstract class ResourcesDto {
 
     private List<WorksiteGetDto> worksites;
 
-    private List<AvailabilityDto> availabilities ;
+    private List<AvailabilityDto> availabilities = new ArrayList<>() ;
 
 
     public String getName() {

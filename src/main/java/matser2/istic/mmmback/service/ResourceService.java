@@ -51,7 +51,6 @@ public class ResourceService  {
 
     public <T extends Resources> T createResource(T resource) {
 
-        // Save the resource first
         T savedResource = resourcesRepository.save(resource);
 
         if (resource.getAvailabilities() != null && !resource.getAvailabilities().isEmpty()) {
