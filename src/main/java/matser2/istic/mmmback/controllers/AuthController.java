@@ -42,5 +42,6 @@ public class AuthController {
                     .body("An error occurred: " + e.getMessage());
         }
     }
+
 }
 

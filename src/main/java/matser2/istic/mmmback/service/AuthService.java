@@ -1,5 +1,6 @@
 package matser2.istic.mmmback.service;
 
+import matser2.istic.mmmback.DTO.AuthenticatedEmployeeDto;
 import matser2.istic.mmmback.config.AuthenticationResponse;
 import matser2.istic.mmmback.config.JwtService;
 import matser2.istic.mmmback.models.Employee;
@@ -35,7 +36,15 @@ public class AuthService {
             if (authentication.isAuthenticated()) {
                 String token = jwtService.generateToken(email);
 
-                return new AuthenticationResponse(token, employee.getId());
+                AuthenticatedEmployeeDto employeeDto = new AuthenticatedEmployeeDto(
+                        employee.getId(),
+                        employee.getFirstName(),
+                        employee.getLastName(),
+                        employee.getEmail(),
+                        employee.getRole()
+                );
+
+                return new AuthenticationResponse(token, employeeDto);
             } else {
                 throw new AuthenticationException("Authentification échouée");
             }
@@ -43,4 +52,5 @@ public class AuthService {
             throw new AuthenticationException("Erreur d'authentification : " + e.getMessage());
         }
     }
+
 }

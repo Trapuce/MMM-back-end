@@ -1,12 +1,14 @@
 package matser2.istic.mmmback.config;
 
+import matser2.istic.mmmback.DTO.AuthenticatedEmployeeDto;
+
 public class AuthenticationResponse {
     private String token;
-    private Long userId;
+    private AuthenticatedEmployeeDto employee;
 
-    public AuthenticationResponse(String token, Long userId) {
+    public AuthenticationResponse(String token, AuthenticatedEmployeeDto employee) {
         this.token = token;
-        this.userId = userId;
+        this.employee = employee;
     }
 
     // Getters et setters
@@ -18,11 +20,11 @@ public class AuthenticationResponse {
         this.token = token;
     }
 
-    public Long getUserId() {
-        return userId;
+    public AuthenticatedEmployeeDto getEmployee() {
+        return employee;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setEmployee(AuthenticatedEmployeeDto employee) {
+        this.employee = employee;
     }
 }

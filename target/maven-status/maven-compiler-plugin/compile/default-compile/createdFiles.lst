@@ -11,6 +11,7 @@ matser2/istic/mmmback/repository/WorksiteRepository.class
 matser2/istic/mmmback/config/DatabaseSeeder.class
 matser2/istic/mmmback/mappers/CustomerMapper.class
 matser2/istic/mmmback/DTO/ResourcesSimpleDto.class
+matser2/istic/mmmback/DTO/AuthenticatedEmployeeDto.class
 matser2/istic/mmmback/models/Resources.class
 matser2/istic/mmmback/service/CompanyService.class
 matser2/istic/mmmback/DTO/CustomerAllDto.class
