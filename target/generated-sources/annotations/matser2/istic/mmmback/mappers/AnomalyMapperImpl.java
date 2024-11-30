@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-11-29T23:39:29+0100",
+    date = "2024-11-30T22:26:05+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -27,6 +27,8 @@ public class AnomalyMapperImpl implements AnomalyMapper {
 
         anomalyDto.setId( anomaly.getId() );
         anomalyDto.setDescription( anomaly.getDescription() );
+        anomalyDto.setTitle( anomaly.getTitle() );
+        anomalyDto.setSeverityLevel( anomaly.getSeverityLevel() );
         anomalyDto.setPhotos( photoListToPhotoDtoList( anomaly.getPhotos() ) );
 
         return anomalyDto;
@@ -42,6 +44,8 @@ public class AnomalyMapperImpl implements AnomalyMapper {
 
         anomaly.setId( anomalyDto.getId() );
         anomaly.setDescription( anomalyDto.getDescription() );
+        anomaly.setTitle( anomalyDto.getTitle() );
+        anomaly.setSeverityLevel( anomalyDto.getSeverityLevel() );
         anomaly.setPhotos( photoDtoListToPhotoList( anomalyDto.getPhotos() ) );
 
         return anomaly;

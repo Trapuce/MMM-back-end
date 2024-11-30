@@ -8,6 +8,7 @@ matser2/istic/mmmback/models/WorksiteStatus.class
 matser2/istic/mmmback/config/JwtAuthenticationFilter.class
 matser2/istic/mmmback/mappers/ResourcesMapperImpl.class
 matser2/istic/mmmback/repository/WorksiteRepository.class
+matser2/istic/mmmback/config/DatabaseSeeder.class
 matser2/istic/mmmback/mappers/CustomerMapper.class
 matser2/istic/mmmback/DTO/ResourcesSimpleDto.class
 matser2/istic/mmmback/models/Resources.class
@@ -31,6 +32,7 @@ matser2/istic/mmmback/repository/ResourcesRepository.class
 matser2/istic/mmmback/MmmBackApplication.class
 matser2/istic/mmmback/repository/PhotoRepository.class
 matser2/istic/mmmback/DTO/ResourcesDto.class
+matser2/istic/mmmback/config/AuthenticationResponse.class
 matser2/istic/mmmback/models/Employee.class
 matser2/istic/mmmback/config/WebConfig.class
 matser2/istic/mmmback/repository/VehicleRepository.class
@@ -43,6 +45,7 @@ matser2/istic/mmmback/DTO/WorksiteGetDto.class
 matser2/istic/mmmback/service/AvailabilityService.class
 matser2/istic/mmmback/repository/AnomalyRepository.class
 matser2/istic/mmmback/repository/EmployeeRepository.class
+matser2/istic/mmmback/models/SeverityLevel.class
 matser2/istic/mmmback/models/Vehicle.class
 matser2/istic/mmmback/DTO/AvailabilityDto.class
 matser2/istic/mmmback/DTO/VehicleDto.class

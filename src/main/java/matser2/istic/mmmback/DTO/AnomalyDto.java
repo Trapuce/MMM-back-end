@@ -1,12 +1,17 @@
 package matser2.istic.mmmback.DTO;
 
 import matser2.istic.mmmback.models.Photo;
+import matser2.istic.mmmback.models.SeverityLevel;
 
 import java.util.List;
 
 public class AnomalyDto {
     private Long id;
+    private String title;
+
     private String description;
+    private SeverityLevel severityLevel;
+
     private List<PhotoDto> photos;
 
     public Long getId() {
@@ -23,6 +28,23 @@ public class AnomalyDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
     }
 
     public List<PhotoDto> getPhotos() {

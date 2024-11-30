@@ -23,7 +23,7 @@ public class WorkSiteController {
     @Autowired
     private WorkSiteService workSiteService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> addWorkSite(@RequestBody @Valid WorksitePostDto worksiteDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body(bindingResult.getAllErrors());

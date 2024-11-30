@@ -11,10 +11,14 @@ public class Anomaly {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(name = "title", nullable = false)
+    private String title;
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "severity_level", nullable = false)
+    private SeverityLevel severityLevel;
     @ManyToOne
     @JoinColumn(name = "worksite_id", nullable = false)
     private Worksite worksite;
@@ -51,6 +55,22 @@ public class Anomaly {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public SeverityLevel getSeverityLevel() {
+        return severityLevel;
+    }
+
+    public void setSeverityLevel(SeverityLevel severityLevel) {
+        this.severityLevel = severityLevel;
     }
 
     public Worksite getWorksite() {

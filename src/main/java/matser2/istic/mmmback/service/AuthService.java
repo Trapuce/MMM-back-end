@@ -1,5 +1,6 @@
 package matser2.istic.mmmback.service;
 
+import matser2.istic.mmmback.config.AuthenticationResponse;
 import matser2.istic.mmmback.config.JwtService;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.repository.ResourcesRepository;
@@ -9,6 +10,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.security.sasl.AuthenticationException;
 
 @Service
 public class AuthService {
@@ -20,12 +23,9 @@ public class AuthService {
     private ResourcesRepository resourcesRepository;
 
 
-
-    public String authenticate(String email, String password) {
+    public AuthenticationResponse authenticate(String email, String password) throws AuthenticationException {
         try {
-            System.out.println("Authenticating user with email: " + email);
-            System.out.println("Authenticating user with email: " + password);
-            Employee employee = (Employee) resourcesRepository.findEmployeeByEmail(email)
+            Employee employee = resourcesRepository.findEmployeeByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
 
             Authentication authentication = authenticationManager.authenticate(
@@ -33,16 +33,14 @@ public class AuthService {
             );
 
             if (authentication.isAuthenticated()) {
-                System.out.println("Authentication successful for user: " + email);
-                return jwtService.generateToken(email);
+                String token = jwtService.generateToken(email);
+
+                return new AuthenticationResponse(token, employee.getId());
             } else {
-                System.out.println("Authentication failed for user: " + email);
-                return "failed";
+                throw new AuthenticationException("Authentification échouée");
             }
         } catch (Exception e) {
-            System.out.println("Authentication error: " + e.getMessage());
-            return "failed";
+            throw new AuthenticationException("Erreur d'authentification : " + e.getMessage());
         }
-
     }
 }

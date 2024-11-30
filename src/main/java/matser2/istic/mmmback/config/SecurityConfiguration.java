@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -31,11 +32,20 @@ public class SecurityConfiguration {
         return http
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register", "/api-docs", "/swagger-ui/index.html", "/api/v1/**")
-                        .permitAll()  // Allow all requests without authentication
-                        .anyRequest().permitAll()) // Allow any other requests without authentication
-                .httpBasic(Customizer.withDefaults())
+                        // Routes publiques
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+
+                        // Routes spécifiques aux rôles
+                        .requestMatchers("/api/v1/worksite/create").hasRole("RESPONSABLE_DU_CHANTIER")
+                        .requestMatchers("/api/v1/worksite/{id}/status").hasAnyRole("CHEF_DE_CHANTIER", "RESPONSABLE_DU_CHANTIER")
+                        .requestMatchers("/api/v1/worksite/{id}/anomalies").hasAnyRole("CHEF_DE_CHANTIER", "RESPONSABLE_DU_CHANTIER")
+
+                        // Routes générales
+                        .requestMatchers("/api/v1/**").authenticated()
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
