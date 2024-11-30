@@ -33,7 +33,7 @@ public class SecurityConfiguration {
                 .csrf(customizer -> customizer.disable())
                 .authorizeHttpRequests(request -> request
                         // Routes publiques
-                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
+                        .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register" ,  "/api-docs", "/swagger-ui/index.html").permitAll()
 
                         // Routes spécifiques aux rôles
                         .requestMatchers("/api/v1/worksite/create").hasRole("RESPONSABLE_DU_CHANTIER")
