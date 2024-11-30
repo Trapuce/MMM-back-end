@@ -35,7 +35,6 @@ matser2/istic/mmmback/repository/PhotoRepository.class
 matser2/istic/mmmback/DTO/ResourcesDto.class
 matser2/istic/mmmback/config/AuthenticationResponse.class
 matser2/istic/mmmback/models/Employee.class
-matser2/istic/mmmback/config/WebConfig.class
 matser2/istic/mmmback/repository/VehicleRepository.class
 matser2/istic/mmmback/DTO/EquipmentSummaryDto.class
 matser2/istic/mmmback/controllers/AvailabilityController.class
