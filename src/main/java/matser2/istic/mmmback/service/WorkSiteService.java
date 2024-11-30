@@ -268,6 +268,7 @@ public class WorkSiteService {
                     Photo photo = new Photo();
                     photo.setFilePath(photoDto.getFilePath());
                     anomaly.addPhoto(photo);
+                    worksite.addPhoto(photo);
                 }
             }
         }
@@ -276,12 +277,7 @@ public class WorkSiteService {
 
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
-        Anomaly savedAnomaly = updatedWorksite.getAnomalies()
-                .stream()
-                .filter(a -> a.getTitle().equals(anomalyDto.getTitle()) && a.getDescription().equals(anomalyDto.getDescription()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Anomaly was not saved correctly"));
-
+        Anomaly savedAnomaly = updatedWorksite.getAnomalies().get(updatedWorksite.getAnomalies().size() - 1);
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
     }
 
@@ -324,13 +320,22 @@ public class WorkSiteService {
                     Photo photo = new Photo();
                     photo.setFilePath(photoDto.getFilePath());
                     existingAnomaly.addPhoto(photo);
+                    worksite.addPhoto(photo);
                 }
             }
         }
 
-        worksiteRepository.save(worksite);
+        Worksite updatedWorksite = worksiteRepository.save(worksite);
 
-        return anomalyMapper.anomalyToAnomalyDto(existingAnomaly);
+        // Retrouver l'anomalie mise à jour
+        Anomaly savedAnomaly = updatedWorksite.getAnomalies().stream()
+                .filter(a -> a.getId().equals(anomalyId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Updated anomaly not found"));
+
+        // Convertir et retourner le DTO
+        return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
+
     }
 
 
