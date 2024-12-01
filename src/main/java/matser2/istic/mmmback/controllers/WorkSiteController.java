@@ -7,14 +7,19 @@ import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.WorksiteStatus;
 import matser2.istic.mmmback.service.WorkSiteService;
+import org.apache.juli.logging.Log;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/worksite")
@@ -57,15 +62,40 @@ public class WorkSiteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<WorksiteGetDto>> getWorkSites() {
+    public ResponseEntity<?> getWorkSites() {
         try {
             List<WorksiteGetDto> worksitesDTO = workSiteService.getWorkSites();
-            if (worksitesDTO.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+
+            if (worksitesDTO == null || worksitesDTO.isEmpty()) {
+                Map<String, String> errorResponse = new HashMap<>();
+                errorResponse.put("code", "NO_CONTENT");
+                errorResponse.put("message", "Aucun site de travail trouvé");
+                return ResponseEntity
+                        .status(HttpStatus.NO_CONTENT)
+                        .body(errorResponse);
             }
+
             return ResponseEntity.ok(worksitesDTO);
+        } catch (DataAccessException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("code", "DATABASE_ERROR");
+            errorResponse.put("message", "Erreur d'accès à la base de données");
+            errorResponse.put("details", e.getMessage());
+
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("code", "UNEXPECTED_ERROR");
+            errorResponse.put("message", "Erreur lors de la récupération des sites");
+            errorResponse.put("details", e.getMessage());
+
+
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(errorResponse);
         }
     }
 

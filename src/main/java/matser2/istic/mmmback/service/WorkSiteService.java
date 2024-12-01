@@ -8,6 +8,7 @@ import matser2.istic.mmmback.mappers.*;
 import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -81,12 +82,20 @@ public class WorkSiteService {
     }
 
     public List<WorksiteGetDto> getWorkSites() {
-        List<Worksite> worksites = worksiteRepository.findAll();
+        try {
+            List<Worksite> worksites = worksiteRepository.findAll();
 
-        return worksites.stream()
-                .sorted((w1, w2) -> w2.getCreatedAt().compareTo(w1.getCreatedAt()))
-                .map(worksiteMapper::worksiteToWorksiteGetDto)
-                .collect(Collectors.toList());
+            if (worksites.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            return worksites.stream()
+                    .sorted((w1, w2) -> w2.getCreatedAt().compareTo(w1.getCreatedAt()))
+                    .map(worksiteMapper::worksiteToWorksiteGetDto)
+                    .collect(Collectors.toList());
+        } catch (DataAccessException e) {
+            throw e;
+        }
     }
 
     @Transactional
