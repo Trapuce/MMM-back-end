@@ -42,5 +42,7 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Long
     List<Availability> findConflictingAvailabilities(Resources resource, Date startDate, Date endDate);
 
     List<Availability> findByResourceId(Long id);
+
+    List<Availability> findByResource(Resources resource);
 }
 

@@ -16,10 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/worksite")
@@ -135,22 +133,56 @@ public class WorkSiteController {
 
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<String> updateWorksiteStatus(@PathVariable Long id, @RequestBody String newStatus) {
+    public ResponseEntity<?> updateWorksiteStatus(
+            @PathVariable Long id,
+            @RequestBody String newStatus
+    ) {
         try {
-            newStatus = newStatus.replace("\"", "");
-            WorksiteStatus status = WorksiteStatus.valueOf(newStatus.toUpperCase());
-            workSiteService.updateWorksiteStatus(id, status);
+            // Nettoyer le statut (retirer les guillemets et les espaces)
+            newStatus = newStatus.trim().replace("\"", "");
 
-            return ResponseEntity.ok("Worksite status updated successfully.");
+            // Convertir en enum, en gérant les variations de casse
+            WorksiteStatus status = WorksiteStatus.valueOf(newStatus.toUpperCase());
+
+            // Mettre à jour et récupérer le DTO mis à jour
+            WorksiteGetDto updatedWorksite = workSiteService.updateWorksiteStatus(id, status);
+
+            // Réponse structurée de succès
+            return ResponseEntity.ok(Map.of(
+                    "code", "STATUS_UPDATED",
+                    "message", "Statut du chantier mis à jour avec succès",
+                    "worksite", updatedWorksite
+            ));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid status value: " + newStatus);
+            // Gestion des statuts invalides
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of(
+                            "code", "INVALID_STATUS",
+                            "message", "Valeur de statut invalide",
+                            "details", "Statut fourni : " + newStatus,
+                            "validStatuses", Arrays.stream(WorksiteStatus.values())
+                                    .map(WorksiteStatus::name)
+                                    .collect(Collectors.toList())
+                    ));
         } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Worksite not found with ID: " + id);
+            // Gestion du chantier non trouvé
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of(
+                            "code", "WORKSITE_NOT_FOUND",
+                            "message", "Chantier non trouvé",
+                            "details", "ID : " + id
+                    ));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred: " + e.getMessage());
+            // Gestion des erreurs génériques
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                            "code", "UNEXPECTED_ERROR",
+                            "message", "Une erreur est survenue lors de la mise à jour du statut",
+                            "details", e.getMessage()
+                    ));
         }
     }
 

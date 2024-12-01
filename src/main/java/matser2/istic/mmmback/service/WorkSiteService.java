@@ -252,13 +252,48 @@ public class WorkSiteService {
         worksiteRepository.delete(worksite);
     }
 
-    public void updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
+   /* public void updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
 
         worksite.setStatus(newStatus);
 
         worksiteRepository.save(worksite);
+    }*/
+
+    @Transactional
+    public WorksiteGetDto updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
+        Worksite worksite = worksiteRepository.findById(worksiteId)
+                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
+
+        // Mettre à jour le statut
+        worksite.setStatus(newStatus);
+
+        // Si le chantier est terminé, libérer les ressources
+        if (newStatus == WorksiteStatus.COMPLETED) {
+            List<Resources> resources = worksite.getResources();
+
+            for (Resources resource : resources) {
+                // Récupérer les disponibilités de la ressource
+                List<Availability> availabilities = availabilityRepository.findByResource(resource);
+
+                for (Availability availability : availabilities) {
+                    // Vérifier si cette disponibilité correspond au chantier
+                    // En utilisant l'association entre Resources et Worksite
+                    if (availability.getResource().getWorksites().contains(worksite)) {
+                        availability.setStartTime(null);
+                        availability.setEndTime(null);
+                        availabilityRepository.save(availability);
+                    }
+                }
+            }
+        }
+
+        // Sauvegarder les modifications
+        Worksite updatedWorksite = worksiteRepository.save(worksite);
+
+        // Convertir et retourner le DTO
+        return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
     public AnomalyDto addAnomalyToWorksite(Long worksiteId, AnomalyDto anomalyDto) {
