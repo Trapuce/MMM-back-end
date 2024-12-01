@@ -347,5 +347,14 @@ public class WorkSiteService {
 
     }
 
+    public List<WorksiteGetDto> getWorksitesByResourceId(Long resourceId) {
+        Resources resource = resourcesRepository.findById(resourceId)
+                .orElseThrow(() -> new EntityNotFoundException("Resource not found with id: " + resourceId));
 
+        List<Worksite> worksites = worksiteRepository.findByResources(resource);
+
+        return worksites.stream()
+                .map(worksiteMapper::worksiteToWorksiteGetDto)
+                .collect(Collectors.toList());
+    }
 }
