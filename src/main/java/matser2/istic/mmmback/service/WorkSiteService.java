@@ -100,7 +100,6 @@ public class WorkSiteService {
 
     @Transactional
     public WorksiteGetDto addResourcesToWorksite(Long worksiteId, List<Long> resourceIds) {
-        // Validate input
         if (resourceIds == null || resourceIds.isEmpty()) {
             throw new IllegalArgumentException("Resource IDs list cannot be null or empty");
         }
@@ -135,11 +134,9 @@ public class WorkSiteService {
 
             }
 
-            // Add the resource to the worksite
             worksite.addResources(resource);
         }
 
-        // Save and return the updated worksite DTO
         Worksite updatedWorksite = worksiteRepository.save(worksite);
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
@@ -186,18 +183,17 @@ public class WorkSiteService {
 
     public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {
         if (id == null) {
-            throw new IllegalArgumentException("L'ID du chantier doit être fourni pour la mise à jour.");
+            throw new IllegalArgumentException("The worksite ID must be provided for the update.");
         }
 
         Worksite existingWorksite = worksiteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
+                .orElseThrow(() -> new EntityNotFoundException("No workSites found with the ID supplied."));
 
-        // Mise à jour du client associé
         if (worksiteAllDto.getCustomer() != null && worksiteAllDto.getCustomer().getId() != null) {
             Long customerId = worksiteAllDto.getCustomer().getId();
             if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId)) {
                 Customer newCustomer = customerRepository.findById(customerId)
-                        .orElseThrow(() -> new EntityNotFoundException("Aucun client trouvé avec l'ID fourni."));
+                        .orElseThrow(() -> new EntityNotFoundException("No customers found with the ID supplied."));
                 existingWorksite.setCustomer(newCustomer);
                 newCustomer.addWorksite(existingWorksite);
             }
@@ -230,7 +226,6 @@ public class WorkSiteService {
 
         Worksite updatedWorksite = worksiteRepository.save(existingWorksite);
 
-        // Retourner le DTO mis à jour
         return worksiteMapper.worksiteToWorksiteAllDto(updatedWorksite);
     }
 
@@ -252,34 +247,23 @@ public class WorkSiteService {
         worksiteRepository.delete(worksite);
     }
 
-   /* public void updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
-        Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
 
-        worksite.setStatus(newStatus);
-
-        worksiteRepository.save(worksite);
-    }*/
 
     @Transactional
     public WorksiteGetDto updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
 
-        // Mettre à jour le statut
         worksite.setStatus(newStatus);
 
-        // Si le chantier est terminé, libérer les ressources
         if (newStatus == WorksiteStatus.COMPLETED) {
             List<Resources> resources = worksite.getResources();
 
             for (Resources resource : resources) {
-                // Récupérer les disponibilités de la ressource
                 List<Availability> availabilities = availabilityRepository.findByResource(resource);
 
                 for (Availability availability : availabilities) {
-                    // Vérifier si cette disponibilité correspond au chantier
-                    // En utilisant l'association entre Resources et Worksite
+
                     if (availability.getResource().getWorksites().contains(worksite)) {
                         availability.setStartTime(null);
                         availability.setEndTime(null);
@@ -289,10 +273,8 @@ public class WorkSiteService {
             }
         }
 
-        // Sauvegarder les modifications
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
-        // Convertir et retourner le DTO
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
@@ -304,39 +286,39 @@ public class WorkSiteService {
         anomaly.setTitle(anomalyDto.getTitle());
         anomaly.setDescription(anomalyDto.getDescription());
         anomaly.setSeverityLevel(anomalyDto.getSeverityLevel());
-        anomaly.setWorksite(worksite);
+
+        worksite.addAnomaly(anomaly);
 
         if (anomalyDto.getPhotos() != null) {
             for (PhotoDto photoDto : anomalyDto.getPhotos()) {
                 if (photoDto.getFilePath() != null && !photoDto.getFilePath().isEmpty()) {
                     Photo photo = new Photo();
                     photo.setFilePath(photoDto.getFilePath());
+
                     anomaly.addPhoto(photo);
                     worksite.addPhoto(photo);
                 }
             }
         }
 
-        worksite.addAnomaly(anomaly);
-
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
         Anomaly savedAnomaly = updatedWorksite.getAnomalies().get(updatedWorksite.getAnomalies().size() - 1);
+
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
     }
-
-
-
 
     public void addPhotosToWorksite(Long worksiteId, List<PhotoDto> photos) throws EntityNotFoundException {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new EntityNotFoundException("Worksite not found"));
 
         for (PhotoDto photoDto : photos) {
-            Photo photo = new Photo();
-            photo.setFilePath(photoDto.getFilePath());
-            worksite.addPhoto(photo);
-            photoRepository.save(photo);
+            if (photoDto.getFilePath() != null && !photoDto.getFilePath().isEmpty()) {
+                Photo photo = new Photo();
+                photo.setFilePath(photoDto.getFilePath());
+
+                worksite.addPhoto(photo);
+            }
         }
 
         worksiteRepository.save(worksite);
@@ -371,13 +353,11 @@ public class WorkSiteService {
 
         Worksite updatedWorksite = worksiteRepository.save(worksite);
 
-        // Retrouver l'anomalie mise à jour
         Anomaly savedAnomaly = updatedWorksite.getAnomalies().stream()
                 .filter(a -> a.getId().equals(anomalyId))
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Updated anomaly not found"));
 
-        // Convertir et retourner le DTO
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
 
     }
