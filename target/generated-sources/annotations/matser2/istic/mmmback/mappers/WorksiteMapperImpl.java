@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-04T14:08:08+0100",
+    date = "2024-12-04T14:36:37+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -126,10 +126,11 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksite.setTitle( worksitePostDto.getTitle() );
         worksite.setStatusUpdated( worksitePostDto.getStatusUpdated() );
         worksite.setDuration( worksitePostDto.getDuration() );
-        worksite.setCreatedAt( worksitePostDto.getCreatedAt() );
         worksite.setLongitude( worksitePostDto.getLongitude() );
         worksite.setLatitude( worksitePostDto.getLatitude() );
         worksite.setPhotos( photoDtoListToPhotoList( worksitePostDto.getPhotos() ) );
+
+        worksite.setCreatedAt( new java.util.Date() );
 
         return worksite;
     }
