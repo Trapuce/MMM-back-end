@@ -2,6 +2,7 @@ package matser2.istic.mmmback.controllers;
 
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import matser2.istic.mmmback.DTO.*;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.models.Employee;
@@ -50,7 +51,7 @@ public class ResourcesController {
     }
 
     @PostMapping("/employees")
-    public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> createEmployee( @RequestBody @Valid EmployeeDto employeeDto) {
 
             Employee employeeEntity = resourceMapper.employeeDtoToEmployee(employeeDto);
             Employee createdEmployee = resourceService.createResource(employeeEntity);
@@ -62,7 +63,7 @@ public class ResourcesController {
     }
 
     @PostMapping("/vehicles")
-    public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleDto vehicleDto) {
+    public ResponseEntity<VehicleDto> createVehicle( @RequestBody @Valid VehicleDto vehicleDto) {
             Vehicle vehicleEntity = resourceMapper.vehicleDtoToVehicle(vehicleDto);
             Vehicle createdVehicle = resourceService.createResource(vehicleEntity);
             VehicleDto createdVehicleDto = resourceMapper.vehicleToVehicleDto(createdVehicle);
@@ -73,7 +74,7 @@ public class ResourcesController {
     }
 
     @PostMapping("/equipment")
-    public ResponseEntity<EquipmentDto> createEquipment(@RequestBody EquipmentDto equipmentDto) {
+    public ResponseEntity<EquipmentDto> createEquipment( @RequestBody @Valid EquipmentDto equipmentDto) {
 
             Equipment equipmentEntity = resourceMapper.equipmentDtoToEquipment(equipmentDto);
             Equipment createdEquipment = resourceService.createResource(equipmentEntity);
