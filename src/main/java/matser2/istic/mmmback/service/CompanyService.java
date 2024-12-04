@@ -23,12 +23,7 @@ public class CompanyService {
 
     @Autowired
     private CompanyMapper companyMapper;
-    /**
-     * Crée une nouvelle entreprise à partir d'un DTO.
-     *
-     * @param companyDto DTO contenant les informations de l'entreprise.
-     * @return Le DTO de l'entreprise créée.
-     */
+
     @Transactional
     public CompanyDto createCompany(CompanyDto companyDto) {
         if (companyDto == null ) {
@@ -41,11 +36,7 @@ public class CompanyService {
         return companyMapper.companyToCompanyDto(savedCompany);
     }
 
-    /**
-     * Récupère toutes les entreprises.
-     *
-     * @return Une liste de DTOs représentant les entreprises.
-     */
+
     @Transactional
     public List<CompanyDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
@@ -55,12 +46,7 @@ public class CompanyService {
                 .toList();
     }
 
-    /**
-     * Récupère une entreprise par son ID.
-     *
-     * @param id L'ID de l'entreprise à récupérer.
-     * @return Le Dto de l'entreprise ou null si elle n'existe pas.
-     */
+
     @Transactional
     public CompanyDto getCompany(Long id) {
         Optional<Company> company = companyRepository.findById(id);
@@ -72,7 +58,7 @@ public class CompanyService {
     @Transactional
     public CompanyDto updateCompany(CompanyDto companyPostDto) {
         if (companyPostDto.getId() == null) {
-            throw new IllegalArgumentException("L'ID de l'entreprise est requis pour la mise à jour.");
+            throw new IllegalArgumentException("The company ID is required for the update.");
         }
 
         Company existingCompany = companyRepository.findById(companyPostDto.getId())
@@ -88,11 +74,7 @@ public class CompanyService {
     }
 
 
-    /**
-     * Supprime une entreprise par son ID.
-     *
-     * @param id L'ID de l'entreprise à supprimer.
-     */
+
     @Transactional
     public void deleteCompany(Long id) {
         Company company = companyRepository.findById(id)

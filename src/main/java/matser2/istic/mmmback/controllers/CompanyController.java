@@ -17,12 +17,7 @@ public class CompanyController {
     @Autowired
     private CompanyService companyService;
 
-    /**
-     * Récupérer une entreprise par son ID
-     *
-     * @param id L'ID de l'entreprise
-     * @return La réponse contenant le DTO de l'entreprise ou une réponse 404 si l'entreprise n'est pas trouvée
-     */
+
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDto> getCompany(@PathVariable Long id) {
         CompanyDto companyDto = companyService.getCompany(id);
@@ -33,11 +28,7 @@ public class CompanyController {
         return ResponseEntity.ok(companyDto);
     }
 
-    /**
-     * Récupérer toutes les entreprises
-     *
-     * @return La liste de toutes les entreprises, ou une réponse 204 si aucune entreprise n'est trouvée
-     */
+
     @GetMapping
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
         List<CompanyDto> companies = companyService.getAllCompanies();
@@ -48,12 +39,7 @@ public class CompanyController {
         return ResponseEntity.ok(companies);
     }
 
-    /**
-     * Ajouter une nouvelle entreprise
-     *
-     * @param companyDto Les informations de l'entreprise à créer
-     * @return La réponse contenant le DTO de l'entreprise créée ou une réponse 400/500 en cas d'erreur
-     */
+
     @PostMapping
     public ResponseEntity<CompanyDto> addCompany(@RequestBody CompanyDto companyDto) {
         try {

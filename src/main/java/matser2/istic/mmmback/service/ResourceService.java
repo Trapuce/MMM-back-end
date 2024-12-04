@@ -4,6 +4,10 @@ package matser2.istic.mmmback.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
+import matser2.istic.mmmback.exceptions.ResourceNotAvailableException;
+import matser2.istic.mmmback.exceptions.ResourceNotFoundException;
+import matser2.istic.mmmback.exceptions.ResourceTypeMismatchException;
+import matser2.istic.mmmback.exceptions.ResourceValidationException;
 import matser2.istic.mmmback.mappers.ResourcesMapper;
 import matser2.istic.mmmback.mappers.ResourcesSimpleMapper;
 import matser2.istic.mmmback.mappers.WorksiteMapper;
@@ -50,6 +54,10 @@ public class ResourceService  {
     private WorksiteRepository worksiteRepository;
 
     public <T extends Resources> T createResource(T resource) {
+        if (resource == null) {
+            throw new ResourceValidationException("resource", "Resource cannot be null");
+        }
+
 
         T savedResource = resourcesRepository.save(resource);
 
@@ -63,18 +71,23 @@ public class ResourceService  {
         if (resource.getAvailabilities() == null || resource.getAvailabilities().isEmpty()) {
             Availability newAvailability = new Availability();
             savedResource.addAvailability(newAvailability);
-            newAvailability.setStartTime(null);  // Explicitly not set
-            newAvailability.setEndTime(null);    // Explicitly not set
+            newAvailability.setStartTime(null);
+            newAvailability.setEndTime(null);
 
             availabilityRepository.save(newAvailability);
         }
 
         return savedResource;
+
     }
 
 
     public List<ResourcesDto> getAllResources() {
         List<Resources> resources = resourcesRepository.findAll();
+
+        if (resources.isEmpty()) {
+            throw new ResourceNotFoundException("No resources found");
+        }
         return resources.stream()
                 .map(resourcesMapper::resourcesToResourcesDto)
                 .collect(Collectors.toList());
@@ -84,15 +97,18 @@ public class ResourceService  {
 
     public ResourcesDto getResourceById(Long id) {
         Optional<Resources> resource = resourcesRepository.findById(id);
-        return  resource.map(resourcesMapper::resourcesToResourcesDto).orElse(null);
+        return  resource.map(resourcesMapper::resourcesToResourcesDto).orElseThrow(() -> new ResourceNotFoundException(id));
     }
     public Resources findById(Long id) {
         return resourcesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Resource not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public Resources updateEmployee(Long id, Employee updatedEmployee) {
-        Employee existingEmployee = (Employee) findById(id);
+        Resources resource = findById(id);
+        if (!(resource instanceof Employee existingEmployee)) {
+            throw new ResourceTypeMismatchException(id, "Employee", resource.getClass().getSimpleName());
+        }
         existingEmployee.setName(updatedEmployee.getName());
         existingEmployee.setEmail(updatedEmployee.getEmail());
         existingEmployee.setFirstName(updatedEmployee.getFirstName());
@@ -103,7 +119,10 @@ public class ResourceService  {
     }
 
     public Resources updateVehicle(Long id, Vehicle updatedVehicle) {
-        Vehicle existingVehicle = (Vehicle) findById(id);
+        Resources resource = findById(id);
+        if (!(resource instanceof Vehicle existingVehicle)) {
+            throw new ResourceTypeMismatchException(id, "Vehicle", resource.getClass().getSimpleName());
+        }
         existingVehicle.setName(updatedVehicle.getName());
         existingVehicle.setLicensePlate(updatedVehicle.getLicensePlate());
         existingVehicle.setModel(updatedVehicle.getModel());
@@ -111,7 +130,10 @@ public class ResourceService  {
     }
 
     public Resources updateEquipment(Long id, Equipment updatedEquipment) {
-        Equipment existingEquipment = (Equipment) findById(id);
+        Resources resource = findById(id);
+        if (!(resource instanceof Equipment existingEquipment)) {
+            throw new ResourceTypeMismatchException(id, "Equipment", resource.getClass().getSimpleName());
+        }
         existingEquipment.setName(updatedEquipment.getName());
         existingEquipment.setSerialNumber(updatedEquipment.getSerialNumber());
         existingEquipment.setType(updatedEquipment.getType());
@@ -120,16 +142,14 @@ public class ResourceService  {
 
     public void deleteResource(Long id) {
         Resources resource = resourcesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ressource non trouvée avec l'ID fourni."));
+                .orElseThrow(() -> new IllegalArgumentException("Resource not found with ID supplied."));
 
 
         resourcesRepository.delete(resource);
     }
 
 
-    /**
-     * Récupère toutes les ressources de type Employee.
-     */
+
     public List<EmployeeSummaryDto> getAllEmployees() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Employee)
@@ -137,9 +157,7 @@ public class ResourceService  {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Récupère toutes les ressources de type Vehicle.
-     */
+
     public List<VehicleSummaryDto> getAllVehicles() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Vehicle)
@@ -147,9 +165,7 @@ public class ResourceService  {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Récupère toutes les ressources de type Equipment.
-     */
+
     public List<EquipmentSummaryDto> getAllEquipment() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Equipment)
@@ -176,16 +192,22 @@ public class ResourceService  {
     }
     public List<EmployeeSummaryDto> getAvailableEmployeesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<EmployeeSummaryDto> availableEmployees = availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .filter(resource -> resource instanceof Employee)
                 .map(resource -> (Employee) resource)
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
+
+        if (availableEmployees.isEmpty()) {
+            throw new ResourceNotAvailableException("No employees available for worksite " + worksiteId);
+        }
+
+        return availableEmployees;
     }
 
         public Date calculateEndDate(Date startDate, int durationInHalfDays) {
@@ -201,71 +223,101 @@ public class ResourceService  {
 
     public List<VehicleSummaryDto> getAvailableVehiclesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
+
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<VehicleSummaryDto> availableVehicles = availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .filter(resource -> resource instanceof Vehicle)
                 .map(resource -> (Vehicle) resource)
                 .map(resourcesSimpleMapper::vehicleToVehicleSummaryDto)
                 .collect(Collectors.toList());
+
+        if (availableVehicles.isEmpty()) {
+            throw new ResourceNotAvailableException("No vehicles available for worksite " + worksiteId);
+        }
+
+        return availableVehicles;
     }
 
     public List<EquipmentSummaryDto> getAvailableEquipmentsForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        // Récupérer les équipements disponibles pendant la période du chantier
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<EquipmentSummaryDto> availableEquipments= availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .filter(resource -> resource instanceof Equipment)
                 .map(resource -> (Equipment) resource)
                 .map(resourcesSimpleMapper::equipmentToEquipmentSummaryDto)
                 .collect(Collectors.toList());
+
+        if (availableEquipments.isEmpty()) {
+            throw new ResourceNotAvailableException("No equipments available for worksite " + worksiteId);
+        }
+
+        return availableEquipments;
     }
     public List<EmployeeSummaryDto> getAvailableSiteManagersForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<EmployeeSummaryDto> availableSiteManagers =  availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .filter(resource -> resource instanceof Employee)
                 .map(resource -> (Employee) resource)
                 .filter(employee -> Role.CHEF_DE_CHANTIER.equals(employee.getRole()))
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
+
+        if (availableSiteManagers.isEmpty()) {
+            throw new ResourceNotAvailableException("No site-Managers available for worksite " + worksiteId);
+        }
+
+        return availableSiteManagers;
     }
 
     public List<EmployeeSummaryDto> getAvailableEquipiersForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<EmployeeSummaryDto> availableEquipiers =  availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .filter(resource -> resource instanceof Employee)
                 .map(resource -> (Employee) resource)
                 .filter(employee -> Role.EQUIPIER_SIMPLE.equals(employee.getRole()))
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
+
+        if (availableEquipiers.isEmpty()) {
+            throw new ResourceNotAvailableException("No simple equipiers available for worksite " + worksiteId);
+        }
+
+        return availableEquipiers;
     }
     public List<ResourcesSimpleDto> getAvailableResourcesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
 
-        return availabilityRepository.findAvailableResources(startDate, endDate).stream()
+        List<ResourcesSimpleDto> availableResources =   availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .map(resourcesSimpleMapper::resourcesToResourcesSimpleDto)
                 .collect(Collectors.toList());
+
+        if (availableResources.isEmpty()) {
+            throw new ResourceNotAvailableException("No resources available for worksite " + worksiteId);
+        }
+
+        return availableResources;
     }
 
 }

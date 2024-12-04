@@ -1,5 +1,6 @@
 package matser2.istic.mmmback.service;
 
+import matser2.istic.mmmback.exceptions.UserNotFoundException;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.UserPrincipal;
@@ -21,7 +22,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Employee employee = resourcesRepository.findEmployeeByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable avec l'email: " + username));
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + username));
 
         return new UserPrincipal(employee);
 

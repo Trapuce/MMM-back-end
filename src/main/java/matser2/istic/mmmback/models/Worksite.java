@@ -1,6 +1,9 @@
 package matser2.istic.mmmback.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -17,33 +20,49 @@ import java.util.List;
         private Long id;
 
         @Column
+        @NotEmpty(message = "Worksite title is required.")
         private String title;
+
         @Column(name = "description")
+        @NotEmpty(message = "Worksite description is required.")
         private String description;
+
         @Column(name = "start_date")
+        @NotNull(message = "Start date is required.")
         private Date startDate;
+
         @Column(name = "status_updated")
+        @NotNull(message = "Status updated date is required.")
         private Date statusUpdated;
+
         @Column(name = "duration")
+        @Positive(message = "Duration must be a positive number.")
         private int duration;
 
-        @Column(name="created_at")
+        @Column(name = "created_at")
+        @NotNull(message = "Creation date is required.")
         private Date createdAt;
+
         @Column
+        @Positive(message = "Longitude must be a positive number.")
         private int longitude;
+
         @Column
-        private int latitude ;
+        @Positive(message = "Latitude must be a positive number.")
+        private int latitude;
 
         @Column(name = "location")
+        @NotEmpty(message = "Location is required.")
         private String location;
 
         @ManyToOne
         @JoinColumn(name = "customer_id")
+        @NotNull(message = "Customer is required.")
         private Customer customer;
 
         @Enumerated(EnumType.STRING)
+        @NotNull(message = "Worksite status is required.")
         private WorksiteStatus status;
-
 
 
         @ManyToMany(

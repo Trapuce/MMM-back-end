@@ -3,6 +3,8 @@ package matser2.istic.mmmback.service;
 import matser2.istic.mmmback.DTO.AuthenticatedEmployeeDto;
 import matser2.istic.mmmback.config.AuthenticationResponse;
 import matser2.istic.mmmback.config.JwtService;
+import matser2.istic.mmmback.exceptions.InvalidCredentialsException;
+import matser2.istic.mmmback.exceptions.UserNotFoundException;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.repository.ResourcesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,9 @@ public class AuthService {
 
 
     public AuthenticationResponse authenticate(String email, String password) throws AuthenticationException {
-        try {
+
             Employee employee = resourcesRepository.findEmployeeByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
+                    .orElseThrow(() -> new UserNotFoundException("Utilisateur non trouvé avec l'email : " + email));
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, password)
@@ -46,11 +48,8 @@ public class AuthService {
 
                 return new AuthenticationResponse(token, employeeDto);
             } else {
-                throw new AuthenticationException("Authentification échouée");
-            }
-        } catch (Exception e) {
-            throw new AuthenticationException("Erreur d'authentification : " + e.getMessage());
-        }
+                throw new InvalidCredentialsException("Identifiants incorrects");            }
+
     }
 
 }

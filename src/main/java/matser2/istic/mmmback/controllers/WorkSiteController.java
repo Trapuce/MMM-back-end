@@ -4,6 +4,7 @@ package matser2.istic.mmmback.controllers;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import matser2.istic.mmmback.DTO.*;
+import matser2.istic.mmmback.exceptions.WorksiteNotFoundException;
 import matser2.istic.mmmback.models.Resources;
 import matser2.istic.mmmback.models.WorksiteStatus;
 import matser2.istic.mmmback.service.WorkSiteService;
@@ -27,107 +28,55 @@ public class WorkSiteController {
     private WorkSiteService workSiteService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> addWorkSite(@RequestBody @Valid WorksitePostDto worksiteDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(bindingResult.getAllErrors());
-        }
+    public ResponseEntity<?> addWorkSite(@RequestBody @Valid WorksitePostDto worksiteDto) {
 
-        try {
-            if (worksiteDto == null || worksiteDto.getCustomer() == null) {
-                return ResponseEntity.badRequest().body("Worksite or customer information is missing.");
-            }
 
             WorksitePostDto createdWorksiteDTO = workSiteService.createWorkSite(worksiteDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdWorksiteDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Invalid data: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
-        }
+
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorksiteGetDto> getWorkSite(@PathVariable Long id) {
-        try {
+    public ResponseEntity<WorksiteGetDto> getWorkSite(@PathVariable Long id)  {
+
+
             WorksiteGetDto worksiteDto = workSiteService.getWorkSite(id);
-            if (worksiteDto == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+
             return ResponseEntity.ok(worksiteDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
+
+
     }
 
     @GetMapping
     public ResponseEntity<?> getWorkSites() {
-        try {
+
             List<WorksiteGetDto> worksitesDTO = workSiteService.getWorkSites();
 
-            if (worksitesDTO == null || worksitesDTO.isEmpty()) {
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("code", "NO_CONTENT");
-                errorResponse.put("message", "Aucun site de travail trouvé");
-                return ResponseEntity
-                        .status(HttpStatus.NO_CONTENT)
-                        .body(errorResponse);
-            }
 
             return ResponseEntity.ok(worksitesDTO);
-        } catch (DataAccessException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("code", "DATABASE_ERROR");
-            errorResponse.put("message", "Erreur d'accès à la base de données");
-            errorResponse.put("details", e.getMessage());
 
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse);
-        } catch (Exception e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("code", "UNEXPECTED_ERROR");
-            errorResponse.put("message", "Erreur lors de la récupération des sites");
-            errorResponse.put("details", e.getMessage());
-
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(errorResponse);
-        }
     }
 
     @PostMapping("/{worksiteId}/resources")
     public ResponseEntity<WorksiteGetDto> addResourcesToWorksite(
             @PathVariable Long worksiteId,
             @RequestBody List<Long> resourceIds) {
-        try {
+
             WorksiteGetDto updatedWorksiteDTO = workSiteService.addResourcesToWorksite(worksiteId, resourceIds);
-            if (updatedWorksiteDTO == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+
             return ResponseEntity.ok(updatedWorksiteDTO);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
     @PutMapping("/{id}")
     public ResponseEntity<WorksiteAllDto> updateWorksite(
             @PathVariable Long id,
             @RequestBody WorksiteAllDto worksiteAllDto) {
-        try {
+
             WorksiteAllDto updatedWorksiteDto = workSiteService.updateWorksite(id, worksiteAllDto);
-            if (updatedWorksiteDto == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
+
             return ResponseEntity.ok(updatedWorksiteDto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
 
@@ -137,90 +86,39 @@ public class WorkSiteController {
             @PathVariable Long id,
             @RequestBody String newStatus
     ) {
-        try {
-            // Nettoyer le statut (retirer les guillemets et les espaces)
+
             newStatus = newStatus.trim().replace("\"", "");
 
-            // Convertir en enum, en gérant les variations de casse
             WorksiteStatus status = WorksiteStatus.valueOf(newStatus.toUpperCase());
 
-            // Mettre à jour et récupérer le DTO mis à jour
             WorksiteGetDto updatedWorksite = workSiteService.updateWorksiteStatus(id, status);
 
-            // Réponse structurée de succès
             return ResponseEntity.ok(Map.of(
                     "code", "STATUS_UPDATED",
                     "message", "Statut du chantier mis à jour avec succès",
                     "worksite", updatedWorksite
             ));
-        } catch (IllegalArgumentException e) {
-            // Gestion des statuts invalides
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "code", "INVALID_STATUS",
-                            "message", "Valeur de statut invalide",
-                            "details", "Statut fourni : " + newStatus,
-                            "validStatuses", Arrays.stream(WorksiteStatus.values())
-                                    .map(WorksiteStatus::name)
-                                    .collect(Collectors.toList())
-                    ));
-        } catch (EntityNotFoundException e) {
-            // Gestion du chantier non trouvé
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Map.of(
-                            "code", "WORKSITE_NOT_FOUND",
-                            "message", "Chantier non trouvé",
-                            "details", "ID : " + id
-                    ));
-        } catch (Exception e) {
-            // Gestion des erreurs génériques
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of(
-                            "code", "UNEXPECTED_ERROR",
-                            "message", "Une erreur est survenue lors de la mise à jour du statut",
-                            "details", e.getMessage()
-                    ));
-        }
+
     }
 
 
     @PostMapping("/{id}/anomalies")
     public ResponseEntity<AnomalyDto> addAnomaly(@PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
-        try {
+
             AnomalyDto addedAnomaly = workSiteService.addAnomalyToWorksite(id, anomalyDto);
-            if (addedAnomaly == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(null);
-            }
+
             return ResponseEntity.status(HttpStatus.CREATED).body(addedAnomaly);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+
     }
 
 
     @GetMapping("/{id}/anomalies")
     public ResponseEntity<List<AnomalyDto>> getAnomalies(@PathVariable Long id) {
-        try {
+
             List<AnomalyDto> anomalies = workSiteService.getWorkSite(id).getAnomalies();
-            if (anomalies == null || anomalies.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            }
+
             return ResponseEntity.ok(anomalies);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+
     }
 
 
@@ -228,16 +126,10 @@ public class WorkSiteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWorksite(@PathVariable Long id) {
-        try {
+
             workSiteService.deleteWorksite(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(null);
-        }
+
     }
 
 
@@ -245,14 +137,10 @@ public class WorkSiteController {
     public ResponseEntity<String> addPhotosToWorksite(
             @PathVariable Long id,
             @RequestBody List<PhotoDto> photos) {
-        try {
+
             workSiteService.addPhotosToWorksite(id, photos);
             return ResponseEntity.ok("Photos added successfully.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Worksite not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
-        }
+
     }
 
     @GetMapping("/{worksiteId}/resources")
@@ -266,17 +154,10 @@ public class WorkSiteController {
     public ResponseEntity<String> removeResourceFromWorksite(
             @PathVariable Long worksiteId,
             @PathVariable Long resourceId) {
-        try {
+
             workSiteService.removeResourceFromWorksite(worksiteId, resourceId);
             return ResponseEntity.ok("Resource removed successfully from the worksite.");
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred while removing the resource: " + e.getMessage());
-        }
+
     }
 
 
@@ -285,49 +166,22 @@ public class WorkSiteController {
             @PathVariable Long worksiteId,
             @PathVariable Long anomalyId,
             @RequestBody AnomalyDto anomalyDto) {
-        try {
+
             AnomalyDto updatedAnomaly = workSiteService.updateAnomalyInWorksite(worksiteId, anomalyId, anomalyDto);
             return ResponseEntity.ok(updatedAnomaly);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
 
     @GetMapping("/resource/{resourceId}/worksites")
     public ResponseEntity<?> getWorksitesByResourceId(@PathVariable Long resourceId) {
-        try {
+
             List<WorksiteGetDto> worksitesDTO = workSiteService.getWorksitesByResourceId(resourceId);
 
-            if (worksitesDTO.isEmpty()) {
-                return ResponseEntity
-                        .status(HttpStatus.NO_CONTENT)
-                        .body(Map.of(
-                                "code", "NO_WORKSITES",
-                                "message", "Aucun site de travail trouvé pour cette ressource"
-                        ));
-            }
+
 
             return ResponseEntity.ok(worksitesDTO);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(Map.of(
-                            "code", "RESOURCE_NOT_FOUND",
-                            "message", "Ressource non trouvée",
-                            "details", e.getMessage()
-                    ));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of(
-                            "code", "UNEXPECTED_ERROR",
-                            "message", "Erreur lors de la récupération des sites de travail",
-                            "details", e.getMessage()
-                    ));
-        }
+
     }
 
 }

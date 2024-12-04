@@ -4,6 +4,7 @@ package matser2.istic.mmmback.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import matser2.istic.mmmback.DTO.*;
+import matser2.istic.mmmback.exceptions.*;
 import matser2.istic.mmmback.mappers.*;
 import matser2.istic.mmmback.models.*;
 import matser2.istic.mmmback.repository.*;
@@ -59,9 +60,6 @@ public class WorkSiteService {
     @Autowired
     private AnomalyRepository anomalyRepository;
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
-        if (worksiteDto.getCustomer() == null) {
-            throw new IllegalArgumentException("Le client doit être fourni et ne doit pas être nul.");
-        }
 
         Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
 
@@ -77,35 +75,33 @@ public class WorkSiteService {
 
 
     public WorksiteGetDto getWorkSite(Long id) {
-        Worksite worksite = worksiteRepository.findById(id).orElse(null);
-        return worksite != null ? worksiteMapper.worksiteToWorksiteGetDto(worksite) : null;
+        Worksite worksite = worksiteRepository.findById(id)
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + id));
+        return worksiteMapper.worksiteToWorksiteGetDto(worksite);
     }
 
     public List<WorksiteGetDto> getWorkSites() {
-        try {
+
             List<Worksite> worksites = worksiteRepository.findAll();
 
-            if (worksites.isEmpty()) {
-                return Collections.emptyList();
-            }
+          if (worksites.isEmpty()) {
+              throw new WorksiteNotFoundException("No worksites found");
+          }
 
             return worksites.stream()
                     .sorted((w1, w2) -> w2.getCreatedAt().compareTo(w1.getCreatedAt()))
                     .map(worksiteMapper::worksiteToWorksiteGetDto)
                     .collect(Collectors.toList());
-        } catch (DataAccessException e) {
-            throw e;
-        }
+
     }
 
-    @Transactional
     public WorksiteGetDto addResourcesToWorksite(Long worksiteId, List<Long> resourceIds) {
         if (resourceIds == null || resourceIds.isEmpty()) {
-            throw new IllegalArgumentException("Resource IDs list cannot be null or empty");
+            throw new InvalidWorksiteOperationException("Resource IDs list cannot be null or empty");
         }
 
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException ("Worksite not found with id: " + worksiteId));
 
         List<Resources> resources = resourcesRepository.findAllById(resourceIds);
         if (resources.size() != resourceIds.size()) {
@@ -117,7 +113,7 @@ public class WorkSiteService {
                     .filter(id -> !foundResourceIds.contains(id))
                     .collect(Collectors.toList());
 
-            throw new EntityNotFoundException("Resources not found with ids: " + missingResourceIds);
+            throw new ResourceNotFoundException("Resources not found with ids: " + missingResourceIds);
         }
 
         Date startDate = worksite.getStartDate();
@@ -145,13 +141,13 @@ public class WorkSiteService {
     @Transactional
     public WorksiteGetDto removeResourceFromWorksite(Long worksiteId, Long resourceId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
 
         Resources resource = resourcesRepository.findById(resourceId)
-                .orElseThrow(() -> new EntityNotFoundException("Resource not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found with id: " + resourceId));
 
         if (!worksite.getResources().contains(resource)) {
-            throw new IllegalArgumentException("The resource is not associated with this worksite.");
+            throw new InvalidWorksiteOperationException("The resource is not associated with this worksite.");
         }
 
         List<Availability> availabilities = availabilityRepository.findByResourceId(resourceId);
@@ -187,13 +183,13 @@ public class WorkSiteService {
         }
 
         Worksite existingWorksite = worksiteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No workSites found with the ID supplied."));
+                .orElseThrow(() -> new WorksiteNotFoundException("No workSites found with the ID supplied."));
 
         if (worksiteAllDto.getCustomer() != null && worksiteAllDto.getCustomer().getId() != null) {
             Long customerId = worksiteAllDto.getCustomer().getId();
             if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId)) {
                 Customer newCustomer = customerRepository.findById(customerId)
-                        .orElseThrow(() -> new EntityNotFoundException("No customers found with the ID supplied."));
+                        .orElseThrow(() -> new CustomerNotFoundException("No customers found with the ID supplied."));
                 existingWorksite.setCustomer(newCustomer);
                 newCustomer.addWorksite(existingWorksite);
             }
@@ -231,7 +227,7 @@ public class WorkSiteService {
 
     public List<ResourcesSimpleDto> getWorksiteResources(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
 
         return worksite.getResources().stream()
                 .map(resourcesSimpleMapper::resourcesToResourcesSimpleDto)
@@ -240,7 +236,7 @@ public class WorkSiteService {
 
     public void deleteWorksite(Long id) {
         Worksite worksite = worksiteRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Aucun chantier trouvé avec l'ID fourni."));
+                .orElseThrow(() -> new WorksiteNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
 
 
 
@@ -252,7 +248,7 @@ public class WorkSiteService {
     @Transactional
     public WorksiteGetDto updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with ID: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with ID: " + worksiteId));
 
         worksite.setStatus(newStatus);
 
@@ -280,7 +276,7 @@ public class WorkSiteService {
 
     public AnomalyDto addAnomalyToWorksite(Long worksiteId, AnomalyDto anomalyDto) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
 
         Anomaly anomaly = new Anomaly();
         anomaly.setTitle(anomalyDto.getTitle());
@@ -310,7 +306,7 @@ public class WorkSiteService {
 
     public void addPhotosToWorksite(Long worksiteId, List<PhotoDto> photos) throws EntityNotFoundException {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found"));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found"));
 
         for (PhotoDto photoDto : photos) {
             if (photoDto.getFilePath() != null && !photoDto.getFilePath().isEmpty()) {
@@ -326,12 +322,12 @@ public class WorkSiteService {
 
     public AnomalyDto updateAnomalyInWorksite(Long worksiteId, Long anomalyId, AnomalyDto anomalyDto) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
-                .orElseThrow(() -> new EntityNotFoundException("Worksite not found with id: " + worksiteId));
+                .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
 
         Anomaly existingAnomaly = worksite.getAnomalies().stream()
                 .filter(a -> a.getId().equals(anomalyId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Anomaly not found with id: " + anomalyId));
+                .orElseThrow(() -> new AnomalyNotFoundException("Anomaly not found with id: " + anomalyId));
 
         existingAnomaly.setTitle(anomalyDto.getTitle());
         existingAnomaly.setDescription(anomalyDto.getDescription());
@@ -356,7 +352,7 @@ public class WorkSiteService {
         Anomaly savedAnomaly = updatedWorksite.getAnomalies().stream()
                 .filter(a -> a.getId().equals(anomalyId))
                 .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Updated anomaly not found"));
+                .orElseThrow(() -> new AnomalyNotFoundException("Updated anomaly not found"));
 
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
 
@@ -364,7 +360,7 @@ public class WorkSiteService {
 
     public List<WorksiteGetDto> getWorksitesByResourceId(Long resourceId) {
         Resources resource = resourcesRepository.findById(resourceId)
-                .orElseThrow(() -> new EntityNotFoundException("Resource not found with id: " + resourceId));
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found with id: " + resourceId));
 
         List<Worksite> worksites = worksiteRepository.findByResources(resource);
 

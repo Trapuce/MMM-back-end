@@ -31,7 +31,6 @@ public class ResourcesController {
     @Autowired
     private ResourcesMapper resourceMapper;
 
-    // Get all resources
     @GetMapping
     public ResponseEntity<List<ResourcesDto>> getResources() {
         List<ResourcesDto> resourcesDTOs = resourceService.getAllResources();
@@ -44,70 +43,59 @@ public class ResourcesController {
     @GetMapping("/{id}")
     public ResponseEntity<ResourcesDto> getResource(@PathVariable Long id) {
         ResourcesDto resourceDto = resourceService.getResourceById(id);
-        if (resourceDto == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+
         return ResponseEntity.ok(resourceDto);
+
+
     }
 
     @PostMapping("/employees")
     public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto) {
-        try {
+
             Employee employeeEntity = resourceMapper.employeeDtoToEmployee(employeeDto);
             Employee createdEmployee = resourceService.createResource(employeeEntity);
             EmployeeDto createdEmployeeDTO = resourceMapper.employeeToEmployeeDto(createdEmployee);
 
             URI location = URI.create("/resources/employees/" + createdEmployeeDTO.getId());
             return ResponseEntity.created(location).body(createdEmployeeDTO);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Internal Server Error
-        }
+
     }
 
     @PostMapping("/vehicles")
     public ResponseEntity<VehicleDto> createVehicle(@RequestBody VehicleDto vehicleDto) {
-        try {
             Vehicle vehicleEntity = resourceMapper.vehicleDtoToVehicle(vehicleDto);
             Vehicle createdVehicle = resourceService.createResource(vehicleEntity);
             VehicleDto createdVehicleDto = resourceMapper.vehicleToVehicleDto(createdVehicle);
 
             URI location = URI.create("/resources/vehicles/" + createdVehicleDto.getId());
             return ResponseEntity.created(location).body(createdVehicleDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
     @PostMapping("/equipment")
     public ResponseEntity<EquipmentDto> createEquipment(@RequestBody EquipmentDto equipmentDto) {
-        try {
+
             Equipment equipmentEntity = resourceMapper.equipmentDtoToEquipment(equipmentDto);
             Equipment createdEquipment = resourceService.createResource(equipmentEntity);
             EquipmentDto createdEquipmentDto = resourceMapper.equipmentToEquipmentDto(createdEquipment);
 
             URI location = URI.create("/resources/equipment/" + createdEquipmentDto.getId());
             return ResponseEntity.created(location).body(createdEquipmentDto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
     }
 
-    // Delete a resource by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteResource(@PathVariable Long id) {
-        try {
+
             resourceService.deleteResource(id);
             return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+
+
     }
 
     @PutMapping("/employees/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee updatedEmployee) {
-        try {
+
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Employee)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -115,18 +103,11 @@ public class ResourcesController {
             }
             Resources updated = resourceService.updateEmployee(id, updatedEmployee);
             return ResponseEntity.ok(updated);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Employee with ID " + id + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred: " + e.getMessage());
-        }
+
     }
 
     @PutMapping("/vehicles/{id}")
     public ResponseEntity<?> updateVehicle(@PathVariable Long id, @RequestBody Vehicle updatedVehicle) {
-        try {
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Vehicle)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -134,18 +115,11 @@ public class ResourcesController {
             }
             Resources updated = resourceService.updateVehicle(id, updatedVehicle);
             return ResponseEntity.ok(updated);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Vehicle with ID " + id + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred: " + e.getMessage());
-        }
+
     }
 
     @PutMapping("/equipment/{id}")
     public ResponseEntity<?> updateEquipment(@PathVariable Long id, @RequestBody Equipment updatedEquipment) {
-        try {
             Resources existingResource = resourceService.findById(id);
             if (!(existingResource instanceof Equipment)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -153,13 +127,7 @@ public class ResourcesController {
             }
             Resources updated = resourceService.updateEquipment(id, updatedEquipment);
             return ResponseEntity.ok(updated);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Equipment with ID " + id + " not found.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred: " + e.getMessage());
-        }
+
     }
 
     @GetMapping("/employees")

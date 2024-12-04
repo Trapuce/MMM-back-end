@@ -43,7 +43,6 @@ public class WorksitePostDto {
     @NotEmpty(message = "Location is required.")
     private String location;
 
-
     @NotNull(message = "Customer is required.")
     private CustomerPostDto customer;
 

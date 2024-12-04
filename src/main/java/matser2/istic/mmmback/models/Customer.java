@@ -2,6 +2,9 @@ package matser2.istic.mmmback.models;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +17,19 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
+    @NotEmpty(message = "Customer name is required.")
     private String name;
+
     @Column
+    @NotEmpty(message = "Customer email is required.")
+    @Email(message = "Invalid email format.")
     private String email;
+
     @Column(name = "phone_number")
-    private int phoneNumber ;
+    @Positive(message = "Phone number must be a positive number.")
+    private int phoneNumber;
 
     @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)
     private List<Worksite> worksites = new ArrayList<>();
