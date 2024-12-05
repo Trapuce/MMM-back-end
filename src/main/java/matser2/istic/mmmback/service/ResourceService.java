@@ -297,9 +297,9 @@ public class ResourceService  {
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
 
-        if (availableEmployees.isEmpty()) {
-            throw new ResourceNotAvailableException("No employees available for worksite " + worksiteId);
-        }
+//        if (availableEmployees.isEmpty()) {
+//            throw new ResourceNotAvailableException("No employees available for worksite " + worksiteId);
+//        }
 
         return availableEmployees;
     }
@@ -339,10 +339,10 @@ public class ResourceService  {
                 .map(resource -> (Vehicle) resource)
                 .map(resourcesSimpleMapper::vehicleToVehicleSummaryDto)
                 .collect(Collectors.toList());
-
-        if (availableVehicles.isEmpty()) {
-            throw new ResourceNotAvailableException("No vehicles available for worksite " + worksiteId);
-        }
+//
+//        if (availableVehicles.isEmpty()) {
+//            throw new ResourceNotAvailableException("No vehicles available for worksite " + worksiteId);
+//        }
 
         return availableVehicles;
     }
@@ -369,9 +369,9 @@ public class ResourceService  {
                 .map(resourcesSimpleMapper::equipmentToEquipmentSummaryDto)
                 .collect(Collectors.toList());
 
-        if (availableEquipments.isEmpty()) {
-            throw new ResourceNotAvailableException("No equipments available for worksite " + worksiteId);
-        }
+//        if (availableEquipments.isEmpty()) {
+//            throw new ResourceNotAvailableException("No equipments available for worksite " + worksiteId);
+//        }
 
         return availableEquipments;
     }
@@ -397,10 +397,10 @@ public class ResourceService  {
                 .filter(employee -> Role.CHEF_DE_CHANTIER.equals(employee.getRole()))
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
-
-        if (availableSiteManagers.isEmpty()) {
-            throw new ResourceNotAvailableException("No site-Managers available for worksite " + worksiteId);
-        }
+//
+//        if (availableSiteManagers.isEmpty()) {
+//            throw new ResourceNotAvailableException("No site-Managers available for worksite " + worksiteId);
+//        }
 
         return availableSiteManagers;
     }
@@ -428,9 +428,9 @@ public class ResourceService  {
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
 
-        if (availableEquipiers.isEmpty()) {
-            throw new ResourceNotAvailableException("No simple equipiers available for worksite " + worksiteId);
-        }
+//        if (availableEquipiers == null) {
+//            throw new ResourceNotAvailableException("No simple equipiers available for worksite " + worksiteId);
+//        }
 
         return availableEquipiers;
     }
@@ -454,10 +454,10 @@ public class ResourceService  {
         List<ResourcesSimpleDto> availableResources =   availabilityRepository.findAvailableResources(startDate, endDate).stream()
                 .map(resourcesSimpleMapper::resourcesToResourcesSimpleDto)
                 .collect(Collectors.toList());
-
-        if (availableResources.isEmpty()) {
-            throw new ResourceNotAvailableException("No resources available for worksite " + worksiteId);
-        }
+//
+//        if (availableResources == null) {
+//            throw new ResourceNotAvailableException("No resources available for worksite " + worksiteId);
+//        }
 
         return availableResources;
     }
