@@ -15,8 +15,8 @@ public class WorksiteGetDto {
     private Date statusUpdated;
     private int duration;
     private Date createdAt;
-    private int longitude;
-    private int latitude;
+    private double longitude;
+    private double latitude;
     private String location;
 
     private CustomerGetDto customer;
@@ -126,19 +126,19 @@ public class WorksiteGetDto {
         this.createdAt = createdAt;
     }
 
-    public int getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 }

@@ -33,12 +33,10 @@ public class WorksitePostDto {
     private Date createdAt;
 
     @NotNull(message = "Longitude is required.")
-    @Positive(message = "Longitude must be a positive number.")
-    private int longitude;
+    private double longitude;
 
     @NotNull(message = "Latitude is required.")
-    @Positive(message = "Latitude must be a positive number.")
-    private int latitude;
+    private double latitude;
 
     @NotEmpty(message = "Location is required.")
     private String location;
@@ -132,19 +130,19 @@ public class WorksitePostDto {
         this.createdAt = createdAt;
     }
 
-    public int getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 

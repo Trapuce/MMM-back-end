@@ -3,6 +3,8 @@ package matser2.istic.mmmback.config;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +40,15 @@ public class OpenAPIConfiguration {
                 .info(new Info()
                         .title("Worksite Management System API")
                         .version("1.0")
-                        .description("Comprehensive API for worksite management and tracking"));
+                        .description("Comprehensive API for worksite management and tracking"))
+                .addSecurityItem(new SecurityRequirement().addList("bearerToken"))
+                .components(new io.swagger.v3.oas.models.Components()
+                        .addSecuritySchemes("bearerToken", new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")));
     }
 
 }

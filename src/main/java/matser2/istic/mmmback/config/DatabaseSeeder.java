@@ -14,6 +14,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 @Component
@@ -80,83 +81,94 @@ public class DatabaseSeeder implements CommandLineRunner {
         Customer customerEpsilon = customerRepository.findByName("Client Epsilon").orElseThrow();
         Customer customerZeta = customerRepository.findByName("Client Beta").orElseThrow();
 
+        Calendar calendar = Calendar.getInstance();
+
         Worksite worksite1 = new Worksite();
         worksite1.setTitle("Construction Immeuble Alpha");
         worksite1.setDescription("Immeuble résidentiel de 10 étages.");
-        worksite1.setStartDate(new Date());
+        calendar.set(2024, Calendar.JANUARY, 15); // 15 janvier 2024
+        worksite1.setStartDate(calendar.getTime());
         worksite1.setStatusUpdated(new Date());
         worksite1.setDuration(24);
         worksite1.setCreatedAt(new Date());
-        worksite1.setLongitude(48);
-        worksite1.setLatitude(2);
-        worksite1.setLocation("Paris");
+        worksite1.setLongitude(-1.6777926); // 8 Rue du Maine, Rennes
+        worksite1.setLatitude(48.108291);
+        worksite1.setLocation("8 Rue du Maine, 35000 Rennes");
         worksite1.setCustomer(customerAlpha);
         worksite1.setStatus(WorksiteStatus.IN_PROGRESS);
 
+        // Worksite 2
         Worksite worksite2 = new Worksite();
         worksite2.setTitle("Pont Beta");
         worksite2.setDescription("Construction d'un pont suspendu.");
-        worksite2.setStartDate(new Date());
+        calendar.set(2024, Calendar.MARCH, 10); // 10 mars 2024
+        worksite2.setStartDate(calendar.getTime());
         worksite2.setStatusUpdated(new Date());
         worksite2.setDuration(41);
         worksite2.setCreatedAt(new Date());
-        worksite2.setLongitude(50);
-        worksite2.setLatitude(5);
-        worksite2.setLocation("Lyon");
+        worksite2.setLongitude(4.841389); // 1 Place Bellecour, Lyon
+        worksite2.setLatitude(45.758011);
+        worksite2.setLocation("1 Place Bellecour, 69002 Lyon");
         worksite2.setCustomer(customerAlpha);
         worksite2.setStatus(WorksiteStatus.NOT_STARTED);
 
+        // Worksite 3
         Worksite worksite3 = new Worksite();
         worksite3.setTitle("Construction École Gamma");
         worksite3.setDescription("Construction d'une école primaire avec 15 classes.");
-        worksite3.setStartDate(new Date());
+        calendar.set(2024, Calendar.MAY, 25); // 25 mai 2024
+        worksite3.setStartDate(calendar.getTime());
         worksite3.setStatusUpdated(new Date());
         worksite3.setDuration(18);
         worksite3.setCreatedAt(new Date());
-        worksite3.setLongitude((int) 44.1);
-        worksite3.setLatitude((int) 3.5);
-        worksite3.setLocation("Marseille");
+        worksite3.setLongitude(5.396193); // 58 Rue Saint-Ferréol, Marseille
+        worksite3.setLatitude(43.296482);
+        worksite3.setLocation("58 Rue Saint-Ferréol, 13001 Marseille");
         worksite3.setCustomer(customerGamma);
         worksite3.setStatus(WorksiteStatus.IN_PROGRESS);
 
+        // Worksite 4
         Worksite worksite4 = new Worksite();
         worksite4.setTitle("Aménagement Parc Delta");
         worksite4.setDescription("Création d'un parc public de 2 hectares.");
-        worksite4.setStartDate(new Date());
+        calendar.set(2024, Calendar.JULY, 10); // 10 juillet 2024
+        worksite4.setStartDate(calendar.getTime());
         worksite4.setStatusUpdated(new Date());
         worksite4.setDuration(8);
         worksite4.setCreatedAt(new Date());
-        worksite4.setLongitude((int) 50.1);
-        worksite4.setLatitude((int) 1.9);
-        worksite4.setLocation("Nice");
+        worksite4.setLongitude(7.269572); // Promenade des Anglais, Nice
+        worksite4.setLatitude(43.695723);
+        worksite4.setLocation("Promenade des Anglais, 06000 Nice");
         worksite4.setCustomer(customerDelta);
         worksite4.setStatus(WorksiteStatus.COMPLETED);
 
-// Worksite 5
+        // Worksite 5
         Worksite worksite5 = new Worksite();
         worksite5.setTitle("Réfection Route Epsilon");
         worksite5.setDescription("Réfection de 10 km de route départementale.");
-        worksite5.setStartDate(new Date());
+        calendar.set(2024, Calendar.SEPTEMBER, 15); // 15 septembre 2024
+        worksite5.setStartDate(calendar.getTime());
         worksite5.setStatusUpdated(new Date());
         worksite5.setDuration(16);
         worksite5.setCreatedAt(new Date());
-        worksite5.setLongitude((int) 45.2);
-        worksite5.setLatitude((int) 4.2);
-        worksite5.setLocation("Toulouse");
+        worksite5.setLongitude(1.451528); // 15 Place du Capitole, Toulouse
+        worksite5.setLatitude(43.604365);
+        worksite5.setLocation("15 Place du Capitole, 31000 Toulouse");
         worksite5.setCustomer(customerEpsilon);
         worksite5.setStatus(WorksiteStatus.INTERRUPTED);
 
-
+        // Worksite 6
         Worksite worksite6 = new Worksite();
         worksite6.setTitle("Extension Usine Zeta");
         worksite6.setDescription("Extension de 5000m² d'une usine de production.");
-        worksite6.setStartDate(new Date());
+        calendar.set(2025, Calendar.JANUARY, 5); // 5 janvier 2025
+        worksite6.setStartDate(calendar.getTime());
         worksite6.setStatusUpdated(new Date());
         worksite6.setDuration(20);
         worksite6.setCreatedAt(new Date());
-        worksite6.setLongitude((int) 43.5);
-        worksite6.setLatitude((int) 5.6);
-        worksite6.setLocation("Bordeaux");
+        worksite6.setLongitude(-0.5800364); // 12 Cours du Chapeau Rouge, Bordeaux
+        worksite6.setLatitude(44.841225);
+        worksite6.setLocation("12 Cours du Chapeau Rouge, 33000 Bordeaux");
         worksite6.setCustomer(customerZeta);
         worksite6.setStatus(WorksiteStatus.NOT_STARTED);
 

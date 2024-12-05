@@ -44,12 +44,10 @@ import java.util.List;
         private Date createdAt;
 
         @Column
-        @Positive(message = "Longitude must be a positive number.")
-        private int longitude;
+        private double longitude;
 
         @Column
-        @Positive(message = "Latitude must be a positive number.")
-        private int latitude;
+        private double latitude;
 
         @Column(name = "location")
         @NotEmpty(message = "Location is required.")
@@ -214,19 +212,19 @@ import java.util.List;
         this.createdAt = createdAt;
     }
 
-    public int getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
