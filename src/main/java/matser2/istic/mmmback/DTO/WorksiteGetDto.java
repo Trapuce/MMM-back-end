@@ -19,7 +19,7 @@ public class WorksiteGetDto {
     private int latitude;
     private String location;
 
-
+    private CustomerGetDto customer;
     private WorksiteStatus status;
 
     private List<AnomalyDto> anomalies;
@@ -76,6 +76,14 @@ public class WorksiteGetDto {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public CustomerGetDto getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(CustomerGetDto customer) {
+        this.customer = customer;
     }
 
     public WorksiteStatus getStatus() {

@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-05T12:34:57+0100",
+    date = "2024-12-05T13:22:29+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -149,6 +149,7 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksiteGetDto.setStartDate( worksite.getStartDate() );
         worksiteGetDto.setId( worksite.getId() );
         worksiteGetDto.setLocation( worksite.getLocation() );
+        worksiteGetDto.setCustomer( customerToCustomerGetDto( worksite.getCustomer() ) );
         worksiteGetDto.setStatus( worksite.getStatus() );
         worksiteGetDto.setTitle( worksite.getTitle() );
         worksiteGetDto.setStatusUpdated( worksite.getStatusUpdated() );
@@ -172,6 +173,7 @@ public class WorksiteMapperImpl implements WorksiteMapper {
         worksite.setDescription( worksiteGetDto.getDescription() );
         worksite.setStartDate( worksiteGetDto.getStartDate() );
         worksite.setLocation( worksiteGetDto.getLocation() );
+        worksite.setCustomer( customerGetDtoToCustomer( worksiteGetDto.getCustomer() ) );
         worksite.setStatus( worksiteGetDto.getStatus() );
         worksite.setAnomalies( anomalyDtoListToAnomalyList( worksiteGetDto.getAnomalies() ) );
         worksite.setTitle( worksiteGetDto.getTitle() );

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 import matser2.istic.mmmback.DTO.AnomalyDto;
 import matser2.istic.mmmback.DTO.AvailabilityDto;
+import matser2.istic.mmmback.DTO.CustomerGetDto;
 import matser2.istic.mmmback.DTO.EmployeeDto;
 import matser2.istic.mmmback.DTO.EquipmentDto;
 import matser2.istic.mmmback.DTO.PhotoDto;
@@ -12,6 +13,7 @@ import matser2.istic.mmmback.DTO.VehicleDto;
 import matser2.istic.mmmback.DTO.WorksiteGetDto;
 import matser2.istic.mmmback.models.Anomaly;
 import matser2.istic.mmmback.models.Availability;
+import matser2.istic.mmmback.models.Customer;
 import matser2.istic.mmmback.models.Employee;
 import matser2.istic.mmmback.models.Equipment;
 import matser2.istic.mmmback.models.Photo;
@@ -21,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-12-05T12:34:57+0100",
+    date = "2024-12-05T13:22:29+0100",
     comments = "version: 1.6.2, compiler: javac, environment: Java 23.0.1 (Oracle Corporation)"
 )
 @Component
@@ -196,6 +198,21 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         return list1;
     }
 
+    protected CustomerGetDto customerToCustomerGetDto(Customer customer) {
+        if ( customer == null ) {
+            return null;
+        }
+
+        CustomerGetDto customerGetDto = new CustomerGetDto();
+
+        customerGetDto.setId( customer.getId() );
+        customerGetDto.setName( customer.getName() );
+        customerGetDto.setPhoneNumber( String.valueOf( customer.getPhoneNumber() ) );
+        customerGetDto.setEmail( customer.getEmail() );
+
+        return customerGetDto;
+    }
+
     protected WorksiteGetDto worksiteToWorksiteGetDto(Worksite worksite) {
         if ( worksite == null ) {
             return null;
@@ -209,6 +226,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         worksiteGetDto.setStartDate( worksite.getStartDate() );
         worksiteGetDto.setId( worksite.getId() );
         worksiteGetDto.setLocation( worksite.getLocation() );
+        worksiteGetDto.setCustomer( customerToCustomerGetDto( worksite.getCustomer() ) );
         worksiteGetDto.setStatus( worksite.getStatus() );
         worksiteGetDto.setTitle( worksite.getTitle() );
         worksiteGetDto.setStatusUpdated( worksite.getStatusUpdated() );
@@ -258,6 +276,23 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         }
 
         return list1;
+    }
+
+    protected Customer customerGetDtoToCustomer(CustomerGetDto customerGetDto) {
+        if ( customerGetDto == null ) {
+            return null;
+        }
+
+        Customer customer = new Customer();
+
+        if ( customerGetDto.getPhoneNumber() != null ) {
+            customer.setPhoneNumber( Integer.parseInt( customerGetDto.getPhoneNumber() ) );
+        }
+        customer.setId( customerGetDto.getId() );
+        customer.setName( customerGetDto.getName() );
+        customer.setEmail( customerGetDto.getEmail() );
+
+        return customer;
     }
 
     protected Photo photoDtoToPhoto(PhotoDto photoDto) {
@@ -326,6 +361,7 @@ public class ResourcesMapperImpl implements ResourcesMapper {
         worksite.setDescription( worksiteGetDto.getDescription() );
         worksite.setStartDate( worksiteGetDto.getStartDate() );
         worksite.setLocation( worksiteGetDto.getLocation() );
+        worksite.setCustomer( customerGetDtoToCustomer( worksiteGetDto.getCustomer() ) );
         worksite.setStatus( worksiteGetDto.getStatus() );
         worksite.setAnomalies( anomalyDtoListToAnomalyList( worksiteGetDto.getAnomalies() ) );
         worksite.setTitle( worksiteGetDto.getTitle() );
