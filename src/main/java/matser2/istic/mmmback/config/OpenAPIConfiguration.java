@@ -10,25 +10,35 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * OpenAPI Configuration for Swagger/SpringDoc documentation
+ * Defines server environments and API metadata for API documentation
+ */
 @Configuration
 public class OpenAPIConfiguration {
 
+
+    /**
+     * Configures OpenAPI specification with server details and API information
+     *
+     * @return Fully configured OpenAPI object
+     */
     @Bean
     public OpenAPI defineOpenApi() {
         Server devServer = new Server()
                 .url("http://localhost:8080")
-                .description("Serveur de développement");
+                .description("Development server URL");
 
         Server prodServer = new Server()
                 .url("http://159.65.20.48:8080")
-                .description("Serveur de production");
+                .description("Production server URL");
 
         return new OpenAPI()
                 .servers(Arrays.asList(devServer, prodServer))
                 .info(new Info()
-                        .title("Employee Management System API")
+                        .title("Worksite Management System API")
                         .version("1.0")
-                        .description("API pour la gestion des employés"));
+                        .description("Comprehensive API for worksite management and tracking"));
     }
 
 }

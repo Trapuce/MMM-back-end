@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/availability")
 public class AvailabilityController {
 
-    @Autowired
+    /*@Autowired
     private AvailabilityService availabilityService;
 
     @GetMapping("/employees")
@@ -99,6 +99,6 @@ public class AvailabilityController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(null);
         }
-    }
+    }*/
 }
 

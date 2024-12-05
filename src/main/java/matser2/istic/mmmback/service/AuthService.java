@@ -26,6 +26,22 @@ public class AuthService {
     private ResourcesRepository resourcesRepository;
 
 
+    /**
+     * Authenticates a user with the provided email and password.
+     *
+     * This method performs the following steps:
+     * 1. Find the employee by email
+     * 2. Attempt to authenticate the user
+     * 3. Generate a JWT token if authentication is successful
+     * 4. Create an AuthenticatedEmployeeDto with user details
+     *
+     * @param email The email address of the user
+     * @param password The password of the user
+     * @return AuthenticationResponse containing JWT token and user details
+     * @throws UserNotFoundException if no user is found with the given email
+     * @throws InvalidCredentialsException if authentication fails
+     * @throws AuthenticationException if there are authentication-related issues
+     */
     public AuthenticationResponse authenticate(String email, String password) throws AuthenticationException {
 
             Employee employee = resourcesRepository.findEmployeeByEmail(email)

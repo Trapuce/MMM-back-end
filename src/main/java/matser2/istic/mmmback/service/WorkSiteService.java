@@ -34,10 +34,7 @@ public class WorkSiteService {
     @Autowired
     private CustomerMapper customerMapper   ;
 
-    @Autowired
-    private CompanyRepository companyRepository;
-    @Autowired
-    private CompanyMapper companyMapper;
+
 
     @Autowired
     private AnomalyMapper anomalyMapper;
@@ -51,19 +48,34 @@ public class WorkSiteService {
     @Autowired
     private ResourcesSimpleMapper resourcesSimpleMapper;
 
-    @Autowired
-    private PhotoRepository    photoRepository;
+
 
     @Autowired
     private AvailabilityRepository availabilityRepository;
 
-    @Autowired
-    private AnomalyRepository anomalyRepository;
+
+
+
+
+    /**
+     * Creates a new worksite based on the provided DTO.
+     * Saves the associated customer and links it to the worksite.
+     *
+     * @param worksiteDto Data Transfer Object containing worksite details.
+     * @return WorksitePostDto representing the created worksite.
+     */
     public WorksitePostDto createWorkSite(WorksitePostDto worksiteDto) {
-
         Worksite worksite = worksiteMapper.worksitePostDtoToWorksite(worksiteDto);
+        if (worksiteDto == null) {
+            throw new WorksiteException("The worksite data transfer object (DTO) must not be null.");
+        }
 
+        if (worksiteDto.getCustomer() == null ) {
+            throw new CustomerNotFoundException("The customer ID must be provided in the DTO.");
+        }
         Customer customer = customerMapper.customerPostDtoToCustomer(worksiteDto.getCustomer());
+
+
         customer = customerRepository.save(customer);
         customer.addWorksite(worksite);
 
@@ -74,12 +86,28 @@ public class WorkSiteService {
 
 
 
+
+    /**
+     * Retrieves a specific worksite by its ID.
+     *
+     * @param id The ID of the worksite.
+     * @return WorksiteGetDto containing details of the requested worksite.
+     * @throws WorksiteNotFoundException if no worksite with the given ID exists.
+     */
     public WorksiteGetDto getWorkSite(Long id) {
         Worksite worksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + id));
         return worksiteMapper.worksiteToWorksiteGetDto(worksite);
     }
 
+
+
+    /**
+     * Retrieves all worksites and sorts them by creation date in descending order.
+     *
+     * @return List of WorksiteGetDto objects.
+     * @throws WorksiteNotFoundException if no worksites are found.
+     */
     public List<WorksiteGetDto> getWorkSites() {
 
             List<Worksite> worksites = worksiteRepository.findAll();
@@ -95,6 +123,17 @@ public class WorkSiteService {
 
     }
 
+    /**
+     * Adds a list of resources to a specific worksite.
+     * Updates resource availability during the worksite duration.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @param resourceIds List of resource IDs to add.
+     * @return Updated WorksiteGetDto.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     * @throws ResourceNotFoundException if any resource is not found.
+     * @throws InvalidWorksiteOperationException if the resource list is null or empty.
+     */
     public WorksiteGetDto addResourcesToWorksite(Long worksiteId, List<Long> resourceIds) {
         if (resourceIds == null || resourceIds.isEmpty()) {
             throw new InvalidWorksiteOperationException("Resource IDs list cannot be null or empty");
@@ -138,6 +177,16 @@ public class WorkSiteService {
     }
 
 
+    /**
+     * Removes a resource from a worksite and resets the resource's availability.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @param resourceId The ID of the resource to remove.
+     * @return Updated WorksiteGetDto.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     * @throws ResourceNotFoundException if the resource does not exist.
+     * @throws InvalidWorksiteOperationException if the resource is not associated with the worksite.
+     */
     @Transactional
     public WorksiteGetDto removeResourceFromWorksite(Long worksiteId, Long resourceId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
@@ -166,6 +215,14 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
+
+    /**
+     * Calculates the end date of a worksite based on its start date and duration.
+     *
+     * @param startDate The start date of the worksite.
+     * @param durationInHalfDays The duration in half days.
+     * @return The calculated end date.
+     */
     public Date calculateEndDate(Date startDate, int durationInHalfDays) {
         int daysToAdd = durationInHalfDays / 2;
 
@@ -177,6 +234,18 @@ public class WorkSiteService {
         return calendar.getTime();
     }
 
+
+    /**
+     * Updates an existing worksite based on its ID and the provided details.
+     * Links or updates the customer, anomalies, photos, and resources.
+     *
+     * @param id The ID of the worksite to update.
+     * @param worksiteAllDto Data Transfer Object containing the new details of the worksite.
+     * @return Updated WorksiteAllDto representing the updated worksite.
+     * @throws IllegalArgumentException if the ID is null.
+     * @throws WorksiteNotFoundException if no worksite is found with the provided ID.
+     * @throws CustomerNotFoundException if the customer ID in the DTO does not exist.
+     */
     public WorksiteAllDto updateWorksite(Long id, WorksiteAllDto worksiteAllDto) {
         if (id == null) {
             throw new IllegalArgumentException("The worksite ID must be provided for the update.");
@@ -225,6 +294,14 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteAllDto(updatedWorksite);
     }
 
+
+    /**
+     * Retrieves all resources associated with a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @return List of ResourcesSimpleDto representing the resources of the worksite.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     */
     public List<ResourcesSimpleDto> getWorksiteResources(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
@@ -234,17 +311,30 @@ public class WorkSiteService {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * Deletes a specific worksite by its ID.
+     *
+     * @param id The ID of the worksite to delete.
+     * @throws WorksiteNotFoundException if no worksite is found with the provided ID.
+     */
     public void deleteWorksite(Long id) {
         Worksite worksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new WorksiteNotFoundException("Aucun chantier trouvé avec l'ID fourni."));
-
-
-
         worksiteRepository.delete(worksite);
     }
 
 
 
+    /**
+     * Updates the status of a specific worksite.
+     * If the status is set to COMPLETED, clears the availability of associated resources.
+     *
+     * @param worksiteId The ID of the worksite to update.
+     * @param newStatus The new status to assign to the worksite.
+     * @return Updated WorksiteGetDto with the new status.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     */
     @Transactional
     public WorksiteGetDto updateWorksiteStatus(Long worksiteId, WorksiteStatus newStatus) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
@@ -274,6 +364,15 @@ public class WorkSiteService {
         return worksiteMapper.worksiteToWorksiteGetDto(updatedWorksite);
     }
 
+
+    /**
+     * Adds an anomaly to a specific worksite and optionally attaches photos to it.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @param anomalyDto Data Transfer Object containing the anomaly details.
+     * @return AnomalyDto representing the created anomaly.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     */
     public AnomalyDto addAnomalyToWorksite(Long worksiteId, AnomalyDto anomalyDto) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));
@@ -304,6 +403,14 @@ public class WorkSiteService {
         return anomalyMapper.anomalyToAnomalyDto(savedAnomaly);
     }
 
+
+    /**
+     * Adds photos to a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @param photos List of PhotoDto objects representing the photos to add.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     */
     public void addPhotosToWorksite(Long worksiteId, List<PhotoDto> photos) throws EntityNotFoundException {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found"));
@@ -320,6 +427,17 @@ public class WorkSiteService {
         worksiteRepository.save(worksite);
     }
 
+
+    /**
+     * Updates an anomaly in a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite.
+     * @param anomalyId The ID of the anomaly to update.
+     * @param anomalyDto Data Transfer Object containing the updated anomaly details.
+     * @return Updated AnomalyDto.
+     * @throws WorksiteNotFoundException if the worksite does not exist.
+     * @throws AnomalyNotFoundException if the anomaly does not exist in the worksite.
+     */
     public AnomalyDto updateAnomalyInWorksite(Long worksiteId, Long anomalyId, AnomalyDto anomalyDto) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new WorksiteNotFoundException("Worksite not found with id: " + worksiteId));

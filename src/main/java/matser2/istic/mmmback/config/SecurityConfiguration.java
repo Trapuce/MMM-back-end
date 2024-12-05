@@ -35,6 +35,15 @@ public class SecurityConfiguration {
     @Autowired
     private MyUserDetailsService userDetailsService;
 
+
+    /**
+     * Main security filter chain configuration
+     * Defines security rules, CORS, exception handling, and authentication
+     *
+     * @param http HTTP Security configuration
+     * @return Configured SecurityFilterChain
+     * @throws Exception If configuration error occurs
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -57,10 +66,10 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/register",
-                                "/api-docs/**",              // Permettre l'accès à toute la doc API
-                                "/swagger-ui/**",            // Permettre l'accès à tout Swagger UI
-                                "/v3/api-docs/**",           // Pour OpenAPI 3
-                                "/actuator/health"           // Pour le health check
+                                "/api-docs/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/actuator/health"
                         ).permitAll()
                         // Routes sécurisées
                         .requestMatchers("/api/v1/worksite/create").hasRole("RESPONSABLE_DU_CHANTIER")
@@ -78,19 +87,41 @@ public class SecurityConfiguration {
                 .build();
     }
 
+
+    /**
+     * Authentication provider configuration
+     * Uses DaoAuthenticationProvider with user details service
+     *
+     * @return Configured AuthenticationProvider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());  // Utilisation du BCrypt encoder
+        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         return provider;
     }
 
+    /**
+     * Provides BCrypt password encoder
+     * Used for hashing and verifying passwords
+     *
+     * @return PasswordEncoder using BCrypt
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+
+    /**
+     * Provides authentication manager
+     * Necessary for managing authentication processes
+     *
+     * @param config Authentication configuration
+     * @return AuthenticationManager
+     * @throws Exception If configuration error occurs
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
             throws Exception {

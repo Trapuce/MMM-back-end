@@ -53,11 +53,18 @@ public class ResourceService  {
     @Autowired
     private WorksiteRepository worksiteRepository;
 
+
+    /**
+     * Creates a new resource in the system.
+     *
+     * @param resource The resource to be created
+     * @return The saved resource
+     * @throws ResourceValidationException if the resource is null
+     */
     public <T extends Resources> T createResource(T resource) {
         if (resource == null) {
             throw new ResourceValidationException("resource", "Resource cannot be null");
         }
-
 
         T savedResource = resourcesRepository.save(resource);
 
@@ -73,7 +80,6 @@ public class ResourceService  {
             savedResource.addAvailability(newAvailability);
             newAvailability.setStartTime(null);
             newAvailability.setEndTime(null);
-
             availabilityRepository.save(newAvailability);
         }
 
@@ -82,6 +88,12 @@ public class ResourceService  {
     }
 
 
+    /**
+     * Retrieves all resources in the system.
+     *
+     * @return List of all resources as ResourcesDto
+     * @throws ResourceNotFoundException if no resources are found
+     */
     public List<ResourcesDto> getAllResources() {
         List<Resources> resources = resourcesRepository.findAll();
 
@@ -95,15 +107,39 @@ public class ResourceService  {
 
 
 
+
+    /**
+     * Retrieves a resource by its ID.
+     *
+     * @param id The ID of the resource
+     * @return ResourcesDto representing the resource
+     * @throws ResourceNotFoundException if no resource is found with the given ID
+     */
     public ResourcesDto getResourceById(Long id) {
         Optional<Resources> resource = resourcesRepository.findById(id);
         return  resource.map(resourcesMapper::resourcesToResourcesDto).orElseThrow(() -> new ResourceNotFoundException(id));
     }
+
+    /**
+     * Finds a resource by its ID and returns the raw resource object.
+     *
+     * @param id The ID of the resource
+     * @return The found Resources object
+     * @throws ResourceNotFoundException if no resource is found with the given ID
+     */
     public Resources findById(Long id) {
         return resourcesRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
+    /**
+     * Updates an existing Employee resource.
+     *
+     * @param id The ID of the employee to update
+     * @param updatedEmployee The updated employee information
+     * @return The updated Employee resource
+     * @throws ResourceTypeMismatchException if the resource is not an Employee
+     */
     public Resources updateEmployee(Long id, Employee updatedEmployee) {
         Resources resource = findById(id);
         if (!(resource instanceof Employee existingEmployee)) {
@@ -118,6 +154,14 @@ public class ResourceService  {
         return resourcesRepository.save(existingEmployee);
     }
 
+    /**
+     * Updates an existing Vehicle resource.
+     *
+     * @param id The ID of the vehicle to update
+     * @param updatedVehicle The updated vehicle information
+     * @return The updated Vehicle resource
+     * @throws ResourceTypeMismatchException if the resource is not a Vehicle
+     */
     public Resources updateVehicle(Long id, Vehicle updatedVehicle) {
         Resources resource = findById(id);
         if (!(resource instanceof Vehicle existingVehicle)) {
@@ -129,6 +173,15 @@ public class ResourceService  {
         return resourcesRepository.save(existingVehicle);
     }
 
+
+    /**
+     * Updates an existing Equipment resource.
+     *
+     * @param id The ID of the equipment to update
+     * @param updatedEquipment The updated equipment information
+     * @return The updated Equipment resource
+     * @throws ResourceTypeMismatchException if the resource is not an Equipment
+     */
     public Resources updateEquipment(Long id, Equipment updatedEquipment) {
         Resources resource = findById(id);
         if (!(resource instanceof Equipment existingEquipment)) {
@@ -140,16 +193,26 @@ public class ResourceService  {
         return resourcesRepository.save(existingEquipment);
     }
 
+    /**
+     * Deletes a resource from the system.
+     *
+     * @param id The ID of the resource to delete
+     * @throws ResourceNotFoundException if no resource is found with the given ID
+     */
     public void deleteResource(Long id) {
         Resources resource = resourcesRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Resource not found with ID supplied."));
-
+                .orElseThrow(() -> new ResourceNotFoundException("Resource not found with ID supplied."));
 
         resourcesRepository.delete(resource);
     }
 
 
 
+    /**
+     * Retrieves all employees in the system.
+     *
+     * @return List of EmployeeSummaryDto containing employee details
+     */
     public List<EmployeeSummaryDto> getAllEmployees() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Employee)
@@ -158,6 +221,11 @@ public class ResourceService  {
     }
 
 
+    /**
+     * Retrieves all vehicles in the system.
+     *
+     * @return List of VehicleSummaryDto containing vehicle details
+     */
     public List<VehicleSummaryDto> getAllVehicles() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Vehicle)
@@ -166,6 +234,11 @@ public class ResourceService  {
     }
 
 
+    /**
+     * Retrieves all equipment in the system.
+     *
+     * @return List of EquipmentSummaryDto containing equipment details
+     */
     public List<EquipmentSummaryDto> getAllEquipment() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Equipment)
@@ -173,6 +246,12 @@ public class ResourceService  {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * Retrieves all site managers (employees with CHEF_DE_CHANTIER role).
+     *
+     * @return List of EmployeeSummaryDto for site managers
+     */
     public List<EmployeeSummaryDto> getAllSiteManagers() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Employee)
@@ -182,6 +261,11 @@ public class ResourceService  {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all simple team members (employees with EQUIPIER_SIMPLE role).
+     *
+     * @return List of EmployeeSummaryDto for simple team members
+     */
     public List<EmployeeSummaryDto> getAllEquipiers() {
         return resourcesRepository.findAll().stream()
                 .filter(resource -> resource instanceof Employee)
@@ -190,6 +274,16 @@ public class ResourceService  {
                 .map(resourcesSimpleMapper::employeeToEmployeeSummaryDto)
                 .collect(Collectors.toList());
     }
+
+
+    /**
+     * Finds available employees for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of EmployeeSummaryDto for available employees
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no employees are available
+     */
     public List<EmployeeSummaryDto> getAvailableEmployeesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
@@ -210,21 +304,32 @@ public class ResourceService  {
         return availableEmployees;
     }
 
-        public Date calculateEndDate(Date startDate, int durationInHalfDays) {
+    /**
+     * Calculates the end date based on a start date and duration.
+     *
+     * @param startDate The start date of the worksite
+     * @param durationInHalfDays Duration in half-day increments
+     * @return Calculated end date
+     */
+    public Date calculateEndDate(Date startDate, int durationInHalfDays) {
             int daysToAdd = durationInHalfDays / 2;
-
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(startDate);
-
             calendar.add(Calendar.DAY_OF_YEAR, daysToAdd);
-
             return calendar.getTime();
-        }
+    }
 
+    /**
+     * Retrieves available vehicles for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of VehicleSummaryDto for available vehicles
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no vehicles are available
+     */
     public List<VehicleSummaryDto> getAvailableVehiclesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
-
 
         Date startDate = worksite.getStartDate();
         Date endDate = calculateEndDate(startDate, worksite.getDuration());
@@ -242,6 +347,15 @@ public class ResourceService  {
         return availableVehicles;
     }
 
+
+    /**
+     * Retrieves available equipment for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of EquipmentSummaryDto for available equipment
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no equipment is available
+     */
     public List<EquipmentSummaryDto> getAvailableEquipmentsForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
@@ -261,6 +375,15 @@ public class ResourceService  {
 
         return availableEquipments;
     }
+
+    /**
+     * Retrieves available site managers for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of EmployeeSummaryDto for available site managers
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no site managers are available
+     */
     public List<EmployeeSummaryDto> getAvailableSiteManagersForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
@@ -282,6 +405,15 @@ public class ResourceService  {
         return availableSiteManagers;
     }
 
+
+    /**
+     * Retrieves available team members (equipiers) for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of EmployeeSummaryDto for available team members
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no team members are available
+     */
     public List<EmployeeSummaryDto> getAvailableEquipiersForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
@@ -302,6 +434,16 @@ public class ResourceService  {
 
         return availableEquipiers;
     }
+
+
+    /**
+     * Retrieves all available resources for a specific worksite.
+     *
+     * @param worksiteId The ID of the worksite
+     * @return List of ResourcesSimpleDto for all available resources
+     * @throws ResourceNotFoundException if worksite is not found
+     * @throws ResourceNotAvailableException if no resources are available
+     */
     public List<ResourcesSimpleDto> getAvailableResourcesForWorksite(Long worksiteId) {
         Worksite worksite = worksiteRepository.findById(worksiteId)
                 .orElseThrow(() -> new ResourceNotFoundException("Worksite not found with id: " + worksiteId));
