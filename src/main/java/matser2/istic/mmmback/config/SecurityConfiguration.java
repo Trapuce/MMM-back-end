@@ -76,7 +76,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/v1/worksite/{id}/status")
                         .hasAnyRole("CHEF_DE_CHANTIER", "RESPONSABLE_DU_CHANTIER")
                         .requestMatchers("/api/v1/worksite/{id}/anomalies")
-                        .hasAnyRole("CHEF_DE_CHANTIER", "RESPONSABLE_DU_CHANTIER")
+                        .hasAnyRole("CHEF_DE_CHANTIER", "RESPONSABLE_DU_CHANTIER" , "EQUIPIER_SIMPLE")
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().authenticated()
                 )
