@@ -254,16 +254,46 @@ public class WorkSiteService {
         Worksite existingWorksite = worksiteRepository.findById(id)
                 .orElseThrow(() -> new WorksiteNotFoundException("No workSites found with the ID supplied."));
 
-        if (worksiteAllDto.getCustomer() != null && worksiteAllDto.getCustomer().getId() != null) {
-            Long customerId = worksiteAllDto.getCustomer().getId();
-            if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerId)) {
-                Customer newCustomer = customerRepository.findById(customerId)
+        // Update customer information if provided
+        if (worksiteAllDto.getCustomer() != null) {
+            Customer customerToUpdate = null;
+
+            // Find the customer to update
+            if (worksiteAllDto.getCustomer().getId() != null) {
+                customerToUpdate = customerRepository.findById(worksiteAllDto.getCustomer().getId())
                         .orElseThrow(() -> new CustomerNotFoundException("No customers found with the ID supplied."));
-                existingWorksite.setCustomer(newCustomer);
-                newCustomer.addWorksite(existingWorksite);
+            } else if (existingWorksite.getCustomer() != null) {
+                customerToUpdate = existingWorksite.getCustomer();
+            }
+
+            // Update customer details if customer exists
+            if (customerToUpdate != null) {
+                CustomerGetDto customerDto = worksiteAllDto.getCustomer();
+
+                // Update customer fields as needed
+                if (customerDto.getName() != null) {
+                    customerToUpdate.setName(customerDto.getName());
+                }
+                if (customerDto.getEmail() != null) {
+                    customerToUpdate.setEmail(customerDto.getEmail());
+                }
+                if (customerDto.getPhoneNumber() != null) {
+                    customerToUpdate.setPhoneNumber(Integer.parseInt(customerDto.getPhoneNumber()));
+                }
+                // Add more customer fields as necessary
+
+                // Save updated customer
+                customerRepository.save(customerToUpdate);
+
+                // Link customer to worksite if not already linked
+                if (existingWorksite.getCustomer() == null || !existingWorksite.getCustomer().getId().equals(customerToUpdate.getId())) {
+                    existingWorksite.setCustomer(customerToUpdate);
+                    customerToUpdate.addWorksite(existingWorksite);
+                }
             }
         }
 
+        // Rest of the existing update logic remains the same
         existingWorksite.setTitle(worksiteAllDto.getTitle());
         existingWorksite.setDescription(worksiteAllDto.getDescription());
         existingWorksite.setLocation(worksiteAllDto.getLocation());

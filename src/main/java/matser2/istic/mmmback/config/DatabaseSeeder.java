@@ -86,7 +86,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Worksite worksite1 = new Worksite();
         worksite1.setTitle("Construction Immeuble Alpha");
         worksite1.setDescription("Immeuble résidentiel de 10 étages.");
-        calendar.set(2024, Calendar.JANUARY, 15); // 15 janvier 2024
+        calendar.set(2024, Calendar.DECEMBER, 15); // 15 janvier 2024
         worksite1.setStartDate(calendar.getTime());
         worksite1.setStatusUpdated(new Date());
         worksite1.setDuration(24);
@@ -101,7 +101,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Worksite worksite2 = new Worksite();
         worksite2.setTitle("Pont Beta");
         worksite2.setDescription("Construction d'un pont suspendu.");
-        calendar.set(2024, Calendar.MARCH, 10); // 10 mars 2024
+        calendar.set(2024, Calendar.DECEMBER, 28); // 10 mars 2024
         worksite2.setStartDate(calendar.getTime());
         worksite2.setStatusUpdated(new Date());
         worksite2.setDuration(41);
@@ -116,7 +116,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Worksite worksite3 = new Worksite();
         worksite3.setTitle("Construction École Gamma");
         worksite3.setDescription("Construction d'une école primaire avec 15 classes.");
-        calendar.set(2024, Calendar.MAY, 25); // 25 mai 2024
+        calendar.set(2024, Calendar.DECEMBER, 25); // 25 mai 2024
         worksite3.setStartDate(calendar.getTime());
         worksite3.setStatusUpdated(new Date());
         worksite3.setDuration(18);
@@ -131,7 +131,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Worksite worksite4 = new Worksite();
         worksite4.setTitle("Aménagement Parc Delta");
         worksite4.setDescription("Création d'un parc public de 2 hectares.");
-        calendar.set(2024, Calendar.JULY, 10); // 10 juillet 2024
+        calendar.set(2024, Calendar.DECEMBER, 10); // 10 juillet 2024
         worksite4.setStartDate(calendar.getTime());
         worksite4.setStatusUpdated(new Date());
         worksite4.setDuration(8);
@@ -146,7 +146,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Worksite worksite5 = new Worksite();
         worksite5.setTitle("Réfection Route Epsilon");
         worksite5.setDescription("Réfection de 10 km de route départementale.");
-        calendar.set(2024, Calendar.SEPTEMBER, 15); // 15 septembre 2024
+        calendar.set(2025, Calendar.SEPTEMBER, 15); // 15 septembre 2024
         worksite5.setStartDate(calendar.getTime());
         worksite5.setStatusUpdated(new Date());
         worksite5.setDuration(16);
